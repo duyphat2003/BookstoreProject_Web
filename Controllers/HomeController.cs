@@ -1,5 +1,7 @@
 ﻿using BookstoreProject.Models;
+using Firebase.Auth;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Diagnostics;
 
 namespace BookstoreProject.Controllers
@@ -11,6 +13,7 @@ namespace BookstoreProject.Controllers
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
+            //_auth = new FirebaseAuthProvider(new FirebaseConfig(_apiKey));
         }
 
         public IActionResult Index()
@@ -18,6 +21,7 @@ namespace BookstoreProject.Controllers
             return View();
         }
 
+        
         public IActionResult Privacy()
         {
             return View();
