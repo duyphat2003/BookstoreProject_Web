@@ -1,4 +1,5 @@
-﻿using BookstoreProject.Models;
+﻿using BookstoreProject.Firestore_Database;
+using BookstoreProject.Models;
 using Firebase.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -18,6 +19,7 @@ namespace BookstoreProject.Controllers
 
         public IActionResult Index()
         {
+            BookstoreProjectDatabase.ConnectToFirestoreDB();
             return View();
         }
 
