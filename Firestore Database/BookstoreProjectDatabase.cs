@@ -1,4 +1,6 @@
-﻿using Google.Cloud.Firestore;
+﻿using BookstoreProject.Models;
+using Google.Cloud.Firestore;
+using Humanizer.Localisation;
 
 namespace BookstoreProject.Firestore_Database
 {
@@ -48,9 +50,133 @@ namespace BookstoreProject.Firestore_Database
             Console.WriteLine("Connected to Account table successfully!");
         }
 
+        // Tải thể loại
+        public static void LoadGenre()
+        {
+
+        }
+        // Tải sách
         public static void LoadBooks()
         {
+           
+        }
+
+        // tải các bản sao của sách
+        public static void LoadCopies()
+        {
+
+        }
+
+        // Tải sách với bản sao mà sách có tên chứa ký tự tìm kiếm
+        public static void SearchBook(string name)
+        {
+
+        }
+
+        // Tải sách theo thể loại
+        public static void LoadBooksWithGenre(string genreName)
+        {
             
+        }
+
+        // Login
+        public static void SearchAccount(string account, string password)
+        {
+
+        }
+
+        // Tải Tài khoản - Manager
+        public static void LoadAccounts()
+        {
+
+        }
+
+
+        // tải thẻ sinh viên - Manager
+        public static void LoadLibraryCards()
+        {
+
+        }
+
+        // Thêm sách - Manager
+        public static void AddBook(Book book)
+        {
+
+        }
+
+        // cập nhập sách - Manager
+        public static void UpdateBook(Book book)
+        {
+
+        }
+
+        // xóa sách - Manager
+        public static void DeleteBook(string id)
+        {
+
+        }
+
+        // Thêm bản sao của sách - Manager
+        public static void AddBookCopy(Copy copy)
+        {
+
+        }
+        // cập nhật bản sao của sách - Manager
+        public static void UpdateBookCopy(Copy copy)
+        {
+
+        }
+        // xóa bản sao của sách - Manager
+        public static void DeleteBookCopy(string id)
+        {
+
+        }
+
+        // Thêm thẻ thư viện - Manager
+        public static void AddLibraryCard(LibraryCard libraryCard)
+        {
+
+        }
+        // cập nhật thẻ thư viện
+        public static void UpdateLibraryCard(LibraryCard libraryCard, string borrowStatus, string useStatus)
+        {
+
+        }
+        // xóa thẻ thư viện - Manager
+        public static void DeleteLibraryCard(string id)
+        {
+
+        }
+        // Thêm Lần mượn sách- Manager
+        public static void AddLoan(Loan loan)
+        {
+
+        }
+        // cập nhập Lần mượn sách- Manager
+        public static void UpdateLoan(Loan loan)
+        {
+
+        }
+        // xóa Lần mượn sách - Manager
+        public static void DeleteLoan(string id)
+        {
+
+        }
+        // Thêm tài khoản - Manager
+        public static void AddAccount(Account account)
+        {
+
+        }
+        // Cập nhật tài khoản - Manager
+        public static void UpdateAccount(Account account)
+        {
+
+        }
+
+        // Xóa tài khoản - Manager
+        public static void DeleteAccount(string nameAccount)
+        {
+
         }
     }
 }
