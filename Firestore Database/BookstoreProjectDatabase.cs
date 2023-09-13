@@ -1,6 +1,5 @@
 ﻿using BookstoreProject.Models;
 using Google.Cloud.Firestore;
-using Humanizer.Localisation;
 
 namespace BookstoreProject.Firestore_Database
 {
@@ -13,6 +12,18 @@ namespace BookstoreProject.Firestore_Database
         static string GENRE = "Genre"; // Tên bảng
         static string ACCOUNT = "Account"; // Tên bảng
         static string projectId = "libraryproject-704cf"; // project id of Bookstore
+
+        public static List<Book> books; // sách
+        public static List<Genre> genres; // thể loại
+        public static List<Copy> copies; // bản sao của sách
+        public static List<Account> accounts;
+        public static List<LibraryCard> libraryCards;
+        public static List<Loan> loans;
+
+        public static List<string> bookName; // từ khóa gợi ý khi tìm kiếm
+
+        public static Account accountInfo;
+        public static LibraryCard libraryCard;
 
         static FirestoreDb database;
         static CollectionReference bookCollectionRef, copyCollectionRef, loanCollectionRef, libraryCardCollectionRef, genreCollectionRef, accountCollectionRef; // Các collection trong database Bookstore
@@ -53,67 +64,354 @@ namespace BookstoreProject.Firestore_Database
         // Tải thể loại
         public static void LoadGenre()
         {
-
+            genres = new List<Genre>();
+            Task<QuerySnapshot> genreIds = genreCollectionRef.GetSnapshotAsync();
+            while(true)
+            {
+                if(genreIds.IsCompleted)
+                {
+                    foreach(DocumentSnapshot genreId in genreIds.Result)
+                    {
+                        genres.Add(new Genre(genreId.GetValue<string>("Id"),
+                                             genreId.GetValue<string>("Name")));
+                    }
+                    break;
+                }
+            }
         }
         // Tải sách
         public static void LoadBooks()
         {
-           
+            books = new List<Book>();
+            Task<QuerySnapshot> bookIds = bookCollectionRef.GetSnapshotAsync();
+            while (true)
+            {
+                if (bookIds.IsCompleted)
+                {
+                    foreach (DocumentSnapshot bookId in bookIds.Result)
+                    {
+                        books.Add(new Book(bookId.GetValue<string>("Id"),
+                                             bookId.GetValue<string>("Name"),
+                                             bookId.GetValue<string>("Author"),
+                                             bookId.GetValue<string>("Genre"),
+                                             bookId.GetValue<string>("Content"),
+                                             bookId.GetValue<string>("YearPublished"),
+                                             bookId.GetValue<string>("Publisher"),
+                                             bookId.GetValue<string>("URL")));
+                    }
+                    break;
+                }
+            }
         }
 
         // tải các bản sao của sách
         public static void LoadCopies()
         {
+            copies = new List<Copy>();
 
+            Task<QuerySnapshot> bookIds = copyCollectionRef.GetSnapshotAsync();
+            while (true)
+            {
+                if (bookIds.IsCompleted)
+                {
+                    foreach (DocumentSnapshot id in bookIds.Result)
+                    {
+                        Task<QuerySnapshot> copyIds = copyCollectionRef.Document(id.Id).Collection("BookCopy").GetSnapshotAsync();
+                        while (true)
+                        {
+                            if (copyIds.IsCompleted)
+                            {
+                                foreach (DocumentSnapshot copy in copyIds.Result)
+                                {
+                                    copies.Add(new Copy(copy.Id,
+                                            id.Id,
+                                            copy.GetValue<string>("Status"),
+                                            copy.GetValue<string>("Notes")));
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
         }
 
         // Tải sách với bản sao mà sách có tên chứa ký tự tìm kiếm
         public static void SearchBook(string name)
         {
+            books = new List<Book>();
+            string content = "";
+            Task<QuerySnapshot> bookIds = bookCollectionRef.WhereLessThanOrEqualTo("Name", name + "\uf8ff").GetSnapshotAsync();
+            while (true)
+            {
+                if (bookIds.IsCompleted)
+                {
+                    foreach (DocumentSnapshot id in bookIds.Result)
+                    {
+                        foreach (string arCon in id.GetValue<List<string>>("Content"))
+                        {
+                            content += arCon + "\n";
+                        }
+                        books.Add(new Book(id.Id,
+                                id.GetValue<string>("Name"),
+                                id.GetValue<string>("Author"),
+                                id.GetValue<string>("Genre"),
+                                content,
+                                id.GetValue<string>("YearPublished"),
+                                id.GetValue<string>("Publisher"),
+                                id.GetValue<string>("URL")));
+                        Console.WriteLine("Book name " + id.Id + " : " + id.GetValue<string>("Name"));
+                    }
+                    break;
+                }
+            }
 
+            copies = new List<Copy>();
+
+            Task<QuerySnapshot> bookIds_Copy = copyCollectionRef.GetSnapshotAsync();
+            while (true)
+            {
+                if (bookIds_Copy.IsCompleted)
+                {
+                    foreach (DocumentSnapshot id in bookIds_Copy.Result)
+                    {
+                        Boolean isExist = false;
+                        foreach (Book b in books)
+                        {
+                            if (id.Id.Equals(b.getId()))
+                            {
+                                isExist = true;
+                                break;
+                            }
+                        }
+                        if (!isExist)
+                        {
+                            Task<QuerySnapshot> copyIds = copyCollectionRef.Document(id.Id).Collection("BookCopy").GetSnapshotAsync();
+                            while (true)
+                            {
+                                if (copyIds.IsCompleted)
+                                {
+                                    foreach (DocumentSnapshot copy in copyIds.Result)
+                                    {
+                                        copies.Add(new Copy(copy.Id,
+                                                id.Id,
+                                                copy.GetValue<string>("Status"),
+                                                copy.GetValue<string>("Notes")));
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
         }
 
         // Tải sách theo thể loại
         public static void LoadBooksWithGenre(string genreName)
         {
-            
+            books = new List<Book>();
+
+            string content = "";
+            Task<QuerySnapshot> bookIds = bookCollectionRef.WhereEqualTo("Genre", genreName).GetSnapshotAsync();
+            while (true)
+            {
+                if (bookIds.IsCompleted)
+                {
+                    foreach (DocumentSnapshot id in bookIds.Result)
+                    {
+                        content = "";
+                        foreach (string arCon in id.GetValue<List<string>>("Content"))
+                        {
+                            content += arCon + "\n";
+                        }
+                        books.Add(new Book(id.Id,
+                                id.GetValue<string>("Name"),
+                                id.GetValue<string>("Author"),
+                                id.GetValue<string>("Genre"),
+                                content,
+                                id.GetValue<string>("YearPublished"),
+                                id.GetValue<string>("Publisher"),
+                                id.GetValue<string>("URL")));
+                        Console.WriteLine("Book name " + id.Id + " : " + id.GetValue<string>("Name"));
+                    }
+                    break;
+                }
+            }
+
+            copies = new List<Copy>();
+
+            Task<QuerySnapshot> bookIds_Copy = copyCollectionRef.GetSnapshotAsync();
+            while (true)
+            {
+                if (bookIds_Copy.IsCompleted)
+                {
+                    foreach (DocumentSnapshot id in bookIds_Copy.Result)
+                    {
+                        Boolean isExist = false;
+                        foreach (Book b in books)
+                        {
+                            if (id.Id.Equals(b.getId()))
+                            {
+                                isExist = true;
+                                break;
+                            }
+                        }
+                        if (!isExist)
+                        {
+                            Task<QuerySnapshot> copyIds = copyCollectionRef.Document(id.Id).Collection("BookCopy").GetSnapshotAsync();
+                            while (true)
+                            {
+                                if (copyIds.IsCompleted)
+                                {
+                                    foreach (DocumentSnapshot copy in copyIds.Result)
+                                    {
+                                        copies.Add(new Copy(copy.Id,
+                                                id.Id,
+                                                copy.GetValue<string>("Status"),
+                                                copy.GetValue<string>("Notes")));
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
         }
 
         // Login
         public static void SearchAccount(string account, string password)
         {
-
+            accountInfo = new Account();
+            Task<QuerySnapshot> accountName = accountCollectionRef.WhereEqualTo("Account", account).GetSnapshotAsync();
+            while (true)
+            {
+                if (accountName.IsCompleted)
+                {
+                    foreach (DocumentSnapshot name in accountName.Result)
+                        if (name.GetValue<string>("Password").Equals(password))
+                            accountInfo = new Account(name.GetValue<string>("Account"), name.GetValue<string>("Password"), name.GetValue<string>("Role"));
+                    break;
+                }
+            }
+            if (!string.IsNullOrEmpty(accountInfo.getRole()) && accountInfo.getRole().Equals("Sinh viên"))
+            {
+                Task<DocumentSnapshot> libraryCardInfo = libraryCardCollectionRef.Document(accountInfo.getAccount()).GetSnapshotAsync();
+                while (true)
+                {
+                    if (libraryCardInfo.IsCompleted)
+                    {
+                        libraryCard = new LibraryCard(accountInfo.getAccount(),
+                                libraryCardInfo.Result.GetValue<string>("Name"),
+                                libraryCardInfo.Result.GetValue<string>("ExpirationDate"),
+                                libraryCardInfo.Result.GetValue<bool>("Status"),
+                                libraryCardInfo.Result.GetValue<bool>("Borrow"));
+                        break;
+                    }
+                }
+            }
         }
 
         // Tải Tài khoản - Manager
         public static void LoadAccounts()
         {
-
+            accounts = new List<Account>();
+            Task<QuerySnapshot> accountNames = accountCollectionRef.GetSnapshotAsync();
+            while (true)
+            {
+                if (accountNames.IsCompleted)
+                {
+                    foreach (DocumentSnapshot accountName in accountNames.Result)
+                    {
+                        accounts.Add(new Account(accountName.GetValue<string>("Account"), accountName.GetValue<string>("Password"), accountName.GetValue<string>("Role")));
+                    }
+                    break;
+                }
+            }
         }
 
 
         // tải thẻ sinh viên - Manager
         public static void LoadLibraryCards()
         {
-
+            libraryCards = new List<LibraryCard>();
+            Task<QuerySnapshot> libraryCardIds = libraryCardCollectionRef.GetSnapshotAsync();
+            while (true)
+            {
+                if (libraryCardIds.IsCompleted)
+                {
+                    foreach (DocumentSnapshot libraryCardId in libraryCardIds.Result)
+                    {
+                        libraryCards.Add(new LibraryCard(libraryCardId.GetValue<string>("Id"),
+                                libraryCardId.GetValue<string>("Name"),
+                                libraryCardId.GetValue<string>("ExpirationDate"),
+                                libraryCardId.GetValue<bool>("Status"),
+                                libraryCardId.GetValue<bool>("Borrow")));
+                    }
+                    break;
+                }
+            }
         }
 
         // Thêm sách - Manager
         public static void AddBook(Book book)
         {
+            List<string> contentParts = new List<string>();
+            string[] parts = book.getContent().Split("\n");
 
+            foreach (string part in parts)
+            {
+                contentParts.Add(part);
+            }
+
+
+            Dictionary<string, object> newBook = new Dictionary<string, object>();
+            newBook.Add("Author", book.getAuthor());
+            newBook.Add("Content", contentParts);
+            newBook.Add("Genre", book.getGenre());
+            newBook.Add("Id", book.getId());
+            newBook.Add("Name", book.getTitle());
+            newBook.Add("Publisher", book.getPublisher());
+            newBook.Add("URL", book.getUrlImage());
+            newBook.Add("YearPublished", book.getYearPublished());
+
+            bookCollectionRef.Document(book.getId()).SetAsync(newBook);
+            Console.WriteLine("Thêm sách thành công: " + newBook);
         }
 
         // cập nhập sách - Manager
         public static void UpdateBook(Book book)
         {
+            List<string> contentParts = new List<string>();
+            string[] parts = book.getContent().Split("\n");
 
+            foreach (string part in parts)
+            {
+                contentParts.Add(part);
+            }
+
+
+            Dictionary<string, object> newBook = new Dictionary<string, object>();
+            newBook.Add("Author", book.getAuthor());
+            newBook.Add("Content", contentParts);
+            newBook.Add("Genre", book.getGenre());
+            newBook.Add("Name", book.getTitle());
+            newBook.Add("Publisher", book.getPublisher());
+            newBook.Add("URL", book.getUrlImage());
+            newBook.Add("YearPublished", book.getYearPublished());
+
+            bookCollectionRef.Document(book.getId()).UpdateAsync(newBook);
+            Console.WriteLine("Chỉnh sửa sách thành công: " + newBook);
         }
 
         // xóa sách - Manager
         public static void DeleteBook(string id)
         {
-
+            bookCollectionRef.Document(id).DeleteAsync();
         }
 
         // Thêm bản sao của sách - Manager
