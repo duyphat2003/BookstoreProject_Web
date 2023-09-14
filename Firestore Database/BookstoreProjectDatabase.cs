@@ -421,11 +421,7 @@ namespace BookstoreProject.Firestore_Database
         }
 
         // xóa sách - Manager
-        public static void DeleteBook(string id)
-        {
-            bookCollectionRef.Document(id).DeleteAsync();
-        }
-
+        public static void DeleteBook(string id) => bookCollectionRef.Document(id).DeleteAsync();
         // Thêm bản sao của sách - Manager
         public static void AddBookCopy(Copy copy)
         {
@@ -447,12 +443,7 @@ namespace BookstoreProject.Firestore_Database
             copyCollectionRef.Document(copy.getBookId()).Collection("BookCopy").Document(copy.getId()).UpdateAsync(updateBookCopy);
         }
         // xóa bản sao của sách - Manager
-        public static void DeleteBookCopy(string BookId, string id)
-        {
-
-            copyCollectionRef.Document(BookId).Collection("BookCopy").Document(id).DeleteAsync();
-        }
-
+        public static void DeleteBookCopy(string BookId, string id) => copyCollectionRef.Document(BookId).Collection("BookCopy").Document(id).DeleteAsync();
         // Thêm thẻ thư viện - Manager
         public static void AddLibraryCard(LibraryCard libraryCard)
         {
@@ -475,39 +466,27 @@ namespace BookstoreProject.Firestore_Database
                 libraryCardCollectionRef.Document(libraryCard.getId()).UpdateAsync("Status", useStatus);
         }
         // xóa thẻ thư viện - Manager
-        public static void DeleteLibraryCard(string id)
-        {
-            libraryCardCollectionRef.Document(id).DeleteAsync();
-        }
+        public static void DeleteLibraryCard(string id) => libraryCardCollectionRef.Document(id).DeleteAsync();
         // Thêm Lần mượn sách- Manager
         public static void AddLoan(Loan loan)
         {
-            Dictionary<string, object> multiData = new Dictionary<string, object>();
-            multiData.Add("BookID", loan.getBookId());
-            multiData.Add("BorrowDate", loan.getDateLoaned());
-            multiData.Add("CopyId", loan.getCopyId());
-            multiData.Add("Id", loan.getCardId());
-            multiData.Add("DateDue", loan.getDateDue());
-            libraryCardCollectionRef.Document(loan.getCardId()).SetAsync(multiData);
+            Dictionary<string, object> addDataData = new Dictionary<string, object>();
+            addDataData.Add("BorrowDate", loan.getDateLoaned());
+            addDataData.Add("DateDue", loan.getDateDue());
+            loanCollectionRef.Document(loan.getCardId()).Collection(loan.getBookId()).Document(loan.getCopyId()).SetAsync(addDataData);
         }
         // cập nhập Lần mượn sách- Manager
         public static void UpdateLoan(Loan loan)
         {
             Dictionary<string, object> updateDataLoan = new Dictionary<string, object>();
 
-            updateDataLoan.Add("BookID", loan.getBookId());
             updateDataLoan.Add("BorrowDate", loan.getDateLoaned());
-            updateDataLoan.Add("CopyId", loan.getCopyId());
-            updateDataLoan.Add("Id", loan.getCardId());
             updateDataLoan.Add("DateDue", loan.getDateDue());
 
-            loanCollectionRef.Document(loan.getCardId()).UpdateAsync(updateDataLoan);
+            loanCollectionRef.Document(loan.getCardId()).Collection(loan.getBookId()).Document(loan.getCopyId()).UpdateAsync(updateDataLoan);
         }
         // xóa Lần mượn sách - Manager
-        public static void DeleteLoan(string id)
-        {
-            loanCollectionRef.Document(id).DeleteAsync();
-        }
+        public static void DeleteLoan(Loan loan) => loanCollectionRef.Document(loan.getCardId()).Collection(loan.getBookId()).Document(loan.getCopyId()).DeleteAsync();
         // Thêm tài khoản - Manager
         public static void AddAccount(Account account)
         {
@@ -530,9 +509,6 @@ namespace BookstoreProject.Firestore_Database
         }
 
         // Xóa tài khoản - Manager
-        public static void DeleteAccount(string nameAccount)
-        {
-            accountCollectionRef.Document(nameAccount).DeleteAsync();
-        }
+        public static void DeleteAccount(string nameAccount) => accountCollectionRef.Document(nameAccount).DeleteAsync();
     }
 }
