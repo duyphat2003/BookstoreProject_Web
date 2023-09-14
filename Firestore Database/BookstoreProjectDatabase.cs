@@ -422,59 +422,100 @@ namespace BookstoreProject.Firestore_Database
         // cập nhật bản sao của sách - Manager
         public static void UpdateBookCopy(Copy copy)
         {
+            Dictionary<string, object> updateBookCopy = new Dictionary<string, object>();
 
+            updateBookCopy.Add("Notes", copy.getNotes());
+            updateBookCopy.Add("Status", copy.getStatus());
+
+            copyCollectionRef.Document(copy.getBookId()).Collection("BookCopy").Document(copy.getId()).UpdateAsync(updateBookCopy);
         }
         // xóa bản sao của sách - Manager
-        public static void DeleteBookCopy(string id)
+        public static void DeleteBookCopy(string BookId, string id)
         {
 
+            copyCollectionRef.Document(BookId).Collection("BookCopy").Document(id).DeleteAsync();
         }
 
         // Thêm thẻ thư viện - Manager
         public static void AddLibraryCard(LibraryCard libraryCard)
         {
+            Dictionary<string, object> libraryCardData = new Dictionary<string, object>();
 
+            libraryCardData.Add("Borrow", libraryCard.getBorrowStatus());
+            libraryCardData.Add("ExpirationDate", libraryCard.getExpirationDate());
+            libraryCardData.Add("Id", libraryCard.getId());
+            libraryCardData.Add("Name", libraryCard.getName());
+            libraryCardData.Add("Status", libraryCard.getUseStatus());
+
+            libraryCardCollectionRef.Document(libraryCard.getId()).SetAsync(libraryCardData);
         }
         // cập nhật thẻ thư viện
         public static void UpdateLibraryCard(LibraryCard libraryCard, string borrowStatus, string useStatus)
         {
-
+            if (!string.IsNullOrEmpty(borrowStatus))
+                libraryCardCollectionRef.Document(libraryCard.getId()).UpdateAsync("Borrow", borrowStatus);
+            if (!string.IsNullOrEmpty(useStatus))
+                libraryCardCollectionRef.Document(libraryCard.getId()).UpdateAsync("Status", useStatus);
         }
         // xóa thẻ thư viện - Manager
         public static void DeleteLibraryCard(string id)
         {
-
+            libraryCardCollectionRef.Document(id).DeleteAsync();
         }
         // Thêm Lần mượn sách- Manager
         public static void AddLoan(Loan loan)
         {
-
+            Dictionary<string, object> multiData = new Dictionary<string, object>();
+            multiData.Add("BookID", loan.getBookId());
+            multiData.Add("BorrowDate", loan.getDateLoaned());
+            multiData.Add("CopyId", loan.getCopyId());
+            multiData.Add("Id", loan.getCardId());
+            multiData.Add("DateDue", loan.getDateDue());
+            libraryCardCollectionRef.Document(loan.getCardId()).SetAsync(multiData);
         }
         // cập nhập Lần mượn sách- Manager
         public static void UpdateLoan(Loan loan)
         {
+            Dictionary<string, object> updateDataLoan = new Dictionary<string, object>();
 
+            updateDataLoan.Add("BookID", loan.getBookId());
+            updateDataLoan.Add("BorrowDate", loan.getDateLoaned());
+            updateDataLoan.Add("CopyId", loan.getCopyId());
+            updateDataLoan.Add("Id", loan.getCardId());
+            updateDataLoan.Add("DateDue", loan.getDateDue());
+
+            loanCollectionRef.Document(loan.getCardId()).UpdateAsync(updateDataLoan);
         }
         // xóa Lần mượn sách - Manager
         public static void DeleteLoan(string id)
         {
-
+            loanCollectionRef.Document(id).DeleteAsync();
         }
         // Thêm tài khoản - Manager
         public static void AddAccount(Account account)
         {
+            Dictionary<string, object> newAccount = new Dictionary<string, object>();
+            newAccount.Add("Account", account.getAccount());
+            newAccount.Add("Password", account.getPassword());
+            newAccount.Add("Role", account.getRole());
 
+            accountCollectionRef.Document(account.getAccount()).SetAsync(newAccount);
         }
         // Cập nhật tài khoản - Manager
         public static void UpdateAccount(Account account)
         {
+            Dictionary<string, object> currentAccount = new Dictionary<string, object>();
+            currentAccount.Add("Account", account.getAccount());
+            currentAccount.Add("Password", account.getPassword());
+            currentAccount.Add("Role", account.getRole());
 
+            accountCollectionRef.Document(account.getAccount()).UpdateAsync(currentAccount);
         }
 
         // Xóa tài khoản - Manager
         public static void DeleteAccount(string nameAccount)
         {
-
+            accountCollectionRef.Document(nameAccount).DeleteAsync();
         }
     }
 }
