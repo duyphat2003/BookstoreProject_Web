@@ -1,7 +1,7 @@
 ﻿using Amazon.SimpleEmail.Model;
 using BookstoreProject.Models;
 using Google.Cloud.Firestore;
-
+using System.Text;
 
 namespace BookstoreProject.Firestore_Database
 {
@@ -108,7 +108,8 @@ namespace BookstoreProject.Firestore_Database
                                              bookId.GetValue<string>("YearPublished"),
                                              bookId.GetValue<string>("Publisher"),
                                              bookId.GetValue<string>("URL")));
-                        Console.WriteLine(books);
+
+                        Console.WriteLine(bookId.GetValue<string>("Name"));
                     }
                     break;
                 }
@@ -428,7 +429,12 @@ namespace BookstoreProject.Firestore_Database
         // Thêm bản sao của sách - Manager
         public static void AddBookCopy(Copy copy)
         {
+            Dictionary<string, object> newBookCopy = new Dictionary<string, object>();
 
+            newBookCopy.Add("Notes", copy.getNotes());
+            newBookCopy.Add("Status", copy.getStatus());
+
+            copyCollectionRef.Document(copy.getBookId()).Collection("BookCopy").Document(copy.getId()).SetAsync(newBookCopy);
         }
         // cập nhật bản sao của sách - Manager
         public static void UpdateBookCopy(Copy copy)

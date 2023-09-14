@@ -32,10 +32,10 @@
     <Folder Include="Repository\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Update="libraryproject-704cf-firebase-adminsdk-trb3v-b601c05ad2.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+    <ItemGroup>
+        <Content Update="libraryproject-704cf-firebase-adminsdk-trb3v-b601c05ad2.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
 
 </Project>
