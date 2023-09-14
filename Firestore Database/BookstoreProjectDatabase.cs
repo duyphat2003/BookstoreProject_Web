@@ -1,5 +1,7 @@
-﻿using BookstoreProject.Models;
+﻿using Amazon.SimpleEmail.Model;
+using BookstoreProject.Models;
 using Google.Cloud.Firestore;
+
 
 namespace BookstoreProject.Firestore_Database
 {
@@ -83,21 +85,30 @@ namespace BookstoreProject.Firestore_Database
         public static void LoadBooks()
         {
             books = new List<Book>();
+            string content = "";
             Task<QuerySnapshot> bookIds = bookCollectionRef.GetSnapshotAsync();
             while (true)
             {
                 if (bookIds.IsCompleted)
                 {
+
                     foreach (DocumentSnapshot bookId in bookIds.Result)
                     {
+                        content = "";
+                        foreach (string arCon in bookId.GetValue<List<string>>("Content"))
+                        {
+                            content += arCon + "\n";
+                        }
+
                         books.Add(new Book(bookId.GetValue<string>("Id"),
                                              bookId.GetValue<string>("Name"),
                                              bookId.GetValue<string>("Author"),
                                              bookId.GetValue<string>("Genre"),
-                                             bookId.GetValue<string>("Content"),
+                                             content,
                                              bookId.GetValue<string>("YearPublished"),
                                              bookId.GetValue<string>("Publisher"),
                                              bookId.GetValue<string>("URL")));
+                        Console.WriteLine(books);
                     }
                     break;
                 }
