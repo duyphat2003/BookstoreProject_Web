@@ -192,7 +192,7 @@ namespace BookstoreProject.Firestore_Database
                 {
                     foreach (DocumentSnapshot id in bookIds_Copy.Result)
                     {
-                        Boolean isExist = false;
+                        bool isExist = false;
                         foreach (Book b in books)
                         {
                             if (id.Id.Equals(b.getId()))
@@ -201,7 +201,7 @@ namespace BookstoreProject.Firestore_Database
                                 break;
                             }
                         }
-                        if (!isExist)
+                        if (isExist)
                         {
                             Task<QuerySnapshot> copyIds = copyCollectionRef.Document(id.Id).Collection("BookCopy").GetSnapshotAsync();
                             while (true)
@@ -266,7 +266,7 @@ namespace BookstoreProject.Firestore_Database
                 {
                     foreach (DocumentSnapshot id in bookIds_Copy.Result)
                     {
-                        Boolean isExist = false;
+                        bool isExist = false;
                         foreach (Book b in books)
                         {
                             if (id.Id.Equals(b.getId()))
@@ -275,7 +275,7 @@ namespace BookstoreProject.Firestore_Database
                                 break;
                             }
                         }
-                        if (!isExist)
+                        if (isExist)
                         {
                             Task<QuerySnapshot> copyIds = copyCollectionRef.Document(id.Id).Collection("BookCopy").GetSnapshotAsync();
                             while (true)
