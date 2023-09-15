@@ -154,26 +154,30 @@ namespace BookstoreProject.Firestore_Database
         {
             books = new List<Book>();
             string content = "";
-            Task<QuerySnapshot> bookIds = bookCollectionRef.WhereLessThanOrEqualTo("Name", name + "\uf8ff").GetSnapshotAsync();
+            Task<QuerySnapshot> bookIds = bookCollectionRef.GetSnapshotAsync();
             while (true)
             {
                 if (bookIds.IsCompleted)
                 {
                     foreach (DocumentSnapshot id in bookIds.Result)
                     {
-                        foreach (string arCon in id.GetValue<List<string>>("Content"))
+                        if (id.GetValue<string>("Name").Contains(name))
                         {
-                            content += arCon + "\n";
+                            content = "";
+                            foreach (string arCon in id.GetValue<List<string>>("Content"))
+                            {
+                                content += arCon + "\n";
+                            }
+                            books.Add(new Book(id.Id,
+                                    id.GetValue<string>("Name"),
+                                    id.GetValue<string>("Author"),
+                                    id.GetValue<string>("Genre"),
+                                    content,
+                                    id.GetValue<string>("YearPublished"),
+                                    id.GetValue<string>("Publisher"),
+                                    id.GetValue<string>("URL")));
+                            Console.WriteLine("Book name " + id.Id + " : " + id.GetValue<string>("Name"));
                         }
-                        books.Add(new Book(id.Id,
-                                id.GetValue<string>("Name"),
-                                id.GetValue<string>("Author"),
-                                id.GetValue<string>("Genre"),
-                                content,
-                                id.GetValue<string>("YearPublished"),
-                                id.GetValue<string>("Publisher"),
-                                id.GetValue<string>("URL")));
-                        Console.WriteLine("Book name " + id.Id + " : " + id.GetValue<string>("Name"));
                     }
                     break;
                 }
