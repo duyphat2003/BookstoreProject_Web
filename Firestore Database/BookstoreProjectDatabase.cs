@@ -1,6 +1,7 @@
 ﻿using Amazon.SimpleEmail.Model;
 using BookstoreProject.Models;
 using Google.Cloud.Firestore;
+using System;
 using System.Text;
 
 namespace BookstoreProject.Firestore_Database
@@ -308,24 +309,35 @@ namespace BookstoreProject.Firestore_Database
             {
                 if (accountName.IsCompleted)
                 {
-                    foreach (DocumentSnapshot name in accountName.Result)
-                        if (name.GetValue<string>("Password").Equals(password))
-                            accountInfo = new Account(name.GetValue<string>("Account"), name.GetValue<string>("Password"), name.GetValue<string>("Role"));
+                    if (accountName.Result.Count != 0)
+                    {
+                        foreach (DocumentSnapshot name in accountName.Result)
+                            if (name.GetValue<string>("Password").Equals(password))
+                                accountInfo = new Account(name.GetValue<string>("Account"), name.GetValue<string>("Password"), name.GetValue<string>("Role"));
+
+                        if (string.IsNullOrEmpty(accountInfo.getAccount()))
+                            Console.WriteLine("Tài khoản hoặc mật khẩu bị sai");
+                    }
+                    else
+                        Console.WriteLine("Tài khoản hoặc mật khẩu bị sai");
                     break;
                 }
             }
             if (!string.IsNullOrEmpty(accountInfo.getRole()) && accountInfo.getRole().Equals("Sinh viên"))
             {
-                Task<DocumentSnapshot> libraryCardInfo = libraryCardCollectionRef.Document(accountInfo.getAccount()).GetSnapshotAsync();
+                Task<QuerySnapshot> libraryCardInfo = libraryCardCollectionRef.WhereEqualTo("Id", accountInfo.getAccount()).GetSnapshotAsync();
                 while (true)
                 {
                     if (libraryCardInfo.IsCompleted)
                     {
-                        libraryCard = new LibraryCard(accountInfo.getAccount(),
-                                libraryCardInfo.Result.GetValue<string>("Name"),
-                                libraryCardInfo.Result.GetValue<string>("ExpirationDate"),
-                                libraryCardInfo.Result.GetValue<bool>("Status"),
-                                libraryCardInfo.Result.GetValue<bool>("Borrow"));
+                        foreach (DocumentSnapshot idCard in libraryCardInfo.Result)
+                            libraryCard = new LibraryCard(accountInfo.getAccount(),
+                                    idCard.GetValue<string>("Name"),
+                                    idCard.GetValue<string>("ExpirationDate"),
+                                    idCard.GetValue<bool>("Status"),
+                                    idCard.GetValue<bool>("Borrow"));
+
+                        Console.WriteLine("Đăng nhập thành công");
                         break;
                     }
                 }
@@ -502,14 +514,22 @@ namespace BookstoreProject.Firestore_Database
             accountCollectionRef.Document(account.getAccount()).SetAsync(newAccount);
         }
         // Cập nhật tài khoản - Manager
-        public static void UpdateAccount(Account account)
+        public static bool UpdateAccount(String account, String password)
         {
-            Dictionary<string, object> currentAccount = new Dictionary<string, object>();
-            currentAccount.Add("Account", account.getAccount());
-            currentAccount.Add("Password", account.getPassword());
-            currentAccount.Add("Role", account.getRole());
-
-            accountCollectionRef.Document(account.getAccount()).UpdateAsync(currentAccount);
+            Task<QuerySnapshot> accId = accountCollectionRef.WhereEqualTo("Account", account).GetSnapshotAsync();
+            while (true)
+            {
+                if (accId.IsCompleted)
+                {
+                    if (accId.Result.Count != 0)
+                    {
+                        accountCollectionRef.Document(account).UpdateAsync("Password", password);
+                        return true;
+                    }
+                    else
+                        return false;
+                }
+            }
         }
 
         // Xóa tài khoản - Manager
