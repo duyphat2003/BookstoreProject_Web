@@ -7,31 +7,67 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BookstoreProject.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/custom.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300&family=Poppins:wght@200;300;500;600;700;800;900&family=Roboto:wght@100&display=swap"
+          rel="stylesheet" />
 </head>
+
 <body>
+
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
+            <div class="container-lg">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">BookstoreProject</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+
+                <div class="navbar-nav">
+                    <div class="nav-item">
+                        Logo
+                    </div>
+
+                    <div class="navbar-expand-lg d-flex flex-row" style="width:300px">
+                        <form action="/" method=post style="width:100%" class="d-flex flex-row">
+                            <div style="width:85%">
+                                <input type="text" name="title" placeholder="Tìm kiếm sản phẩm mong muốn" style="width:100%" />
+                             </div>
+                            <input type="submit" class="btn" id="btnProceed" value="Tìm" style="border:1px grey solid; padding:3px;color:#b81f32" />
+                        </form>
+                    </div>
+                </div>
+
+                <div class="navbar-nav">
+                    <div class="flex-column align-items-center d-flex me-4">
+                        <div class="mb-1">Logo</div>
+                        <div>
+                            <a class="nav-item">@Html.ActionLink("Thông báo", "cart", "user", null, new { @class = "nav-link"})</a>
+                        </div>
+                    </div>
+                    <div class="flex-column align-items-center d-flex me-4">
+                        <div class="mb-1">Logo</div>
+                        <div>
+                             <a class="nav-item">@Html.ActionLink("Giỏ hàng", "cart", "user", null, new { @class = "nav-link"})</a>
+                        </div>
+                    </div>
+                    <div class="flex-column align-items-center d-flex me-4">
+                        <div class="mb-1">Logo</div>
+                        <div>
+                            <a class="nav-item">@Html.ActionLink("Đăng nhập", "signin", "user", null, new { @class = "nav-link"})</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </nav>
+
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+
+    <div style="background: #f8f6f0;min-height:100vh">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
@@ -41,6 +77,7 @@
             &copy; 2023 - BookstoreProject - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

@@ -4,7 +4,7 @@
     ViewData["Title"] = "SignIn";
 }
 
-<h1>SignIn</h1>
+@* <h1>SignIn</h1>
 
 <h4>LoginModel</h4>
 <hr />
@@ -31,8 +31,59 @@
 
 <div>
     <a asp-action="Registration">Register new User</a>
+</div> *@
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+            <div class="card card-signin my-5" style="background-color: none">
+                <div class="card-body" style="border-radius:50px">
+
+                    <h5 class="card-title text-center">Đăng Ký</h5>
+                    <div class="text-center text-danger">@ViewBag.Error</div>
+
+                    <section id="loginForm">
+                        @using (Html.BeginForm("Signin", "User", FormMethod.Post, new { @class = "form-horizontal" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <hr />
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <div class="form-group">
+
+                                <div class="col-md-10">
+                                    <p class="control-label">Số điện thoại/Email</p>
+                                    <input asp-for="Email" class="form-control" />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <p class="control-label">Mật khẩu</p>
+                                <input asp-for="Password" class="form-control" type="password" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <input type="submit" value="Đăng nhập" class="btn btn-default" style="color:var(--primary-color)" />
+                                </div>
+                            </div>
+                            <p>
+                                @Html.ActionLink("Bạn chưa có tài khoản?Vui lòng đăng kí", "Registration")
+                            </p>
+                            @* Enable this once you have account confirmation enabled for password reset functionality *@
+                            <p>
+                                @Html.ActionLink("Quên mật khẩu?", "ForgotPassword")
+                            </p>
+                        }
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
