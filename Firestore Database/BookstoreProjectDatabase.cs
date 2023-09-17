@@ -2,7 +2,9 @@
 using BookstoreProject.Models;
 using Google.Cloud.Firestore;
 using System;
+using System.Net;
 using System.Text;
+using System.Xml.Linq;
 
 namespace BookstoreProject.Firestore_Database
 {
@@ -146,6 +148,30 @@ namespace BookstoreProject.Firestore_Database
                         }
                     }
                     break;
+                }
+            }
+        }
+
+        public static List<Copy> LoadCopiesWithBookId(string bookId, string status)
+        {
+            List<Copy> copyArrayList = new List<Copy>();
+
+            Task<QuerySnapshot> copyIds = copyCollectionRef.Document(bookId).Collection("BookCopy").GetSnapshotAsync();
+            while (true)
+            {
+                if (copyIds.IsCompleted)
+                {
+                    foreach (DocumentSnapshot id in copyIds.Result)
+                    {
+                        if (!string.IsNullOrEmpty(status) && id.GetValue<string>("Status").Equals(status))
+                        {
+                            copyArrayList.Add(new Copy(id.Id,
+                                    bookId,
+                                    id.GetValue<string>("Status"),
+                                    id.GetValue<string>("Notes")));
+                        }
+                    }
+                    return copyArrayList;
                 }
             }
         }
@@ -379,6 +405,52 @@ namespace BookstoreProject.Firestore_Database
                                 libraryCardId.GetValue<string>("ExpirationDate"),
                                 libraryCardId.GetValue<bool>("Status"),
                                 libraryCardId.GetValue<bool>("Borrow")));
+                    }
+                    break;
+                }
+            }
+        }
+
+        // tải thẻ sinh viên - Manager
+        public static void LoadLibraryCardsWithId(string id)
+        {
+            libraryCards = new List<LibraryCard>();
+            Task<QuerySnapshot> libraryCardIds = libraryCardCollectionRef.GetSnapshotAsync();
+            while (true)
+            {
+                if (libraryCardIds.IsCompleted)
+                {
+                    foreach (DocumentSnapshot libraryCardId in libraryCardIds.Result)
+                    {
+                        if (libraryCardId.GetValue<string>("Id").Contains(id))
+                            libraryCards.Add(new LibraryCard(libraryCardId.GetValue<string>("Id"),
+                                    libraryCardId.GetValue<string>("Name"),
+                                    libraryCardId.GetValue<string>("ExpirationDate"),
+                                    libraryCardId.GetValue<bool>("Status"),
+                                    libraryCardId.GetValue<bool>("Borrow")));
+                    }
+                    break;
+                }
+            }
+        }
+
+        // tải thẻ sinh viên - Manager
+        public static void LoadLibraryCardsWithName(string name)
+        {
+            libraryCards = new List<LibraryCard>();
+            Task<QuerySnapshot> libraryCardIds = libraryCardCollectionRef.GetSnapshotAsync();
+            while (true)
+            {
+                if (libraryCardIds.IsCompleted)
+                {
+                    foreach (DocumentSnapshot libraryCardId in libraryCardIds.Result)
+                    {
+                        if (libraryCardId.GetValue<string>("Name").Contains(name))
+                            libraryCards.Add(new LibraryCard(libraryCardId.GetValue<string>("Id"),
+                                    libraryCardId.GetValue<string>("Name"),
+                                    libraryCardId.GetValue<string>("ExpirationDate"),
+                                    libraryCardId.GetValue<bool>("Status"),
+                                    libraryCardId.GetValue<bool>("Borrow")));
                     }
                     break;
                 }
