@@ -1,4 +1,5 @@
 ﻿<!DOCTYPE html>
+@model List<Book>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -8,15 +9,15 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BookstoreProject.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/custom.css" />
-
+    <link rel="stylesheet" href="~/css/StyleSheet.css" />
+    <link rel="stylesheet" href="https://cdn.firebase.com/libs/firestore/2.5.0/firestore.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300&family=Poppins:wght@200;300;500;600;700;800;900&family=Roboto:wght@100&display=swap"
-          rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300&family=Poppins:wght@200;300;500;600;700;800;900&family=Roboto:wght@100&display=swap" rel="stylesheet" />
+
 </head>
 
 <body>
-
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-lg">
@@ -25,7 +26,33 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                
+                <div class="test">
+                    <ul id="menu">
+                        <li><a href="#">Thể loại sách<span class="arrow arrow-down"></span></a>
+                            
+                            <ul class="dropdown_menu">
+                                <li>
+                                    <a href="@Url.Action("index", "bookgenre", new { nameGenre = "Kỹ năng sống"})"> Kỹ năng sống</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("index", "bookgenre", new { nameGenre = "Marketing"})"> Marketing</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("index", "bookgenre", new { nameGenre = "Manga"})"> Manga</a>
 
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("index", "bookgenre", new { nameGenre = "Ngoại ngữ"})"> Ngoại ngữ</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("index", "bookgenre", new { nameGenre = "Novel"})"> Novel</a>
+                                </li>
+                            </ul>
+
+                        </li>
+                    </ul>
+                </div>
                 <div class="navbar-nav">
                     <div class="nav-item">
                         Logo
@@ -64,8 +91,7 @@
                 </div>
             </div>
         </nav>
-
-    </header>
+        </header>
 
     <div style="background: #f8f6f0;min-height:100vh">
         <main role="main">
@@ -85,3 +111,21 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+<script src="http://code.jquery.com/jquery-1.7.min.js"></script>
+<script>
+    $('#menu > li').hover(function () {
+        // khi thẻ menu li bị hover thì drop down menu thuộc thẻ li đó sẽ trượt xuống(hiện)
+        $('.dropdown_menu', this).slideDown();
+    }, function () {
+        // khi thẻ menu li bị out không hover nữa thì drop down menu thuộc thẻ li đó sẽ trượt lên(ẩn)
+        $('.dropdown_menu', this).slideUp();
+    });
+
+    $('.dropdown_menu > li').hover(function () {
+        // khi thẻ dropdown_menu li bị hover thì submenusubmenu thuộc thẻ li đó sẽ trượt xuống(hiện)
+        $('.submenu', this).slideDown();
+    }, function () {
+        // khi thẻ dropdown_menu li bị hover thì submenusubmenu thuộc thẻ li đó sẽ trượt lên(ẩnẩn)
+        $('.submenu', this).slideUp();
+    });
+</script>
