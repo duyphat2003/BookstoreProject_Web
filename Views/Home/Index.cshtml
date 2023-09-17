@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+
 }
 
 
@@ -43,62 +44,24 @@
                         </a>
                     </div>
                 </div>
-
-
                 <div class="products">
-                    <div class="prod-item d-flex flex-column">
-                        <div class="image"><img style="object-fit:cover;width:100%;height:100%" src="https://cdn0.fahasa.com/media/catalog/product/t/d/tdcsvnsh.jpg" /></div>
-                        <div class="title">Thay Đổi Cuộc Sống Với Nhân Số Học</div>
-                        <div class="price">30000</div>
-                    </div> 
-                    <div class="prod-item d-flex flex-column">
-                        <div class="image"><img style="object-fit:cover;width:100%;height:100%" src="https://cdn0.fahasa.com/media/catalog/product/t/d/tdcsvnsh.jpg" /></div>
-                        <div class="title">Thay Đổi Cuộc Sống Với Nhân Số Học</div>
-                        <div class="price">30000</div>
-                    </div>
-                    <div class="prod-item d-flex flex-column">
-                        <div class="image"><img style="object-fit:cover;width:100%;height:100%" src="https://cdn0.fahasa.com/media/catalog/product/t/d/tdcsvnsh.jpg" /></div>
-                        <div class="title">Thay Đổi Cuộc Sống Với Nhân Số Học</div>
-                        <div class="price">30000</div>
-                    </div>
-                    <div class="prod-item d-flex flex-column">
-                        <div class="image"><img style="object-fit:cover;width:100%;height:100%" src="https://cdn0.fahasa.com/media/catalog/product/t/d/tdcsvnsh.jpg" /></div>
-                        <div class="title">Thay Đổi Cuộc Sống Với Nhân Số Học</div>
-                        <div class="price">30000</div>
-                    </div>
-                    <div class="prod-item d-flex flex-column">
-                        <div class="image"><img style="object-fit:cover;width:100%;height:100%" src="https://cdn0.fahasa.com/media/catalog/product/t/d/tdcsvnsh.jpg" /></div>
-                        <div class="title">Thay Đổi Cuộc Sống Với Nhân Số Học</div>
-                        <div class="price">30000</div>
-                    </div>
-                    <div class="prod-item d-flex flex-column">
-                        <div class="image"><img style="object-fit:cover;width:100%;height:100%" src="https://cdn0.fahasa.com/media/catalog/product/t/d/tdcsvnsh.jpg" /></div>
-                        <div class="title">Thay Đổi Cuộc Sống Với Nhân Số Học</div>
-                        <div class="price">30000</div>
-                    </div><div class="prod-item d-flex flex-column">
-                        <div class="image"><img style="object-fit:cover;width:100%;height:100%" src="https://cdn0.fahasa.com/media/catalog/product/t/d/tdcsvnsh.jpg" /></div>
-                        <div class="title">Thay Đổi Cuộc Sống Với Nhân Số Học</div>
-                        <div class="price">30000</div>
-                    </div><div class="prod-item d-flex flex-column">
-                        <div class="image"><img style="object-fit:cover;width:100%;height:100%" src="https://cdn0.fahasa.com/media/catalog/product/t/d/tdcsvnsh.jpg" /></div>
-                        <div class="title">Thay Đổi Cuộc Sống Với Nhân Số Học</div>
-                        <div class="price">30000</div>
-                    </div>
-                    <div class="prod-item d-flex flex-column">
-                        <div class="image"><img style="object-fit:cover;width:100%;height:100%" src="https://cdn0.fahasa.com/media/catalog/product/t/d/tdcsvnsh.jpg" /></div>
-                        <div class="title">Thay Đổi Cuộc Sống Với Nhân Số Học</div>
-                        <div class="price">30000</div>
-                    </div>
-                    <div class="prod-item d-flex flex-column">
-                        <div class="image"><img style="object-fit:cover;width:100%;height:100%" src="https://cdn0.fahasa.com/media/catalog/product/t/d/tdcsvnsh.jpg" /></div>
-                        <div class="title">Thay Đổi Cuộc Sống Với Nhân Số Học</div>
-                        <div class="price">30000</div>
-                    </div>
-                    <div class="prod-item d-flex flex-column">
-                        <div class="image"><img style="object-fit:cover;width:100%;height:100%" src="https://cdn0.fahasa.com/media/catalog/product/t/d/tdcsvnsh.jpg" /></div>
-                        <div class="title">Thay Đổi Cuộc Sống Với Nhân Số Học</div>
-                        <div class="price">30000</div>
-                    </div>
+                    @foreach (var book in BookstoreProject.Firestore_Database.BookstoreProjectDatabase.books)
+                    {
+                        int count = 0;
+                        if (BookstoreProject.Firestore_Database.BookstoreProjectDatabase.copies.Count > 0)
+                            foreach (Copy cop in BookstoreProject.Firestore_Database.BookstoreProjectDatabase.copies)
+                                if (cop.getStatus().Equals("Còn") && cop.getBookId().Equals(book.getId()))
+                                    count++;
+
+                        string status = count > 0 ? "Còn" : "Hết";
+                        <div class="prod-item d-flex flex-column">
+                            <div class="image"><img style="object-fit:cover;width:100%;height:100%" src="@book.getUrlImage()" /></div>
+                            <div class="title">@book.getTitle()</div>
+                            <div class="price">Trạng thái: @status</div>
+                        </div>
+                    }
+
+                   
                 </div>
             </div>
         </div>
