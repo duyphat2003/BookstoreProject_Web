@@ -1,5 +1,6 @@
 ﻿using Amazon.SimpleEmail.Model;
 using BookstoreProject.Models;
+using FirebaseAdmin.Messaging;
 using Google.Cloud.Firestore;
 using System;
 using System.Net;
@@ -451,6 +452,206 @@ namespace BookstoreProject.Firestore_Database
                                     libraryCardId.GetValue<string>("ExpirationDate"),
                                     libraryCardId.GetValue<bool>("Status"),
                                     libraryCardId.GetValue<bool>("Borrow")));
+                    }
+                    break;
+                }
+            }
+        }
+
+        public static void SortAcccount(string roleName, bool isAsc)
+        {
+            accounts = new List<Account>();
+
+            Task<QuerySnapshot> accountNames;
+            if (isAsc)
+                accountNames = accountCollectionRef.WhereEqualTo("Role", roleName).OrderBy("Account").GetSnapshotAsync();
+            else
+                accountNames = accountCollectionRef.WhereEqualTo("Role", roleName).OrderByDescending("Account").GetSnapshotAsync();
+            while (true)
+            {
+                if (accountNames.IsCompleted)
+                {
+                    foreach (DocumentSnapshot accountName in accountNames.Result)
+                    {
+                        accounts.Add(new Account(accountName.GetValue<string>("Account"), accountName.GetValue<string>("Password"), accountName.GetValue<string>("Role")));
+                        Console.WriteLine(accountName.GetValue<string>("Account"));
+                    }
+                    break;
+                }
+            }
+        }
+
+        public static void SortBookWithName(bool isAsc)
+        {
+            books = new List<Book>();
+            string content = "";
+            Task<QuerySnapshot> bookIds;
+            if (isAsc)
+                bookIds = bookCollectionRef.OrderBy("Name").GetSnapshotAsync();
+            else
+                bookIds = bookCollectionRef.OrderByDescending("Name").GetSnapshotAsync();
+            while (true)
+            {
+                if (bookIds.IsCompleted)
+                {
+                    foreach (DocumentSnapshot id in bookIds.Result)
+                    {
+                        content = "";
+                        foreach (string arCon in id.GetValue<List<string>>("Content"))
+                        {
+                            content += arCon + "\n";
+                        }
+                        books.Add(new Book(id.Id,
+                                id.GetValue<string>("Name"),
+                                id.GetValue<string>("Author"),
+                                id.GetValue<string>("Genre"),
+                                content,
+                                id.GetValue<string>("YearPublished"),
+                                id.GetValue<string>("Publisher"),
+                                id.GetValue<string>("URL")));
+                        Console.WriteLine("Book name " + id.Id + " : " + id.GetValue<string>("Name"));
+                    }
+                    break;
+                }
+            }
+        }
+
+        public static void SortBookWithYearPublished(bool isAsc)
+        {
+            books = new List<Book>();
+            string content = "";
+            Task<QuerySnapshot> bookIds;
+            if (isAsc)
+                bookIds = bookCollectionRef.OrderBy("YearPublished").GetSnapshotAsync();
+            else
+                bookIds = bookCollectionRef.OrderByDescending("YearPublished").GetSnapshotAsync();
+            while (true)
+            {
+                if (bookIds.IsCompleted)
+                {
+                    foreach (DocumentSnapshot id in bookIds.Result)
+                    {
+                        content = "";
+                        foreach (string arCon in id.GetValue<List<string>>("Content"))
+                        {
+                            content += arCon + "\n";
+                        }
+                        books.Add(new Book(id.Id,
+                                id.GetValue<string>("Name"),
+                                id.GetValue<string>("Author"),
+                                id.GetValue<string>("Genre"),
+                                content,
+                                id.GetValue<string>("YearPublished"),
+                                id.GetValue<string>("Publisher"),
+                                id.GetValue<string>("URL")));
+                        Console.WriteLine("Book name " + id.Id + " : " + id.GetValue<string>("Name"));
+                    }
+                    break;
+                }
+            }
+        }
+
+        public static void SortLibraryCard(bool isAsc)
+        {
+            libraryCards = new List<LibraryCard>();
+            Task<QuerySnapshot> libraryCardIds;
+            if (isAsc)
+                libraryCardIds = libraryCardCollectionRef.OrderBy("Id").GetSnapshotAsync();
+            else
+                libraryCardIds = libraryCardCollectionRef.OrderByDescending("Id").GetSnapshotAsync();
+            while (true)
+            {
+                if (libraryCardIds.IsCompleted)
+                {
+                    foreach (DocumentSnapshot libraryCardId in libraryCardIds.Result)
+                    {
+                        libraryCards.Add(new LibraryCard(libraryCardId.GetValue<string>("Id"),
+                                libraryCardId.GetValue<string>("Name"),
+                                libraryCardId.GetValue<string>("ExpirationDate"),
+                                libraryCardId.GetValue<bool>("Status"),
+                                libraryCardId.GetValue<bool>("Borrow")));
+                    }
+                    break;
+                }
+            }
+        }
+
+        public static void LoadLoan()
+        {
+            loans = new List<Loan>();
+            Task<QuerySnapshot> loanIds = loanCollectionRef.GetSnapshotAsync();
+            while (true)
+            {
+                if (loanIds.IsCompleted)
+                {
+                    foreach (DocumentSnapshot loanId in loanIds.Result)
+                    {
+                        foreach (Book book in books)
+                        {
+                            Task<QuerySnapshot> bookCopyIds = loanCollectionRef.Document(loanId.Id).Collection(book.getId()).GetSnapshotAsync();
+                            while (true)
+                            {
+                                if (bookCopyIds.IsCompleted)
+                                {
+                                    foreach (DocumentSnapshot bookCopyId in bookCopyIds.Result)
+                                    {
+                                        loans.Add(new Loan(book.getId(),
+                                                loanId.Id,
+                                                bookCopyId.Id,
+                                                bookCopyId.GetValue<string>("BorrowDate"),
+                                                bookCopyId.GetValue<string>("DateDue")));
+                                    }
+                                    break;
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        public static void SortLoan(bool isAsc)
+        {
+            loans = new List<Loan>();
+            Task<QuerySnapshot> loanIds = loanCollectionRef.GetSnapshotAsync();
+            while (true)
+            {
+                if (loanIds.IsCompleted)
+                {
+                    foreach (DocumentSnapshot loanId in loanIds.Result)
+                    {
+                        foreach (Book book in books)
+                        {
+                            Task<QuerySnapshot> bookCopyIds;
+                            if(isAsc)
+                                bookCopyIds = loanCollectionRef.Document(loanId.Id).Collection(book.getId()).OrderBy("BorrowDate").GetSnapshotAsync();
+                            else
+                                bookCopyIds = loanCollectionRef.Document(loanId.Id).Collection(book.getId()).OrderByDescending("BorrowDate").GetSnapshotAsync();
+                            while (true)
+                            {
+                                if (bookCopyIds.IsCompleted)
+                                {
+                                    foreach (DocumentSnapshot bookCopyId in bookCopyIds.Result)
+                                    {
+                                        loans.Add(new Loan(book.getId(),
+                                                loanId.Id,
+                                                bookCopyId.Id,
+                                                bookCopyId.GetValue<string>("BorrowDate"),
+                                                bookCopyId.GetValue<string>("DateDue")));
+                                    }
+                                    break;
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                        }
                     }
                     break;
                 }
