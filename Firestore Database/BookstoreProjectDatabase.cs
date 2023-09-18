@@ -658,6 +658,42 @@ namespace BookstoreProject.Firestore_Database
             }
         }
 
+        public static void SortCopies(bool isAsc)
+        {
+            copies = new List<Copy>();
+
+            Task<QuerySnapshot> bookIds;
+            if (isAsc)
+                bookIds = copyCollectionRef.OrderBy("Id").GetSnapshotAsync();
+            else
+                bookIds = copyCollectionRef.OrderByDescending("Id").GetSnapshotAsync();
+            while (true)
+            {
+                if (bookIds.IsCompleted)
+                {
+                    foreach (DocumentSnapshot id in bookIds.Result)
+                    {
+                        Task<QuerySnapshot> copyIds = copyCollectionRef.Document(id.Id).Collection("BookCopy").GetSnapshotAsync();
+                        while (true)
+                        {
+                            if (copyIds.IsCompleted)
+                            {
+                                foreach (DocumentSnapshot copy in copyIds.Result)
+                                {
+                                    copies.Add(new Copy(copy.Id,
+                                            id.Id,
+                                            copy.GetValue<string>("Status"),
+                                            copy.GetValue<string>("Notes")));
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
         // Thêm sách - Manager
         public static void AddBook(Book book)
         {
