@@ -22,10 +22,18 @@ namespace BookstoreProject.Controllers
             BookstoreProjectDatabase.ConnectToFirestoreDB();
             BookstoreProjectDatabase.LoadBooks();
             BookstoreProjectDatabase.LoadCopies();
+
             return View();
         }
 
-        
+        [HttpPost]
+        public IActionResult Index(string result)
+        {
+            result = Request.Form["title"];
+            Console.WriteLine(result);
+            return View();
+        }
+            
         public IActionResult Privacy()
         {
             return View();

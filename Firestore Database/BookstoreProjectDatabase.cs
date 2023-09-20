@@ -1,11 +1,5 @@
-﻿using Amazon.SimpleEmail.Model;
-using BookstoreProject.Models;
-using FirebaseAdmin.Messaging;
+﻿using BookstoreProject.Models;
 using Google.Cloud.Firestore;
-using System;
-using System.Net;
-using System.Text;
-using System.Xml.Linq;
 
 namespace BookstoreProject.Firestore_Database
 {
@@ -125,30 +119,23 @@ namespace BookstoreProject.Firestore_Database
         {
             copies = new List<Copy>();
 
-            Task<QuerySnapshot> bookIds = copyCollectionRef.GetSnapshotAsync();
-            while (true)
+            foreach (Book book in books)
             {
-                if (bookIds.IsCompleted)
+                Task<QuerySnapshot> copyIds = copyCollectionRef.Document(book.getId()).Collection("BookCopy").GetSnapshotAsync();
+                while (true)
                 {
-                    foreach (DocumentSnapshot id in bookIds.Result)
+                    if (copyIds.IsCompleted)
                     {
-                        Task<QuerySnapshot> copyIds = copyCollectionRef.Document(id.Id).Collection("BookCopy").GetSnapshotAsync();
-                        while (true)
+                        foreach (DocumentSnapshot copy in copyIds.Result)
                         {
-                            if (copyIds.IsCompleted)
-                            {
-                                foreach (DocumentSnapshot copy in copyIds.Result)
-                                {
-                                    copies.Add(new Copy(copy.Id,
-                                            id.Id,
-                                            copy.GetValue<string>("Status"),
-                                            copy.GetValue<string>("Notes")));
-                                }
-                                break;
-                            }
+                            copies.Add(new Copy(copy.Id,
+                                    book.getId(),
+                                    copy.GetValue<string>("Status"),
+                                    copy.GetValue<string>("Notes")));
+                            Console.WriteLine("Copy id " + copy.Id + ", book id " + book.getId());
                         }
+                        break;
                     }
-                    break;
                 }
             }
         }
@@ -213,42 +200,23 @@ namespace BookstoreProject.Firestore_Database
 
             copies = new List<Copy>();
 
-            Task<QuerySnapshot> bookIds_Copy = copyCollectionRef.GetSnapshotAsync();
-            while (true)
+            foreach (Book book in books)
             {
-                if (bookIds_Copy.IsCompleted)
+                Task<QuerySnapshot> copyIds = copyCollectionRef.Document(book.getId()).Collection("BookCopy").GetSnapshotAsync();
+                while (true)
                 {
-                    foreach (DocumentSnapshot id in bookIds_Copy.Result)
+                    if (copyIds.IsCompleted)
                     {
-                        bool isExist = false;
-                        foreach (Book b in books)
+                        foreach (DocumentSnapshot copy in copyIds.Result)
                         {
-                            if (id.Id.Equals(b.getId()))
-                            {
-                                isExist = true;
-                                break;
-                            }
+                            copies.Add(new Copy(copy.Id,
+                                    book.getId(),
+                                    copy.GetValue<string>("Status"),
+                                    copy.GetValue<string>("Notes")));
+                            Console.WriteLine("Copy id " + copy.Id + ", book id " + book.getId());
                         }
-                        if (isExist)
-                        {
-                            Task<QuerySnapshot> copyIds = copyCollectionRef.Document(id.Id).Collection("BookCopy").GetSnapshotAsync();
-                            while (true)
-                            {
-                                if (copyIds.IsCompleted)
-                                {
-                                    foreach (DocumentSnapshot copy in copyIds.Result)
-                                    {
-                                        copies.Add(new Copy(copy.Id,
-                                                id.Id,
-                                                copy.GetValue<string>("Status"),
-                                                copy.GetValue<string>("Notes")));
-                                    }
-                                    break;
-                                }
-                            }
-                        }
+                        break;
                     }
-                    break;
                 }
             }
         }
@@ -287,42 +255,23 @@ namespace BookstoreProject.Firestore_Database
 
             copies = new List<Copy>();
 
-            Task<QuerySnapshot> bookIds_Copy = copyCollectionRef.GetSnapshotAsync();
-            while (true)
+            foreach (Book book in books)
             {
-                if (bookIds_Copy.IsCompleted)
+                Task<QuerySnapshot> copyIds = copyCollectionRef.Document(book.getId()).Collection("BookCopy").GetSnapshotAsync();
+                while (true)
                 {
-                    foreach (DocumentSnapshot id in bookIds_Copy.Result)
+                    if (copyIds.IsCompleted)
                     {
-                        bool isExist = false;
-                        foreach (Book b in books)
+                        foreach (DocumentSnapshot copy in copyIds.Result)
                         {
-                            if (id.Id.Equals(b.getId()))
-                            {
-                                isExist = true;
-                                break;
-                            }
+                            copies.Add(new Copy(copy.Id,
+                                    book.getId(),
+                                    copy.GetValue<string>("Status"),
+                                    copy.GetValue<string>("Notes")));
+                            Console.WriteLine("Copy id " + copy.Id + ", book id " + book.getId());
                         }
-                        if (isExist)
-                        {
-                            Task<QuerySnapshot> copyIds = copyCollectionRef.Document(id.Id).Collection("BookCopy").GetSnapshotAsync();
-                            while (true)
-                            {
-                                if (copyIds.IsCompleted)
-                                {
-                                    foreach (DocumentSnapshot copy in copyIds.Result)
-                                    {
-                                        copies.Add(new Copy(copy.Id,
-                                                id.Id,
-                                                copy.GetValue<string>("Status"),
-                                                copy.GetValue<string>("Notes")));
-                                    }
-                                    break;
-                                }
-                            }
-                        }
+                        break;
                     }
-                    break;
                 }
             }
         }
