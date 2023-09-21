@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang chủ - Quản lí thư viện</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="~/css/General.css"/>
+    <link rel="stylesheet" href="~/css/Style.css"/>
+
+    <script type="module" src="https://unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule="" src="https://unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js"></script>
+
+    <link rel="icon" type="image/x-icon" href="#">
+    <div class="header">
+        <a href="#">
+            <img class="logo" alt="Logo" src="#" />
+        </a>
+        <nav class="main-nav">
+            <ul class="main-nav-list">
+                <li class="main-nav-link"> @Html.ActionLink("Trang chủ", "Index", "Admin",new { area = "" }, new { @class = "tt" })</li>
+                <li class="main-nav-link">@Html.ActionLink("Quản lí mượn/trả", "Index", "Books",new { area = "" }, new { @class = "tt" })</li>
+                <li class="main-nav-link">@Html.ActionLink("Quản lí sách", "Index", "Books",new { area = "" }, new { @class = "tt" })</li>
+                <li class="main-nav-link">@Html.ActionLink("Quản lí thẻ", "Index", "Books",new { area = "" }, new { @class = "tt" })</li>
+                <li class="main-nav-link">@Html.ActionLink("Thống kê", "Index", "Books",new { area = "" }, new { @class = "tt" })</li>
+
+                <li class="main-nav-link">
+                    <a class="tt" style="color:white " href="#">Tài khoản : Ninh</a>
+                    @* <a style="color:red" href="/User/DangXuat"> ĐĂNG XUẤT</a> *@
+                </li>
+
+            </ul>
+        </nav>
+    </div>
+</head>
+@RenderBody()
+<body>
+    <footer >
+        <div class="header">
+
+        </div>
+    </footer>
+    @RenderSection("scripts", required: false)
+</body>
+</html>
