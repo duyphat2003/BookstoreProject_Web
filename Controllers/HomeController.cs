@@ -22,6 +22,7 @@ namespace BookstoreProject.Controllers
             BookstoreProjectDatabase.ConnectToFirestoreDB();
             BookstoreProjectDatabase.LoadBooks();
             BookstoreProjectDatabase.LoadCopies();
+            BookstoreProjectDatabase.LoadGenre();
 
             return View();
         }

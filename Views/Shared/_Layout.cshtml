@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using BookstoreProject.Firestore_Database;
+<!DOCTYPE html>
 @model List<Book>
 <html lang="en">
 <head>
@@ -33,22 +34,14 @@
                             <a href="#" id="menuTitle"><img alt="Lỗi ảnh" src="~/lib/menu.png" width="25" height="25" /><span class="arrow arrow-down"></span></a>
                             
                             <ul class="dropdown_menu">
-                                <li>
-                                    <a href="@Url.Action("index", "bookgenre", new { nameGenre = "Kỹ năng sống"})"> Kỹ năng sống</a>
-                                </li>
-                                <li>
-                                    <a href="@Url.Action("index", "bookgenre", new { nameGenre = "Marketing"})"> Marketing</a>
-                                </li>
-                                <li>
-                                    <a href="@Url.Action("index", "bookgenre", new { nameGenre = "Manga"})"> Manga</a>
-
-                                </li>
-                                <li>
-                                    <a href="@Url.Action("index", "bookgenre", new { nameGenre = "Ngoại ngữ"})"> Ngoại ngữ</a>
-                                </li>
-                                <li>
-                                    <a href="@Url.Action("index", "bookgenre", new { nameGenre = "Novel"})"> Novel</a>
-                                </li>
+                                @{
+                                    foreach (Genre genre in BookstoreProjectDatabase.genres)
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("index", "bookgenre", new { nameGenre = genre.getName()})"> @genre.getName()</a>
+                                        </li>
+                                    }
+                                }
                             </ul>
 
                         </li>
