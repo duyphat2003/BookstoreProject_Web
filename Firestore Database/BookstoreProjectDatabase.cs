@@ -1,5 +1,6 @@
 ﻿using BookstoreProject.Models;
 using Google.Cloud.Firestore;
+using System.Net;
 
 namespace BookstoreProject.Firestore_Database
 {
@@ -110,6 +111,59 @@ namespace BookstoreProject.Firestore_Database
                         Console.WriteLine(bookId.GetValue<string>("Name"));
                     }
                     break;
+                }
+            }
+        }
+        public static List<Book> booksAfterSorted;
+        // Tải sách
+        public static void LoadBooksSortedWithCopies()
+        {
+            List<Tuple<string, int>> booksBeforeSorted = new List<Tuple<string, int>>();
+            booksAfterSorted = new List<Book>();
+            foreach (Book book in books)
+            {
+                Task<QuerySnapshot> copyIds = copyCollectionRef.Document(book.getId()).Collection("BookCopy").GetSnapshotAsync();
+                while (true)
+                {
+                    if (copyIds.IsCompleted)
+                    {
+                        int i = 0;
+                        foreach (DocumentSnapshot id in copyIds.Result)
+                        {
+                            if (id.GetValue<string>("Status").Equals("Cho mượn"))
+                            {
+                                i++;
+                            }
+                        }
+                        booksBeforeSorted.Add(new Tuple<string, int>(book.getId(), i));
+                        break;
+                    }
+                }
+            }
+
+
+            for(int i = 0; i < booksBeforeSorted.Count - 1; i++)
+            {
+                for(int j = i + 1; j < booksBeforeSorted.Count; j++)
+                {
+                    if (booksBeforeSorted[i].Item2 < booksBeforeSorted[j].Item2)
+                    {
+                        Tuple<string, int> temp = booksBeforeSorted[i];
+                        booksBeforeSorted[i] = booksBeforeSorted[j];
+                        booksBeforeSorted[j] = temp;
+                    }
+                }
+            }
+
+            foreach(Tuple<string, int> tuple in booksBeforeSorted)
+            {
+                foreach (Book book in books)
+                {
+                    if(tuple.Item1.Equals(book.getId()))
+                    {
+                        booksAfterSorted.Add(book);
+                        break;
+                    }
                 }
             }
         }

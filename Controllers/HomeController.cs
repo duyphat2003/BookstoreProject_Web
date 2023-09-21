@@ -23,6 +23,7 @@ namespace BookstoreProject.Controllers
             BookstoreProjectDatabase.LoadBooks();
             BookstoreProjectDatabase.LoadCopies();
             BookstoreProjectDatabase.LoadGenre();
+            BookstoreProjectDatabase.LoadBooksSortedWithCopies();
 
             return View();
         }

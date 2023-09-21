@@ -1,5 +1,6 @@
 ﻿@{
     List<Book> books = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.books;
+    List<Book> booksSorted = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.booksAfterSorted;
     List<Copy> copies = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.copies;
     ViewData["Title"] = "Home Page";
 }
@@ -64,6 +65,56 @@
                         }
                     }
            
+                </div>
+            </div>
+
+
+            <div class="categorySection">
+                <div class="categories">
+                    <div class="categoriesIn">
+                        <a class="catItem">
+                            <span>
+                                Xu hướng đọc
+                            </span>
+                        </a>
+                    </div>
+                </div>
+                <div class="products">
+                    @if (booksSorted.Count > 10)
+                    {
+                        for (int i = 0; i < 10; i++)
+                        {
+                            int count = 0;
+                            if (copies.Count > 0)
+                                foreach (Copy cop in copies)
+                                    if (cop.getStatus().Equals("Còn") && cop.getBookId().Equals(booksSorted[i].getId()))
+                                        count++;
+                            string status = count > 0 ? "Còn" : "Hết";
+                            <div class="prod-item d-flex flex-column">
+                                <div class="image"><img style="object-fit:cover;width:100%;height:100%" src="@booksSorted[i].getUrlImage()" /></div>
+                                <div class="title">@booksSorted[i].getTitle()</div>
+                                <div class="price">Trạng thái: @status</div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        foreach (var book in booksSorted)
+                        {
+                            int count = 0;
+                            if (copies.Count > 0)
+                                foreach (Copy cop in copies)
+                                    if (cop.getStatus().Equals("Còn") && cop.getBookId().Equals(book.getId()))
+                                        count++;
+                            string status = count > 0 ? "Còn" : "Hết";
+                            <div class="prod-item d-flex flex-column">
+                                <div class="image"><img style="object-fit:cover;width:100%;height:100%" src="@book.getUrlImage()" /></div>
+                                <div class="title">@book.getTitle()</div>
+                                <div class="price">Trạng thái: @status</div>
+                            </div>
+                        }
+                    }
+
                 </div>
             </div>
         </div>
