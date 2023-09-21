@@ -1,9 +1,5 @@
 ﻿using BookstoreProject.Firestore_Database;
-using BookstoreProject.Models;
-using Firebase.Auth;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using System.Diagnostics;
 
 namespace BookstoreProject.Controllers
 {
