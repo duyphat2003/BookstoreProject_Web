@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -12,6 +12,12 @@
 
   <ItemGroup>
     <Compile Include="Views\User\index.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Image\bell.png" />
+    <Content Include="Image\shopping-cart.png" />
+    <Content Include="Image\user.png" />
   </ItemGroup>
 
   <ItemGroup>

@@ -19,9 +19,9 @@
 
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3" style="height: 100px">
             <div class="container-lg">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="https://www.vnpayqr.vn/wp-content/uploads/2020/08/FAHASA-300x175.png" /></a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="https://www.vnpayqr.vn/wp-content/uploads/2020/08/FAHASA-300x175.png" width="200" height="100" /></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -29,7 +29,8 @@
                 
                 <div class="test">
                     <ul id="menu">
-                        <li><a href="#">Thể loại sách<span class="arrow arrow-down"></span></a>
+                        <li>
+                            <a href="#" id="menuTitle"><img alt="Lỗi ảnh" src="~/lib/menu.png" width="25" height="25" /><span class="arrow arrow-down"></span></a>
                             
                             <ul class="dropdown_menu">
                                 <li>
@@ -55,7 +56,7 @@
                 </div>
                 <div class="navbar-nav">
                     <div class="nav-item">
-                        Logo
+                        <img alt="Lỗi ảnh" src="~/lib/loupe.png" width="25" height="25" />   &ensp;
                     </div>
 
                     <div class="navbar-expand-lg d-flex flex-row" style="width:300px">
@@ -70,19 +71,19 @@
 
                 <div class="navbar-nav">
                     <div class="flex-column align-items-center d-flex me-4">
-                        <div class="mb-1">Logo</div>
+                        <div class="mb-1"><img alt="Lỗi ảnh" src="~/lib/bell.png" width="25" height="25" /></div>
                         <div>
                             <a class="nav-item">@Html.ActionLink("Thông báo", "cart", "user", null, new { @class = "nav-link"}) </a>
                         </div>
                     </div>
                     <div class="flex-column align-items-center d-flex me-4">
-                        <div class="mb-1">Logo</div>
+                        <div class="mb-1"><img alt="Lỗi ảnh" src="~/lib/shopping-cart.png" width="25" height="25" /></div>
                         <div>
                              <a class="nav-item">@Html.ActionLink("Giỏ hàng", "cart", "user", null, new { @class = "nav-link"})</a>
                         </div>
                     </div>
                     <div class="flex-column align-items-center d-flex me-4">
-                        <div class="mb-1">Logo</div>
+                        <div class="mb-1"><img alt="Lỗi ảnh" src="~/lib/user.png" width="25" height="25" /></div>
                         <div>
                             @* <a href="@Url.Action("signin", "user", new { mess = "Hello"})"> Copy</a> *@
                             <a class="nav-item">@Html.ActionLink("Đăng nhập", "signin", "user", null, new { @class = "nav-link", mess = "Hello"})</a>
@@ -91,7 +92,7 @@
                 </div>
             </div>
         </nav>
-        </header>
+    </header>
 
     <div style="background: #f8f6f0;min-height:100vh">
         <main role="main">
