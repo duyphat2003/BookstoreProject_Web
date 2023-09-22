@@ -114,6 +114,42 @@ namespace BookstoreProject.Firestore_Database
                 }
             }
         }
+
+
+        public static Book LoadContentBookWithId(string id)
+        {
+            Book book = new Book();
+            string content = "";
+            Task<QuerySnapshot> bookIds = bookCollectionRef.WhereEqualTo("Id", id).GetSnapshotAsync();
+            while (true)
+            {
+                if (bookIds.IsCompleted)
+                {
+
+                    foreach (DocumentSnapshot bookId in bookIds.Result)
+                    {
+                        content = "";
+                        foreach (string arCon in bookId.GetValue<List<string>>("Content"))
+                        {
+                            content += arCon + "\n";
+                        }
+
+                        book = new Book(bookId.GetValue<string>("Id"),
+                                             bookId.GetValue<string>("Name"),
+                                             bookId.GetValue<string>("Author"),
+                                             bookId.GetValue<string>("Genre"),
+                                             content,
+                                             bookId.GetValue<string>("YearPublished"),
+                                             bookId.GetValue<string>("Publisher"),
+                                             bookId.GetValue<string>("URL"));
+
+                        Console.WriteLine(bookId.GetValue<string>("Name"));
+                    }
+                    return book;
+                }
+            }
+        }
+
         public static List<Book> booksAfterSorted;
         // Tải sách
         public static void LoadBooksSortedWithCopies()

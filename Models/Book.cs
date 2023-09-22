@@ -23,6 +23,11 @@
             this.urlImage = urlImage;
         }
 
+        public Book()
+        {
+
+        }
+
         public string getUrlImage()
         {
             return urlImage;

@@ -35,6 +35,15 @@ namespace BookstoreProject.Controllers
             Console.WriteLine(result);
             return View();
         }
+
+
+        public IActionResult DetailBook(string id)
+        {
+            BookstoreProjectDatabase.ConnectToFirestoreDB();
+            BookstoreProjectDatabase.LoadGenre();
+            //ViewBag.bookInfo = BookstoreProjectDatabase.LoadContentBookWithId(id);
+            return View();
+        }
             
         public IActionResult Privacy()
         {
