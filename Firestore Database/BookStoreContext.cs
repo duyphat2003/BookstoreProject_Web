@@ -5,10 +5,6 @@
         public static void InitRequestDB()
         {
             BookstoreProjectDatabase.ConnectToFirestoreDB();
-            BookstoreProjectDatabase.LoadBooks();
-            BookstoreProjectDatabase.LoadCopies();
-            BookstoreProjectDatabase.LoadGenre();
-            BookstoreProjectDatabase.LoadBooksSortedWithCopies();
         }
 
     }

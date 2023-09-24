@@ -29,7 +29,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 //Start Database ngoai nay, ha?n chê? go?i la?i trong t??ng controller
-BookStoreContext.InitRequestDB();
+BookstoreProjectDatabase.ConnectToFirestoreDB();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

@@ -20,7 +20,6 @@ namespace BookstoreProject.Controllers
         //Trang chính
         public IActionResult Index(string name)
         {
-            BookstoreProjectDatabase.ConnectToFirestoreDB();
             BookstoreProjectDatabase.LoadBooks();
             BookstoreProjectDatabase.LoadCopies();
             BookstoreProjectDatabase.LoadGenre();
