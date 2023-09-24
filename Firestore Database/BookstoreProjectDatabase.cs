@@ -1,5 +1,6 @@
 ﻿using BookstoreProject.Models;
 using Google.Cloud.Firestore;
+using System;
 using System.Net;
 
 namespace BookstoreProject.Firestore_Database
@@ -144,6 +145,7 @@ namespace BookstoreProject.Firestore_Database
                                              bookId.GetValue<string>("URL"));
 
                         Console.WriteLine(bookId.GetValue<string>("Name"));
+
                     }
                     return book;
                 }
@@ -623,6 +625,7 @@ namespace BookstoreProject.Firestore_Database
             {
                 if (loanIds.IsCompleted)
                 {
+                    int i = 0;
                     foreach (DocumentSnapshot loanId in loanIds.Result)
                     {
                         foreach (Book book in books)
@@ -636,20 +639,19 @@ namespace BookstoreProject.Firestore_Database
                                     {
                                         loans.Add(new Loan(book.getId(),
                                                 loanId.Id,
-                                                bookCopyId.Id,
+                                                bookCopyId.GetValue<string>("BookCopyId"),
                                                 bookCopyId.GetValue<string>("BorrowDate"),
                                                 bookCopyId.GetValue<string>("DateDue")));
+                                        Console.WriteLine(book.getId() + ", " + loanId.Id);
                                     }
-                                    break;
-                                }
-                                else
-                                {
                                     break;
                                 }
                             }
                         }
+                        i++;
                     }
-                    break;
+                    if (i == loanIds.Result.Count)
+                        break;
                 }
             }
         }
@@ -791,6 +793,10 @@ namespace BookstoreProject.Firestore_Database
         {
             Dictionary<string, object> newBookCopy = new Dictionary<string, object>();
 
+            newBookCopy.Add("Id", copy.getBookId());
+            copyCollectionRef.Document(copy.getBookId()).SetAsync(newBookCopy);
+
+            newBookCopy = new Dictionary<string, object>();
             newBookCopy.Add("Notes", copy.getNotes());
             newBookCopy.Add("Status", copy.getStatus());
 
@@ -834,23 +840,17 @@ namespace BookstoreProject.Firestore_Database
         // Thêm Lần mượn sách- Manager
         public static void AddLoan(Loan loan)
         {
-            Dictionary<string, object> addDataData = new Dictionary<string, object>();
-            addDataData.Add("BorrowDate", loan.getDateLoaned());
-            addDataData.Add("DateDue", loan.getDateDue());
-            loanCollectionRef.Document(loan.getCardId()).Collection(loan.getBookId()).Document(loan.getCopyId()).SetAsync(addDataData);
-        }
-        // cập nhập Lần mượn sách- Manager
-        public static void UpdateLoan(Loan loan)
-        {
-            Dictionary<string, object> updateDataLoan = new Dictionary<string, object>();
+            Dictionary<string, object> multiData = new Dictionary<string, object>();
+            multiData.Add("Id", loan.getCardId());
+            loanCollectionRef.Document(loan.getCardId()).SetAsync(multiData);
 
-            updateDataLoan.Add("BorrowDate", loan.getDateLoaned());
-            updateDataLoan.Add("DateDue", loan.getDateDue());
-
-            loanCollectionRef.Document(loan.getCardId()).Collection(loan.getBookId()).Document(loan.getCopyId()).UpdateAsync(updateDataLoan);
+            multiData = new Dictionary<string, object>();
+            multiData.Add("BorrowDate", loan.getDateLoaned());
+            multiData.Add("DateDue", loan.getDateDue());
+            multiData.Add("BookCopyId", loan.getCopyId());
+            loanCollectionRef.Document(loan.getCardId()).Collection(loan.getBookId()).Document().SetAsync(multiData);
         }
-        // xóa Lần mượn sách - Manager
-        public static void DeleteLoan(Loan loan) => loanCollectionRef.Document(loan.getCardId()).Collection(loan.getBookId()).Document(loan.getCopyId()).DeleteAsync();
+
         // Thêm tài khoản - Manager
         public static void AddAccount(Account account)
         {
@@ -858,6 +858,7 @@ namespace BookstoreProject.Firestore_Database
             newAccount.Add("Account", account.getAccount());
             newAccount.Add("Password", account.getPassword());
             newAccount.Add("Role", account.getRole());
+            newAccount.Add("isLogin", false);
 
             accountCollectionRef.Document(account.getAccount()).SetAsync(newAccount);
         }
@@ -872,6 +873,25 @@ namespace BookstoreProject.Firestore_Database
                     if (accId.Result.Count != 0)
                     {
                         accountCollectionRef.Document(account).UpdateAsync("Password", password);
+                        return true;
+                    }
+                    else
+                        return false;
+                }
+            }
+        }
+
+        // Cập nhật tài khoản - Manager
+        public static bool UpdateAccount(string account, bool isLogin)
+        {
+            Task<QuerySnapshot> accId = accountCollectionRef.WhereEqualTo("Account", account).GetSnapshotAsync();
+            while (true)
+            {
+                if (accId.IsCompleted)
+                {
+                    if (accId.Result.Count != 0)
+                    {
+                        accountCollectionRef.Document(account).UpdateAsync("isLogin", isLogin);
                         return true;
                     }
                     else

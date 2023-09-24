@@ -25,6 +25,10 @@ namespace BookstoreProject.Controllers
             BookstoreProjectDatabase.LoadGenre();
             BookstoreProjectDatabase.LoadBooksSortedWithCopies();
 
+            Book book = BookstoreProjectDatabase.LoadContentBookWithId("KNS001");
+
+            Console.WriteLine("LoadContentBookWithId: " + book.getTitle());
+
             return View();
         }
 
