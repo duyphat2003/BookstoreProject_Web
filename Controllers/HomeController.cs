@@ -17,7 +17,7 @@ namespace BookstoreProject.Controllers
             //_auth = new FirebaseAuthProvider(new FirebaseConfig(_apiKey));
         }
 
-        //Tìm kiếm sách theo tên
+        //Trang chính
         public IActionResult Index(string name)
         {
             BookstoreProjectDatabase.ConnectToFirestoreDB();
@@ -26,16 +26,77 @@ namespace BookstoreProject.Controllers
             BookstoreProjectDatabase.LoadGenre();
             BookstoreProjectDatabase.LoadBooksSortedWithCopies();
 
+
+            if (name != null)
+            {
+                //Nếu có searchValue lấy ra danh sách book map vs searchValue
+                BookstoreProjectDatabase.SearchBook(name);
+            }
+            else
+            {
+                //Không có searchValue , load lại Bookdata
+                BookstoreProjectDatabase.LoadBooks();
+            }
             return View();
         }
 
-        [HttpPost]
-        public IActionResult Index(string result)
+        // Trang danh sách sản phẩm
+        public IActionResult BookList()
         {
-            result = Request.Form["title"];
-            Console.WriteLine(result);
             return View();
         }
+
+
+        //Trang chi tiết sản phẩm
+        public IActionResult Detail()
+        {
+            return View();
+        }
+
+        // Trang giỏ hàng
+        public IActionResult Cart()
+        {
+            return View();
+        }
+
+
+        //Trang đăng nhập
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        // Trang đăng ký
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+
+        //Trang quên mật khẩu
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        //Trang thông tin người dùng
+        public IActionResult UserInfo()
+        {
+            return View();
+        }
+
+        //Trang lịch sử mượn
+        public IActionResult UserLoanHistory()
+        {
+            return View();
+        }
+
+        //Trang thông báo của người dùng    
+        public IActionResult UserNofi()
+        {
+            return View();
+        }
+
 
         public IActionResult Privacy()
         {

@@ -10,16 +10,47 @@ namespace BookstoreProject.Controllers
         public AdminController(ILogger<AdminController> logger)
         {
             _logger = logger;
-            //_auth = new FirebaseAuthProvider(new FirebaseConfig(_apiKey));
         }
 
+        //Trang chính
         public IActionResult Index()
         {
-            //BookstoreProjectDatabase.ConnectToFirestoreDB();
+            BookstoreProjectDatabase.ConnectToFirestoreDB();
             return View();
         }
 
-        public IActionResult Search()
+        //Trang quản lý tài khoản
+        public IActionResult AccountManagement()
+        {
+            return View();
+        }
+
+        //Trang quản lý sách
+        public IActionResult BookManagement()
+        {
+            return View();
+        }
+
+        //Trang quản lý phiếu mượn
+        public IActionResult LoanManagement()
+        {
+            return View();
+        }
+
+        //Trang quản lý thẻ thư viện
+        public IActionResult LibraryCardManagement()
+        {
+            return View();
+        }
+
+        //Trang quản lý bản sao
+        public IActionResult BookCopyManagement()
+        {
+            return View();
+        }
+
+        //Trang quản lý thể loại
+        public IActionResult GenreManagement()
         {
             return View();
         }
