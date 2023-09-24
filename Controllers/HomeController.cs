@@ -17,17 +17,14 @@ namespace BookstoreProject.Controllers
             //_auth = new FirebaseAuthProvider(new FirebaseConfig(_apiKey));
         }
 
-        public IActionResult Index()
+        //Tìm kiếm sách theo tên
+        public IActionResult Index(string name)
         {
             BookstoreProjectDatabase.ConnectToFirestoreDB();
             BookstoreProjectDatabase.LoadBooks();
             BookstoreProjectDatabase.LoadCopies();
             BookstoreProjectDatabase.LoadGenre();
             BookstoreProjectDatabase.LoadBooksSortedWithCopies();
-
-            Book book = BookstoreProjectDatabase.LoadContentBookWithId("KNS001");
-
-            Console.WriteLine("LoadContentBookWithId: " + book.getTitle());
 
             return View();
         }
@@ -39,8 +36,6 @@ namespace BookstoreProject.Controllers
             Console.WriteLine(result);
             return View();
         }
-
-
 
         public IActionResult Privacy()
         {

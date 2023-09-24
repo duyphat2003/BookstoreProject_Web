@@ -2,6 +2,7 @@
     List<Book> books = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.books;
     List<Book> booksSorted = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.booksAfterSorted;
     List<Copy> copies = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.copies;
+    List<Genre> genres = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.genres;
     ViewData["Title"] = "Home Page";
 }
 
@@ -22,13 +23,18 @@
             <div class="categorySection">
                 <div class="categories">
                     <div class="categoriesIn">
-                        <a class="catItem">
-                            <span>
-                                Những cuốn sách phổ biến
-                            </span>
-                        </a>
+                        @foreach(Genre genre in genres)
+                        {
+                            <a class="catItem">
+                                <span>
+                                    @genre.getName()
+                                </span>
+                            </a>
+                        }
+                        
                     </div>
                 </div>
+
                 <div class="products">
                     @if (books.Count > 10)
                     {
@@ -64,7 +70,7 @@
                             </div>
                         }
                     }
-           
+
                 </div>
             </div>
 

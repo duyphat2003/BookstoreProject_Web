@@ -1,3 +1,5 @@
+using BookstoreProject.Firestore_Database;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -23,9 +25,11 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+
 }
 
-
+//Start Database ngoai nay, ha?n chê? go?i la?i trong t??ng controller
+BookStoreContext.InitRequestDB();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

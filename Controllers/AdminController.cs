@@ -15,7 +15,12 @@ namespace BookstoreProject.Controllers
 
         public IActionResult Index()
         {
-            BookstoreProjectDatabase.ConnectToFirestoreDB();
+            //BookstoreProjectDatabase.ConnectToFirestoreDB();
+            return View();
+        }
+
+        public IActionResult Search()
+        {
             return View();
         }
     }
