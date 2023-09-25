@@ -48,8 +48,13 @@ namespace BookstoreProject.Controllers
 
 
         //Trang chi tiết sản phẩm
-        public IActionResult Detail()
+        public IActionResult Details(string id)
         {
+            BookstoreProjectDatabase.ConnectToFirestoreDB();
+            BookstoreProjectDatabase.LoadGenre();
+            Book book = BookstoreProjectDatabase.LoadContentBookWithId(id);
+            ViewBag.meomeo = book;
+
             return View();
         }
 
