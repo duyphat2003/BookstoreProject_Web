@@ -1,0 +1,98 @@
+﻿
+@{
+    ViewData["Title"] = "Details";
+    Book book = ViewBag.meomeo;
+}
+
+    <div class="product-details-container">
+        <h2 style="text-align: center; margin-bottom: 20px;">CHI TIẾT</h2>
+        <hr />
+
+    <div class="row">
+            <div class="col-md-4">
+                <img class="product-image" " src=" @book.getUrlImage()" alt="Ảnh sách">
+            </div>
+            <div class="col-md-8">
+                <h4 class="product-title">Tên sách: @book.getTitle()</h4>
+                <p class="product-author">
+                    <span style="font-weight: bold">Tác giả:</span> @book.getAuthor()
+                </p>
+                <p class="product-genre">
+                    <span style="font-weight: bold">Thể loại: @book.getGenre()
+                </p>
+                <p class="product-content">
+                    <span style="font-weight: bold">Nội dung:</span> @book.getContent()
+                </p>
+                <p class="product-YearPublished">
+                    <span style="font-weight: bold">Năm xuất bản:</span> @book.getYearPublished() 
+                </p>
+                <p class="product-Publisher">
+                    <span style="font-weight: bold">Nhà xuất bản:</span>@book.getPublisher()
+                </p>
+                <p class="product-id">
+                    <span style="font-weight: bold">ID sách:</span>@book.getId()
+                </p>
+            </div>
+        </div>
+    </div>
+
+<style>
+    .product-details-container {
+        width: 100%;
+        padding: 20px;
+    }
+
+    h2 {
+        text-align: center;
+        font-size: 28px;
+        margin-bottom: 20px;
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        padding: 20px;
+    }
+
+    .col-md-4 {
+        width: 40%;
+        margin-right: 10%;
+    }
+
+    .product-image {
+        width: 100%;
+        height: auto;
+    }
+
+    .col-md-8 {
+        width: 50%;
+    }
+
+    .product-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .product-author,
+    .product-genre,
+    .product-content,
+    .product-YearPublished,
+    .product-Publisher,
+    .product-id {
+        margin-top: 10px;
+        font-size: 16px;
+    }
+
+        .product-author span,
+        .product-genre span,
+        .product-content span,
+        .product-YearPublished span,
+        .product-Publisher span,
+        .product-id span {
+            font-weight: bold;
+        }
+
+</style>
