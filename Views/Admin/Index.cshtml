@@ -1,62 +1,30 @@
 ﻿@{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutAd.cshtml";
+    <link rel="stylesheet" type="text/css" href="~/css/admin.css">
 }
-<body>
-    <div>
-        <br />
-        <h1>TRANG QUẢN TRỊ</h1>
-        <br />
-        <div class="container1">
-            <div class="image-list">
-                <button class="selectable">
-                    <a href="/Books/Index">
-                        <img src="~/lib/admin/h1.jpg">
-                    </a>
-                </button>
-                <button class="selectable">
-                    <img src="~/lib/admin/h2.jpg">
-                </button>
-                <button class="selectable">
-                    <img src="~/lib/admin/h3.jpg">
-                </button>
-                <button class="selectable">
-                    <img src="~/lib/admin/h4.jpg">
-                </button>
-                <button class="selectable">
-                    <img src="~/lib/admin/h5.jpg">
-                </button>
-                <button class="selectable">
-                    <img src="~/lib/admin/h6.jpg">
-                </button>
-                <button class="selectable">
-                    <img src="~/lib/admin/h7.jpg">
-                </button>
-                <button class="selectable">
-                    <img src="~/lib/admin/h9.jpg">
-                </button>
-            </div>
-        </div>
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-    </div>
 
+<body>
+    <div class="button-container homePage">
+        <h3 style="text-align: left;">Trang quản trị</h3>
+        <br />
+        <a href="#" class="button" style=" font-size: 20px; text-decoration: none;">
+            <span><i class="fas fa-book"></i></span>
+            <span><i class="fas fa-arrow-up"></i></span>
+            Cập nhật tình trạng sách
+        </a>
+        <a href="#" class="button" style="font-size: 20px; text-decoration: none;">
+            <span><i class="fas fa-address-card"></i></span>
+            <span><i class="fas fa-arrow-up"></i></span>
+            Cập nhật tình trạng thẻ
+        </a>
+        <a href="#" class="button" style="font-size: 20px; text-decoration: none;">
+            <span><i class="fas fa-newspaper"></i></span>
+            <span><i class="fas fa-arrow-up"></i></span>
+            Cập nhật tình trạng mượn
+        </a>
+        <br />
+        <h3>Hình minh họa</h3>
+        <img src="~/lib/Admin/h1.png" />
+    </div>
 </body>
