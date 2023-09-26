@@ -1,0 +1,68 @@
+﻿
+.homePage {
+    padding: 20px;
+    background-color: #f0f0f0;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+
+.products {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
+.prod-item {
+    margin: 10px;
+    padding: 10px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 200px;
+}
+
+
+.image img {
+    object-fit: cover; /* Hiển thị hình ảnh sao cho nó điền hết vào khu vực */
+    width: 30px;
+    height: 50px;
+}
+
+
+.title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+
+.price {
+    font-size: 14px;
+    color: #007BFF;
+}
+
+
+.button-container {
+    text-align: center;
+}
+
+.button {
+    display: inline-block;
+    background-color: #007BFF;
+    color: #fff;
+    padding: 20px 50px;
+    border: none;
+    border-radius: 5px;
+    margin: 5px;
+    text-decoration: none;
+}
+
+    .button i {
+        margin-right: 5px; /* Khoảng cách giữa biểu tượng và chữ */
+    }
+
