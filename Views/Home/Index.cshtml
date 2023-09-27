@@ -1,7 +1,6 @@
 ﻿@{
     List<Book> books = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.books;
     List<Book> booksSorted = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.booksAfterSorted;
-    List<Copy> copies = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.copies;
     List<Genre> genres = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.genres;
     ViewData["Title"] = "Home Page";
 }
@@ -36,12 +35,8 @@
                     {
                         for (int i = 0; i < 10; i++)
                         {
-                            int count = 0;
-                            if (copies.Count > 0)
-                                foreach (Copy cop in copies)
-                                    if (cop.getStatus().Equals("Còn") && cop.getBookId().Equals(books[i].getId()))
-                                        count++;
-                            string status = count > 0 ? "Còn" : "Hết";
+                            List<Copy> copies = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.LoadCopiesWithBookId(books[i].getId(), "Còn");
+                            string status = copies.Count > 0 ? "Còn" : "Hết";
                             <div class="prod-item d-flex flex-column">
                                 @* <div class="image"><img style="object-fit:cover;width:100%;height:100%" src="@books[i].getUrlImage()" /></div> *@
                                 <a href="@Url.Action("Details", "Home", new { id = books[i].getId() })">
@@ -109,16 +104,18 @@
                     {
                         foreach (var book in books)
                         {
-                            int count = 0;
-                            if (copies.Count > 0)
-                                foreach (Copy cop in copies)
-                                    if (cop.getStatus().Equals("Còn") && cop.getBookId().Equals(book.getId()))
-                                        count++;
-                            string status = count > 0 ? "Còn" : "Hết";
+                            List<Copy> copies = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.LoadCopiesWithBookId(book.getId(), "Còn");
+                            string status = copies.Count > 0 ? "Còn" : "Hết";
                             <div class="prod-item d-flex flex-column">
-                                <div class="image"><img style="object-fit:cover;width:100%;height:100%" src="@book.getUrlImage()" /></div>
-                                <div class="title">@book.getTitle()</div>
-                                <div class="price">Trạng thái: @status</div>
+                                <a href="@Url.Action("Details", "Home", new { id = book.getId() })">
+
+                                    <div class="image">
+                                        <img style="object-fit: cover; width: 100%; height: 100%;" src="@book.getUrlImage()" />
+                                    </div>
+                                    <div class="title">@book.getTitle()</div>
+                                    <div class="price">Trạng thái: @status</div>
+                                </a>
+
                             </div>
                         }
                     }
@@ -142,12 +139,8 @@
                     {
                         for (int i = 0; i < 10; i++)
                         {
-                            int count = 0;
-                            if (copies.Count > 0)
-                                foreach (Copy cop in copies)
-                                    if (cop.getStatus().Equals("Còn") && cop.getBookId().Equals(booksSorted[i].getId()))
-                                        count++;
-                            string status = count > 0 ? "Còn" : "Hết";
+                            List<Copy> copies = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.LoadCopiesWithBookId(books[i].getId(), "Còn");
+                            string status = copies.Count > 0 ? "Còn" : "Hết";
                             <div class="prod-item d-flex flex-column">
                                 <a href="@Url.Action("Details", "Home", new { id = books[i].getId() })">
                                     <div class="image">
@@ -164,16 +157,17 @@
                     {
                         foreach (var book in booksSorted)
                         {
-                            int count = 0;
-                            if (copies.Count > 0)
-                                foreach (Copy cop in copies)
-                                    if (cop.getStatus().Equals("Còn") && cop.getBookId().Equals(book.getId()))
-                                        count++;
-                            string status = count > 0 ? "Còn" : "Hết";
+                            List<Copy> copies = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.LoadCopiesWithBookId(book.getId(), "Còn");
+                            string status = copies.Count > 0 ? "Còn" : "Hết";
                             <div class="prod-item d-flex flex-column">
-                                <div class="image"><img style="object-fit:cover;width:100%;height:100%" src="@book.getUrlImage()" /></div>
-                                <div class="title">@book.getTitle()</div>
-                                <div class="price">Trạng thái: @status</div>
+                                <a href="@Url.Action("Details", "Home", new { id = book.getId() })">
+
+                                    <div class="image">
+                                        <img style="object-fit: cover; width: 100%; height: 100%;" src="@book.getUrlImage()" />
+                                    </div>
+                                    <div class="title">@book.getTitle()</div>
+                                    <div class="price">Trạng thái: @status</div>
+                                </a>
                             </div>
                         }
                     }
