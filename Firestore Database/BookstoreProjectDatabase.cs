@@ -1,7 +1,5 @@
 ﻿using BookstoreProject.Models;
 using Google.Cloud.Firestore;
-using System;
-using System.Net;
 
 namespace BookstoreProject.Firestore_Database
 {
@@ -68,51 +66,39 @@ namespace BookstoreProject.Firestore_Database
         {
             genres = new List<Genre>();
             Task<QuerySnapshot> genreIds = genreCollectionRef.GetSnapshotAsync();
-            while(true)
+            genreIds.Wait();
+            foreach (DocumentSnapshot genreId in genreIds.Result)
             {
-                if(genreIds.IsCompleted)
-                {
-                    foreach(DocumentSnapshot genreId in genreIds.Result)
-                    {
-                        genres.Add(new Genre(genreId.GetValue<string>("Id"),
-                                             genreId.GetValue<string>("Name")));
-                    }
-                    break;
-                }
+                genres.Add(new Genre(genreId.GetValue<string>("Id"),
+                                     genreId.GetValue<string>("Name")));
             }
         }
         // Tải sách
         public static void LoadBooks()
         {
             books = new List<Book>();
-            string content = "";
+            
             Task<QuerySnapshot> bookIds = bookCollectionRef.GetSnapshotAsync();
-            while (true)
+            bookIds.Wait();
+
+            foreach (DocumentSnapshot bookId in bookIds.Result)
             {
-                if (bookIds.IsCompleted)
+                string content = "";
+                foreach (string arCon in bookId.GetValue<List<string>>("Content"))
                 {
-
-                    foreach (DocumentSnapshot bookId in bookIds.Result)
-                    {
-                        content = "";
-                        foreach (string arCon in bookId.GetValue<List<string>>("Content"))
-                        {
-                            content += arCon + "\n";
-                        }
-
-                        books.Add(new Book(bookId.GetValue<string>("Id"),
-                                             bookId.GetValue<string>("Name"),
-                                             bookId.GetValue<string>("Author"),
-                                             bookId.GetValue<string>("Genre"),
-                                             content,
-                                             bookId.GetValue<string>("YearPublished"),
-                                             bookId.GetValue<string>("Publisher"),
-                                             bookId.GetValue<string>("URL")));
-
-                        Console.WriteLine(bookId.GetValue<string>("Name"));
-                    }
-                    break;
+                    content += arCon + "\n";
                 }
+
+                books.Add(new Book(bookId.GetValue<string>("Id"),
+                                     bookId.GetValue<string>("Name"),
+                                     bookId.GetValue<string>("Author"),
+                                     bookId.GetValue<string>("Genre"),
+                                     content,
+                                     bookId.GetValue<string>("YearPublished"),
+                                     bookId.GetValue<string>("Publisher"),
+                                     bookId.GetValue<string>("URL")));
+
+                Console.WriteLine(bookId.GetValue<string>("Name"));
             }
         }
 
@@ -120,36 +106,29 @@ namespace BookstoreProject.Firestore_Database
         public static Book LoadContentBookWithId(string id)
         {
             Book book = new Book();
-            string content = "";
             Task<QuerySnapshot> bookIds = bookCollectionRef.WhereEqualTo("Id", id).GetSnapshotAsync();
-            while (true)
+            bookIds.Wait();
+            foreach (DocumentSnapshot bookId in bookIds.Result)
             {
-                if (bookIds.IsCompleted)
+                string content = "";
+                foreach (string arCon in bookId.GetValue<List<string>>("Content"))
                 {
-
-                    foreach (DocumentSnapshot bookId in bookIds.Result)
-                    {
-                        content = "";
-                        foreach (string arCon in bookId.GetValue<List<string>>("Content"))
-                        {
-                            content += arCon + "\n";
-                        }
-
-                        book = new Book(bookId.GetValue<string>("Id"),
-                                             bookId.GetValue<string>("Name"),
-                                             bookId.GetValue<string>("Author"),
-                                             bookId.GetValue<string>("Genre"),
-                                             content,
-                                             bookId.GetValue<string>("YearPublished"),
-                                             bookId.GetValue<string>("Publisher"),
-                                             bookId.GetValue<string>("URL"));
-
-                        Console.WriteLine(bookId.GetValue<string>("Name"));
-
-                    }
-                    return book;
+                    content += arCon + "\n";
                 }
+
+                book = new Book(bookId.GetValue<string>("Id"),
+                                     bookId.GetValue<string>("Name"),
+                                     bookId.GetValue<string>("Author"),
+                                     bookId.GetValue<string>("Genre"),
+                                     content,
+                                     bookId.GetValue<string>("YearPublished"),
+                                     bookId.GetValue<string>("Publisher"),
+                                     bookId.GetValue<string>("URL"));
+
+                Console.WriteLine(bookId.GetValue<string>("Name"));
+
             }
+            return book;
         }
 
         public static List<Book> booksAfterSorted;
@@ -161,22 +140,16 @@ namespace BookstoreProject.Firestore_Database
             foreach (Book book in books)
             {
                 Task<QuerySnapshot> copyIds = copyCollectionRef.Document(book.getId()).Collection("BookCopy").GetSnapshotAsync();
-                while (true)
+                copyIds.Wait();
+                int i = 0;
+                foreach (DocumentSnapshot id in copyIds.Result)
                 {
-                    if (copyIds.IsCompleted)
+                    if (id.GetValue<string>("Status").Equals("Cho mượn"))
                     {
-                        int i = 0;
-                        foreach (DocumentSnapshot id in copyIds.Result)
-                        {
-                            if (id.GetValue<string>("Status").Equals("Cho mượn"))
-                            {
-                                i++;
-                            }
-                        }
-                        booksBeforeSorted.Add(new Tuple<string, int>(book.getId(), i));
-                        break;
+                        i++;
                     }
                 }
+                booksBeforeSorted.Add(new Tuple<string, int>(book.getId(), i));
             }
 
 
@@ -237,56 +210,44 @@ namespace BookstoreProject.Firestore_Database
             List<Copy> copyArrayList = new List<Copy>();
 
             Task<QuerySnapshot> copyIds = copyCollectionRef.Document(bookId).Collection("BookCopy").GetSnapshotAsync();
-            while (true)
+            copyIds.Wait();
+            foreach (DocumentSnapshot id in copyIds.Result)
             {
-                if (copyIds.IsCompleted)
+                if (!string.IsNullOrEmpty(status) && id.GetValue<string>("Status").Equals(status))
                 {
-                    foreach (DocumentSnapshot id in copyIds.Result)
-                    {
-                        if (!string.IsNullOrEmpty(status) && id.GetValue<string>("Status").Equals(status))
-                        {
-                            copyArrayList.Add(new Copy(id.Id,
-                                    bookId,
-                                    id.GetValue<string>("Status"),
-                                    id.GetValue<string>("Notes")));
-                        }
-                    }
-                    return copyArrayList;
+                    copyArrayList.Add(new Copy(id.Id,
+                            bookId,
+                            id.GetValue<string>("Status"),
+                            id.GetValue<string>("Notes")));
                 }
             }
+            return copyArrayList;
         }
 
         // Tải sách với bản sao mà sách có tên chứa ký tự tìm kiếm
         public static void SearchBook(string name)
         {
             books = new List<Book>();
-            string content = "";
             Task<QuerySnapshot> bookIds = bookCollectionRef.GetSnapshotAsync();
-            while (true)
+            bookIds.Wait();
+            foreach (DocumentSnapshot id in bookIds.Result)
             {
-                if (bookIds.IsCompleted)
+                if (id.GetValue<string>("Name").Contains(name))
                 {
-                    foreach (DocumentSnapshot id in bookIds.Result)
+                    string content = "";
+                    foreach (string arCon in id.GetValue<List<string>>("Content"))
                     {
-                        if (id.GetValue<string>("Name").Contains(name))
-                        {
-                            content = "";
-                            foreach (string arCon in id.GetValue<List<string>>("Content"))
-                            {
-                                content += arCon + "\n";
-                            }
-                            books.Add(new Book(id.Id,
-                                    id.GetValue<string>("Name"),
-                                    id.GetValue<string>("Author"),
-                                    id.GetValue<string>("Genre"),
-                                    content,
-                                    id.GetValue<string>("YearPublished"),
-                                    id.GetValue<string>("Publisher"),
-                                    id.GetValue<string>("URL")));
-                            Console.WriteLine("Book name " + id.Id + " : " + id.GetValue<string>("Name"));
-                        }
+                        content += arCon + "\n";
                     }
-                    break;
+                    books.Add(new Book(id.Id,
+                            id.GetValue<string>("Name"),
+                            id.GetValue<string>("Author"),
+                            id.GetValue<string>("Genre"),
+                            content,
+                            id.GetValue<string>("YearPublished"),
+                            id.GetValue<string>("Publisher"),
+                            id.GetValue<string>("URL")));
+                    Console.WriteLine("Book name " + id.Id + " : " + id.GetValue<string>("Name"));
                 }
             }
 
@@ -295,20 +256,14 @@ namespace BookstoreProject.Firestore_Database
             foreach (Book book in books)
             {
                 Task<QuerySnapshot> copyIds = copyCollectionRef.Document(book.getId()).Collection("BookCopy").GetSnapshotAsync();
-                while (true)
+                copyIds.Wait();
+                foreach (DocumentSnapshot copy in copyIds.Result)
                 {
-                    if (copyIds.IsCompleted)
-                    {
-                        foreach (DocumentSnapshot copy in copyIds.Result)
-                        {
-                            copies.Add(new Copy(copy.Id,
-                                    book.getId(),
-                                    copy.GetValue<string>("Status"),
-                                    copy.GetValue<string>("Notes")));
-                            Console.WriteLine("Copy id " + copy.Id + ", book id " + book.getId());
-                        }
-                        break;
-                    }
+                    copies.Add(new Copy(copy.Id,
+                            book.getId(),
+                            copy.GetValue<string>("Status"),
+                            copy.GetValue<string>("Notes")));
+                    Console.WriteLine("Copy id " + copy.Id + ", book id " + book.getId());
                 }
             }
         }
@@ -320,29 +275,24 @@ namespace BookstoreProject.Firestore_Database
 
             string content = "";
             Task<QuerySnapshot> bookIds = bookCollectionRef.WhereEqualTo("Genre", genreName).GetSnapshotAsync();
-            while (true)
+
+            bookIds.Wait();
+            foreach (DocumentSnapshot id in bookIds.Result)
             {
-                if (bookIds.IsCompleted)
+                content = "";
+                foreach (string arCon in id.GetValue<List<string>>("Content"))
                 {
-                    foreach (DocumentSnapshot id in bookIds.Result)
-                    {
-                        content = "";
-                        foreach (string arCon in id.GetValue<List<string>>("Content"))
-                        {
-                            content += arCon + "\n";
-                        }
-                        books.Add(new Book(id.Id,
-                                id.GetValue<string>("Name"),
-                                id.GetValue<string>("Author"),
-                                id.GetValue<string>("Genre"),
-                                content,
-                                id.GetValue<string>("YearPublished"),
-                                id.GetValue<string>("Publisher"),
-                                id.GetValue<string>("URL")));
-                        Console.WriteLine("Book name " + id.Id + " : " + id.GetValue<string>("Name"));
-                    }
-                    break;
+                    content += arCon + "\n";
                 }
+                books.Add(new Book(id.Id,
+                        id.GetValue<string>("Name"),
+                        id.GetValue<string>("Author"),
+                        id.GetValue<string>("Genre"),
+                        content,
+                        id.GetValue<string>("YearPublished"),
+                        id.GetValue<string>("Publisher"),
+                        id.GetValue<string>("URL")));
+                Console.WriteLine("Book name " + id.Id + " : " + id.GetValue<string>("Name"));
             }
 
             copies = new List<Copy>();
@@ -350,20 +300,14 @@ namespace BookstoreProject.Firestore_Database
             foreach (Book book in books)
             {
                 Task<QuerySnapshot> copyIds = copyCollectionRef.Document(book.getId()).Collection("BookCopy").GetSnapshotAsync();
-                while (true)
+                copyIds.Wait();
+                foreach (DocumentSnapshot copy in copyIds.Result)
                 {
-                    if (copyIds.IsCompleted)
-                    {
-                        foreach (DocumentSnapshot copy in copyIds.Result)
-                        {
-                            copies.Add(new Copy(copy.Id,
-                                    book.getId(),
-                                    copy.GetValue<string>("Status"),
-                                    copy.GetValue<string>("Notes")));
-                            Console.WriteLine("Copy id " + copy.Id + ", book id " + book.getId());
-                        }
-                        break;
-                    }
+                    copies.Add(new Copy(copy.Id,
+                            book.getId(),
+                            copy.GetValue<string>("Status"),
+                            copy.GetValue<string>("Notes")));
+                    Console.WriteLine("Copy id " + copy.Id + ", book id " + book.getId());
                 }
             }
         }
@@ -373,42 +317,31 @@ namespace BookstoreProject.Firestore_Database
         {
             accountInfo = new Account();
             Task<QuerySnapshot> accountName = accountCollectionRef.WhereEqualTo("Account", account).GetSnapshotAsync();
-            while (true)
+            accountName.Wait();
+            if (accountName.Result.Count != 0)
             {
-                if (accountName.IsCompleted)
-                {
-                    if (accountName.Result.Count != 0)
-                    {
-                        foreach (DocumentSnapshot name in accountName.Result)
-                            if (name.GetValue<string>("Password").Equals(password))
-                                accountInfo = new Account(name.GetValue<string>("Account"), name.GetValue<string>("Password"), name.GetValue<string>("Role"));
+                foreach (DocumentSnapshot name in accountName.Result)
+                    if (name.GetValue<string>("Password").Equals(password))
+                        accountInfo = new Account(name.GetValue<string>("Account"), name.GetValue<string>("Password"), name.GetValue<string>("Role"));
 
-                        if (string.IsNullOrEmpty(accountInfo.getAccount()))
-                            Console.WriteLine("Tài khoản hoặc mật khẩu bị sai");
-                    }
-                    else
-                        Console.WriteLine("Tài khoản hoặc mật khẩu bị sai");
-                    break;
-                }
+                if (string.IsNullOrEmpty(accountInfo.getAccount()))
+                    Console.WriteLine("Tài khoản hoặc mật khẩu bị sai");
             }
+            else
+                Console.WriteLine("Tài khoản hoặc mật khẩu bị sai");
+
             if (!string.IsNullOrEmpty(accountInfo.getRole()) && accountInfo.getRole().Equals("Sinh viên"))
             {
                 Task<QuerySnapshot> libraryCardInfo = libraryCardCollectionRef.WhereEqualTo("Id", accountInfo.getAccount()).GetSnapshotAsync();
-                while (true)
-                {
-                    if (libraryCardInfo.IsCompleted)
-                    {
-                        foreach (DocumentSnapshot idCard in libraryCardInfo.Result)
-                            libraryCard = new LibraryCard(accountInfo.getAccount(),
-                                    idCard.GetValue<string>("Name"),
-                                    idCard.GetValue<string>("ExpirationDate"),
-                                    idCard.GetValue<bool>("Status"),
-                                    idCard.GetValue<bool>("Borrow"));
+                libraryCardInfo.Wait();
+                foreach (DocumentSnapshot idCard in libraryCardInfo.Result)
+                    libraryCard = new LibraryCard(accountInfo.getAccount(),
+                            idCard.GetValue<string>("Name"),
+                            idCard.GetValue<string>("ExpirationDate"),
+                            idCard.GetValue<bool>("Status"),
+                            idCard.GetValue<bool>("Borrow"));
 
-                        Console.WriteLine("Đăng nhập thành công");
-                        break;
-                    }
-                }
+                Console.WriteLine("Đăng nhập thành công");
             }
         }
 
@@ -417,39 +350,26 @@ namespace BookstoreProject.Firestore_Database
         {
             accounts = new List<Account>();
             Task<QuerySnapshot> accountNames = accountCollectionRef.GetSnapshotAsync();
-            while (true)
+            accountNames.Wait();
+            foreach (DocumentSnapshot accountName in accountNames.Result)
             {
-                if (accountNames.IsCompleted)
-                {
-                    foreach (DocumentSnapshot accountName in accountNames.Result)
-                    {
-                        accounts.Add(new Account(accountName.GetValue<string>("Account"), accountName.GetValue<string>("Password"), accountName.GetValue<string>("Role")));
-                    }
-                    break;
-                }
+                accounts.Add(new Account(accountName.GetValue<string>("Account"), accountName.GetValue<string>("Password"), accountName.GetValue<string>("Role")));
             }
         }
-
 
         // tải thẻ sinh viên - Manager
         public static void LoadLibraryCards()
         {
             libraryCards = new List<LibraryCard>();
             Task<QuerySnapshot> libraryCardIds = libraryCardCollectionRef.GetSnapshotAsync();
-            while (true)
+            libraryCardIds.Wait();
+            foreach (DocumentSnapshot libraryCardId in libraryCardIds.Result)
             {
-                if (libraryCardIds.IsCompleted)
-                {
-                    foreach (DocumentSnapshot libraryCardId in libraryCardIds.Result)
-                    {
-                        libraryCards.Add(new LibraryCard(libraryCardId.GetValue<string>("Id"),
-                                libraryCardId.GetValue<string>("Name"),
-                                libraryCardId.GetValue<string>("ExpirationDate"),
-                                libraryCardId.GetValue<bool>("Status"),
-                                libraryCardId.GetValue<bool>("Borrow")));
-                    }
-                    break;
-                }
+                libraryCards.Add(new LibraryCard(libraryCardId.GetValue<string>("Id"),
+                        libraryCardId.GetValue<string>("Name"),
+                        libraryCardId.GetValue<string>("ExpirationDate"),
+                        libraryCardId.GetValue<bool>("Status"),
+                        libraryCardId.GetValue<bool>("Borrow")));
             }
         }
 
@@ -458,21 +378,15 @@ namespace BookstoreProject.Firestore_Database
         {
             libraryCards = new List<LibraryCard>();
             Task<QuerySnapshot> libraryCardIds = libraryCardCollectionRef.GetSnapshotAsync();
-            while (true)
+            libraryCardIds.Wait();
+            foreach (DocumentSnapshot libraryCardId in libraryCardIds.Result)
             {
-                if (libraryCardIds.IsCompleted)
-                {
-                    foreach (DocumentSnapshot libraryCardId in libraryCardIds.Result)
-                    {
-                        if (libraryCardId.GetValue<string>("Id").Contains(id))
-                            libraryCards.Add(new LibraryCard(libraryCardId.GetValue<string>("Id"),
-                                    libraryCardId.GetValue<string>("Name"),
-                                    libraryCardId.GetValue<string>("ExpirationDate"),
-                                    libraryCardId.GetValue<bool>("Status"),
-                                    libraryCardId.GetValue<bool>("Borrow")));
-                    }
-                    break;
-                }
+                if (libraryCardId.GetValue<string>("Id").Contains(id))
+                    libraryCards.Add(new LibraryCard(libraryCardId.GetValue<string>("Id"),
+                            libraryCardId.GetValue<string>("Name"),
+                            libraryCardId.GetValue<string>("ExpirationDate"),
+                            libraryCardId.GetValue<bool>("Status"),
+                            libraryCardId.GetValue<bool>("Borrow")));
             }
         }
 
@@ -481,21 +395,15 @@ namespace BookstoreProject.Firestore_Database
         {
             libraryCards = new List<LibraryCard>();
             Task<QuerySnapshot> libraryCardIds = libraryCardCollectionRef.GetSnapshotAsync();
-            while (true)
+            libraryCardIds.Wait();
+            foreach (DocumentSnapshot libraryCardId in libraryCardIds.Result)
             {
-                if (libraryCardIds.IsCompleted)
-                {
-                    foreach (DocumentSnapshot libraryCardId in libraryCardIds.Result)
-                    {
-                        if (libraryCardId.GetValue<string>("Name").Contains(name))
-                            libraryCards.Add(new LibraryCard(libraryCardId.GetValue<string>("Id"),
-                                    libraryCardId.GetValue<string>("Name"),
-                                    libraryCardId.GetValue<string>("ExpirationDate"),
-                                    libraryCardId.GetValue<bool>("Status"),
-                                    libraryCardId.GetValue<bool>("Borrow")));
-                    }
-                    break;
-                }
+                if (libraryCardId.GetValue<string>("Name").Contains(name))
+                    libraryCards.Add(new LibraryCard(libraryCardId.GetValue<string>("Id"),
+                            libraryCardId.GetValue<string>("Name"),
+                            libraryCardId.GetValue<string>("ExpirationDate"),
+                            libraryCardId.GetValue<bool>("Status"),
+                            libraryCardId.GetValue<bool>("Borrow")));
             }
         }
 
@@ -508,17 +416,12 @@ namespace BookstoreProject.Firestore_Database
                 accountNames = accountCollectionRef.WhereEqualTo("Role", roleName).OrderBy("Account").GetSnapshotAsync();
             else
                 accountNames = accountCollectionRef.WhereEqualTo("Role", roleName).OrderByDescending("Account").GetSnapshotAsync();
-            while (true)
+
+            accountNames.Wait();
+            foreach (DocumentSnapshot accountName in accountNames.Result)
             {
-                if (accountNames.IsCompleted)
-                {
-                    foreach (DocumentSnapshot accountName in accountNames.Result)
-                    {
-                        accounts.Add(new Account(accountName.GetValue<string>("Account"), accountName.GetValue<string>("Password"), accountName.GetValue<string>("Role")));
-                        Console.WriteLine(accountName.GetValue<string>("Account"));
-                    }
-                    break;
-                }
+                accounts.Add(new Account(accountName.GetValue<string>("Account"), accountName.GetValue<string>("Password"), accountName.GetValue<string>("Role")));
+                Console.WriteLine(accountName.GetValue<string>("Account"));
             }
         }
 
@@ -531,29 +434,24 @@ namespace BookstoreProject.Firestore_Database
                 bookIds = bookCollectionRef.OrderBy("Name").GetSnapshotAsync();
             else
                 bookIds = bookCollectionRef.OrderByDescending("Name").GetSnapshotAsync();
-            while (true)
+
+            bookIds.Wait();
+            foreach (DocumentSnapshot id in bookIds.Result)
             {
-                if (bookIds.IsCompleted)
+                content = "";
+                foreach (string arCon in id.GetValue<List<string>>("Content"))
                 {
-                    foreach (DocumentSnapshot id in bookIds.Result)
-                    {
-                        content = "";
-                        foreach (string arCon in id.GetValue<List<string>>("Content"))
-                        {
-                            content += arCon + "\n";
-                        }
-                        books.Add(new Book(id.Id,
-                                id.GetValue<string>("Name"),
-                                id.GetValue<string>("Author"),
-                                id.GetValue<string>("Genre"),
-                                content,
-                                id.GetValue<string>("YearPublished"),
-                                id.GetValue<string>("Publisher"),
-                                id.GetValue<string>("URL")));
-                        Console.WriteLine("Book name " + id.Id + " : " + id.GetValue<string>("Name"));
-                    }
-                    break;
+                    content += arCon + "\n";
                 }
+                books.Add(new Book(id.Id,
+                        id.GetValue<string>("Name"),
+                        id.GetValue<string>("Author"),
+                        id.GetValue<string>("Genre"),
+                        content,
+                        id.GetValue<string>("YearPublished"),
+                        id.GetValue<string>("Publisher"),
+                        id.GetValue<string>("URL")));
+                Console.WriteLine("Book name " + id.Id + " : " + id.GetValue<string>("Name"));
             }
         }
 
@@ -566,29 +464,24 @@ namespace BookstoreProject.Firestore_Database
                 bookIds = bookCollectionRef.OrderBy("YearPublished").GetSnapshotAsync();
             else
                 bookIds = bookCollectionRef.OrderByDescending("YearPublished").GetSnapshotAsync();
-            while (true)
+
+            bookIds.Wait();
+            foreach (DocumentSnapshot id in bookIds.Result)
             {
-                if (bookIds.IsCompleted)
+                content = "";
+                foreach (string arCon in id.GetValue<List<string>>("Content"))
                 {
-                    foreach (DocumentSnapshot id in bookIds.Result)
-                    {
-                        content = "";
-                        foreach (string arCon in id.GetValue<List<string>>("Content"))
-                        {
-                            content += arCon + "\n";
-                        }
-                        books.Add(new Book(id.Id,
-                                id.GetValue<string>("Name"),
-                                id.GetValue<string>("Author"),
-                                id.GetValue<string>("Genre"),
-                                content,
-                                id.GetValue<string>("YearPublished"),
-                                id.GetValue<string>("Publisher"),
-                                id.GetValue<string>("URL")));
-                        Console.WriteLine("Book name " + id.Id + " : " + id.GetValue<string>("Name"));
-                    }
-                    break;
+                    content += arCon + "\n";
                 }
+                books.Add(new Book(id.Id,
+                        id.GetValue<string>("Name"),
+                        id.GetValue<string>("Author"),
+                        id.GetValue<string>("Genre"),
+                        content,
+                        id.GetValue<string>("YearPublished"),
+                        id.GetValue<string>("Publisher"),
+                        id.GetValue<string>("URL")));
+                Console.WriteLine("Book name " + id.Id + " : " + id.GetValue<string>("Name"));
             }
         }
 
@@ -600,20 +493,15 @@ namespace BookstoreProject.Firestore_Database
                 libraryCardIds = libraryCardCollectionRef.OrderBy("Id").GetSnapshotAsync();
             else
                 libraryCardIds = libraryCardCollectionRef.OrderByDescending("Id").GetSnapshotAsync();
-            while (true)
+
+            libraryCardIds.Wait();
+            foreach (DocumentSnapshot libraryCardId in libraryCardIds.Result)
             {
-                if (libraryCardIds.IsCompleted)
-                {
-                    foreach (DocumentSnapshot libraryCardId in libraryCardIds.Result)
-                    {
-                        libraryCards.Add(new LibraryCard(libraryCardId.GetValue<string>("Id"),
-                                libraryCardId.GetValue<string>("Name"),
-                                libraryCardId.GetValue<string>("ExpirationDate"),
-                                libraryCardId.GetValue<bool>("Status"),
-                                libraryCardId.GetValue<bool>("Borrow")));
-                    }
-                    break;
-                }
+                libraryCards.Add(new LibraryCard(libraryCardId.GetValue<string>("Id"),
+                        libraryCardId.GetValue<string>("Name"),
+                        libraryCardId.GetValue<string>("ExpirationDate"),
+                        libraryCardId.GetValue<bool>("Status"),
+                        libraryCardId.GetValue<bool>("Borrow")));
             }
         }
 
@@ -621,37 +509,22 @@ namespace BookstoreProject.Firestore_Database
         {
             loans = new List<Loan>();
             Task<QuerySnapshot> loanIds = loanCollectionRef.GetSnapshotAsync();
-            while (true)
+            loanIds.Wait();
+            foreach (DocumentSnapshot loanId in loanIds.Result)
             {
-                if (loanIds.IsCompleted)
+                foreach (Book book in books)
                 {
-                    int i = 0;
-                    foreach (DocumentSnapshot loanId in loanIds.Result)
+                    Task<QuerySnapshot> bookCopyIds = loanCollectionRef.Document(loanId.Id).Collection(book.getId()).GetSnapshotAsync();
+                    bookCopyIds.Wait();
+                    foreach (DocumentSnapshot bookCopyId in bookCopyIds.Result)
                     {
-                        foreach (Book book in books)
-                        {
-                            Task<QuerySnapshot> bookCopyIds = loanCollectionRef.Document(loanId.Id).Collection(book.getId()).GetSnapshotAsync();
-                            while (true)
-                            {
-                                if (bookCopyIds.IsCompleted)
-                                {
-                                    foreach (DocumentSnapshot bookCopyId in bookCopyIds.Result)
-                                    {
-                                        loans.Add(new Loan(book.getId(),
-                                                loanId.Id,
-                                                bookCopyId.GetValue<string>("BookCopyId"),
-                                                bookCopyId.GetValue<string>("BorrowDate"),
-                                                bookCopyId.GetValue<string>("DateDue")));
-                                        Console.WriteLine(book.getId() + ", " + loanId.Id);
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                        i++;
+                        loans.Add(new Loan(book.getId(),
+                                loanId.Id,
+                                bookCopyId.GetValue<string>("BookCopyId"),
+                                bookCopyId.GetValue<string>("BorrowDate"),
+                                bookCopyId.GetValue<string>("DateDue")));
+                        Console.WriteLine(book.getId() + ", " + loanId.Id);
                     }
-                    if (i == loanIds.Result.Count)
-                        break;
                 }
             }
         }
@@ -660,41 +533,26 @@ namespace BookstoreProject.Firestore_Database
         {
             loans = new List<Loan>();
             Task<QuerySnapshot> loanIds = loanCollectionRef.GetSnapshotAsync();
-            while (true)
+            loanIds.Wait();
+            foreach (DocumentSnapshot loanId in loanIds.Result)
             {
-                if (loanIds.IsCompleted)
+                foreach (Book book in books)
                 {
-                    foreach (DocumentSnapshot loanId in loanIds.Result)
+                    Task<QuerySnapshot> bookCopyIds;
+                    if (isAsc)
+                        bookCopyIds = loanCollectionRef.Document(loanId.Id).Collection(book.getId()).OrderBy("BorrowDate").GetSnapshotAsync();
+                    else
+                        bookCopyIds = loanCollectionRef.Document(loanId.Id).Collection(book.getId()).OrderByDescending("BorrowDate").GetSnapshotAsync();
+
+                    bookCopyIds.Wait();
+                    foreach (DocumentSnapshot bookCopyId in bookCopyIds.Result)
                     {
-                        foreach (Book book in books)
-                        {
-                            Task<QuerySnapshot> bookCopyIds;
-                            if(isAsc)
-                                bookCopyIds = loanCollectionRef.Document(loanId.Id).Collection(book.getId()).OrderBy("BorrowDate").GetSnapshotAsync();
-                            else
-                                bookCopyIds = loanCollectionRef.Document(loanId.Id).Collection(book.getId()).OrderByDescending("BorrowDate").GetSnapshotAsync();
-                            while (true)
-                            {
-                                if (bookCopyIds.IsCompleted)
-                                {
-                                    foreach (DocumentSnapshot bookCopyId in bookCopyIds.Result)
-                                    {
-                                        loans.Add(new Loan(book.getId(),
-                                                loanId.Id,
-                                                bookCopyId.Id,
-                                                bookCopyId.GetValue<string>("BorrowDate"),
-                                                bookCopyId.GetValue<string>("DateDue")));
-                                    }
-                                    break;
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                            }
-                        }
+                        loans.Add(new Loan(book.getId(),
+                                loanId.Id,
+                                bookCopyId.Id,
+                                bookCopyId.GetValue<string>("BorrowDate"),
+                                bookCopyId.GetValue<string>("DateDue")));
                     }
-                    break;
                 }
             }
         }
@@ -708,29 +566,18 @@ namespace BookstoreProject.Firestore_Database
                 bookIds = copyCollectionRef.OrderBy("Id").GetSnapshotAsync();
             else
                 bookIds = copyCollectionRef.OrderByDescending("Id").GetSnapshotAsync();
-            while (true)
+            
+            bookIds.Wait();
+            foreach (DocumentSnapshot id in bookIds.Result)
             {
-                if (bookIds.IsCompleted)
+                Task<QuerySnapshot> copyIds = copyCollectionRef.Document(id.Id).Collection("BookCopy").GetSnapshotAsync();
+                copyIds.Wait();
+                foreach (DocumentSnapshot copy in copyIds.Result)
                 {
-                    foreach (DocumentSnapshot id in bookIds.Result)
-                    {
-                        Task<QuerySnapshot> copyIds = copyCollectionRef.Document(id.Id).Collection("BookCopy").GetSnapshotAsync();
-                        while (true)
-                        {
-                            if (copyIds.IsCompleted)
-                            {
-                                foreach (DocumentSnapshot copy in copyIds.Result)
-                                {
-                                    copies.Add(new Copy(copy.Id,
-                                            id.Id,
-                                            copy.GetValue<string>("Status"),
-                                            copy.GetValue<string>("Notes")));
-                                }
-                                break;
-                            }
-                        }
-                    }
-                    break;
+                    copies.Add(new Copy(copy.Id,
+                            id.Id,
+                            copy.GetValue<string>("Status"),
+                            copy.GetValue<string>("Notes")));
                 }
             }
         }

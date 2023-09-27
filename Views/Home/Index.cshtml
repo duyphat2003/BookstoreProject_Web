@@ -2,7 +2,7 @@
     List<Book> books = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.books;
     List<Book> booksSorted = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.booksAfterSorted;
     List<Genre> genres = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.genres;
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Trang chủ";
 }
 
 
@@ -30,7 +30,7 @@
                     </div>
                 </div>
 
-                <div class="products">
+                <div class="products" style="background-color:white">
                     @if (books.Count > 10)
                     {
                         for (int i = 0; i < 10; i++)
@@ -134,7 +134,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="products">
+                <div class="products" style="background-color:white">
                     @if (booksSorted.Count > 10)
                     {
                         for (int i = 0; i < 10; i++)

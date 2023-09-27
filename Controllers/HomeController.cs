@@ -22,21 +22,20 @@ namespace BookstoreProject.Controllers
         public IActionResult Index(string name)
         {
             BookstoreProjectDatabase.LoadBooks();
-            BookstoreProjectDatabase.LoadCopies();
             BookstoreProjectDatabase.LoadGenre();
             BookstoreProjectDatabase.LoadBooksSortedWithCopies();
 
 
-            if (name != null)
-            {
-                //Nếu có searchValue lấy ra danh sách book map vs searchValue
-                BookstoreProjectDatabase.SearchBook(name);
-            }
-            else
-            {
-                //Không có searchValue , load lại Bookdata
-                BookstoreProjectDatabase.LoadBooks();
-            }
+            //if (name != null)
+            //{
+            //    //Nếu có searchValue lấy ra danh sách book map vs searchValue
+            //    BookstoreProjectDatabase.SearchBook(name);
+            //}
+            //else
+            //{
+            //    //Không có searchValue , load lại Bookdata
+            //    BookstoreProjectDatabase.LoadBooks();
+            //}
             return View();
         }
 

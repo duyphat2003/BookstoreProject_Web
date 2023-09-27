@@ -15,7 +15,6 @@ namespace BookstoreProject.Controllers
         //Trang chính
         public IActionResult Index()
         {
-            BookstoreProjectDatabase.ConnectToFirestoreDB();
             return View();
         }
 
@@ -28,9 +27,7 @@ namespace BookstoreProject.Controllers
         //Trang quản lý sách
         public IActionResult BookManagement()
         {
-            BookstoreProjectDatabase.ConnectToFirestoreDB();
             BookstoreProjectDatabase.LoadBooks();
-            BookstoreProjectDatabase.LoadCopies();
             return View();
         }
 

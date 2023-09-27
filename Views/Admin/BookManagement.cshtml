@@ -2,7 +2,6 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutAd.cshtml";
     List<Book> books = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.books;
-    List<Copy> copies = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.copies;
     List<Genre> genres = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.genres;
     <link rel="stylesheet" type="text/css" href="~/css/admin.css">
 }
@@ -15,13 +14,8 @@
             {
                 for (int i = 0; i < 10; i++)
                 {
-                    int count = 0;
-                    if (copies.Count > 0)
-                        foreach (Copy cop in copies)
-                            if (cop.getStatus().Equals("Còn") && cop.getBookId().Equals(books[i].getId()))
-                                count++;
-
-                    string status = count > 0 ? "Còn" : "Hết";
+                    List<Copy> copies = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.LoadCopiesWithBookId(books[i].getId(), "Còn");
+                    string status = copies.Count > 0 ? "Còn" : "Hết";
                     <div class="prod-item d-flex flex-column">
                         <div class="image"><img src="@books[i].getUrlImage()" /></div>
                         <div class="title">@books[i].getTitle()</div>
@@ -33,13 +27,8 @@
             {
                 foreach (var book in books)
                 {
-                    int count = 0;
-                    if (copies.Count > 0)
-                        foreach (Copy cop in copies)
-                            if (cop.getStatus().Equals("Còn") && cop.getBookId().Equals(book.getId()))
-                                count++;
-
-                    string status = count > 0 ? "Còn" : "Hết";
+                    List<Copy> copies = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.LoadCopiesWithBookId(book.getId(), "Còn");
+                    string status = copies.Count > 0 ? "Còn" : "Hết";
                     <div class="prod-item d-flex flex-column">
                         <div class="image"><img src="@book.getUrlImage()" /></div>
                         <div class="title">@book.getTitle()</div>
