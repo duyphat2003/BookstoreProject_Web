@@ -1,7 +1,7 @@
 ﻿@model BookstoreProject.Models.LoginModel
 
 @{
-    ViewData["Title"] = "SignIn";
+    ViewData["Title"] = "Đăng nhập";
 }
 
 @* <h1>SignIn</h1>
@@ -42,7 +42,7 @@
                     <div class="text-center text-danger">@ViewBag.Error</div>
 
                     <section id="loginForm">
-                        @using (Html.BeginForm("Signin", "User", FormMethod.Post, new { @class = "form-horizontal" }))
+                        @using (Html.BeginForm("SignIn", "User", FormMethod.Post, new { @class = "form-horizontal" }))
                         {
                             @Html.AntiForgeryToken()
                             <hr />

@@ -1,4 +1,5 @@
 ﻿using BookstoreProject.Firestore_Database;
+using BookstoreProject.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookstoreProject.Controllers
@@ -34,12 +35,30 @@ namespace BookstoreProject.Controllers
         //Trang quản lý phiếu mượn
         public IActionResult LoanManagement()
         {
+            BookstoreProjectDatabase.LoadBooks();
+            BookstoreProjectDatabase.LoadLoan();
+            ViewBag.loanList = BookstoreProjectDatabase.loans;
             return View();
         }
 
+        public IActionResult AddLoan(string copyId, string bookId, string cardId, string button)
+        {
+            if(button == "addBtn")
+            {
+                DateTime currentDate = DateTime.Now;
+                DateTime dateDue = currentDate.AddDays(15);
+                BookstoreProjectDatabase.AddLoan(new Loan(bookId, cardId, copyId, currentDate.ToString("dd/MM/yyyy"), dateDue.ToString("dd/MM/yyyy")));
+            }
+            BookstoreProjectDatabase.LoadBooks();
+            BookstoreProjectDatabase.LoadLoan();
+            ViewBag.loanList = BookstoreProjectDatabase.loans;
+            return View("LoanManagement");
+        }
         //Trang quản lý thẻ thư viện
         public IActionResult LibraryCardManagement()
         {
+            BookstoreProjectDatabase.LoadLibraryCards();
+            ViewBag.libraryCardList = BookstoreProjectDatabase.libraryCards;
             return View();
         }
 

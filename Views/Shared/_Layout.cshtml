@@ -67,20 +67,20 @@
                     <div class="flex-column align-items-center d-flex me-4">
                         <div class="mb-1"><img alt="Lỗi ảnh" src="~/lib/bell.png" width="25" height="25" /></div>
                         <div>
-                            <a class="nav-item">@Html.ActionLink("Thông báo", "cart", "user", null, new { @class = "nav-link"}) </a>
+                            <a class="nav-item">@Html.ActionLink("Thông báo", "SignIn", "User", null, new { @class = "nav-link"}) </a>
                         </div>
                     </div>
                     <div class="flex-column align-items-center d-flex me-4">
                         <div class="mb-1"><img alt="Lỗi ảnh" src="~/lib/shopping-cart.png" width="25" height="25" /></div>
                         <div>
-                             <a class="nav-item">@Html.ActionLink("Giỏ hàng", "cart", "user", null, new { @class = "nav-link"})</a>
+                            <a class="nav-item">@Html.ActionLink("Giỏ hàng", "SignIn", "User", null, new { @class = "nav-link"})</a>
                         </div>
                     </div>
                     <div class="flex-column align-items-center d-flex me-4">
                         <div class="mb-1"><img alt="Lỗi ảnh" src="~/lib/user.png" width="25" height="25" /></div>
                         <div>
                             @* <a href="@Url.Action("signin", "user", new { mess = "Hello"})"> Copy</a> *@
-                            <a class="nav-item">@Html.ActionLink("Đăng nhập", "signin", "user", null, new { @class = "nav-link", mess = "Hello"})</a>
+                            <a class="nav-item">@Html.ActionLink("Đăng nhập", "SignIn", "User", null, new { @class = "nav-link", mess = "Hello"})</a>
                         </div>
                     </div>
                 </div>
