@@ -662,8 +662,13 @@ namespace BookstoreProject.Firestore_Database
         // xóa bản sao của sách - Manager
         public static void DeleteBookCopy(string BookId, string id) => copyCollectionRef.Document(BookId).Collection("BookCopy").Document(id).DeleteAsync();
         // Thêm thẻ thư viện - Manager
-        public static void AddLibraryCard(LibraryCard libraryCard)
+        public static bool AddLibraryCard(LibraryCard libraryCard)
         {
+            if (libraryCardCollectionRef.Document(libraryCard.getId()) != null)
+            {
+                return false;
+            }
+
             Dictionary<string, object> libraryCardData = new Dictionary<string, object>();
 
             libraryCardData.Add("Borrow", libraryCard.getBorrowStatus());
@@ -673,6 +678,7 @@ namespace BookstoreProject.Firestore_Database
             libraryCardData.Add("Status", libraryCard.getUseStatus());
 
             libraryCardCollectionRef.Document(libraryCard.getId()).SetAsync(libraryCardData);
+            return true;
         }
         // cập nhật thẻ thư viện
         public static void UpdateLibraryCard(LibraryCard libraryCard, string borrowStatus, string useStatus)
@@ -699,8 +705,12 @@ namespace BookstoreProject.Firestore_Database
         }
 
         // Thêm tài khoản - Manager
-        public static void AddAccount(Account account)
+        public static bool AddAccount(Account account)
         {
+            if (accountCollectionRef.Document(account.getAccount()) != null)
+            {
+                return false;
+            }
             Dictionary<string, object> newAccount = new Dictionary<string, object>();
             newAccount.Add("Account", account.getAccount());
             newAccount.Add("Password", account.getPassword());
@@ -708,6 +718,7 @@ namespace BookstoreProject.Firestore_Database
             newAccount.Add("isLogin", false);
 
             accountCollectionRef.Document(account.getAccount()).SetAsync(newAccount);
+            return true;
         }
         // Cập nhật tài khoản - Manager
         public static bool UpdateAccount(String account, String password)

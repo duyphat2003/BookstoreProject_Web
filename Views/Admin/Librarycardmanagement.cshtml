@@ -86,31 +86,27 @@
 
 <h2>Quản Lí Thẻ</h2>
 <h4>Thông tin thẻ sinh viên</h4>
-<table>
-    <tr>
-        <th>Mã thẻ</th>
-        <th>Tên sinh viên</th>
-        <th>Ngày hết hạn</th>
-        <th>Trạng thái</th>
-        <th>Đang mượn</th>
+<form action="~/Admin/AddLibraryCard">
+    <table>
+        <tr>
+            <th>Mã thẻ</th>
+            <th>Tên sinh viên</th>
 
-    </tr>
-    <tr>
-        <td><input type="text"></td>
-        <td><input type="text"></td>
-        <td><input type="date"></td>
-        <td><input type="checkbox"></td>
-        <td><input type="checkbox"></td>
-    </tr>
+        </tr>
+        <tr>
+            <td><input name="cardId" type="text"></td>
+            <td><input name="nameStudent" type="text"></td>
+        </tr>
 
 
-</table>
+    </table>
 
-<div class="buttons">
-    <button><i class="fas fa-plus"></i> Thêm</button>
-    <button><i class="fas fa-trash-alt"></i> Xóa</button>
-    <button><i class="fas fa-edit"></i> Sửa</button>
-</div>
+    <div class="buttons">
+        <button name="button" value="add"><i class="fas fa-plus"></i> Thêm</button>
+        <button name="button" value="delete"> <i class="fas fa-trash-alt"></i> Xóa</button>
+        <button name="button" value="update"><i class="fas fa-edit"></i> Sửa</button>
+    </div>
+</form>
 
 <h4>Bảng thông tin thẻ thư viện</h4>
 <table id="library-table">

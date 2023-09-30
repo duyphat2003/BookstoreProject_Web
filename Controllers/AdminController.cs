@@ -1,6 +1,7 @@
 ﻿using BookstoreProject.Firestore_Database;
 using BookstoreProject.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
 
 namespace BookstoreProject.Controllers
 {
@@ -43,11 +44,15 @@ namespace BookstoreProject.Controllers
 
         public IActionResult AddLoan(string copyId, string bookId, string cardId, string button)
         {
-            if(button == "addBtn")
+            if (cardId != "" && bookId != "" && cardId != "")
             {
-                DateTime currentDate = DateTime.Now;
-                DateTime dateDue = currentDate.AddDays(15);
-                BookstoreProjectDatabase.AddLoan(new Loan(bookId, cardId, copyId, currentDate.ToString("dd/MM/yyyy"), dateDue.ToString("dd/MM/yyyy")));
+                if (button == "addBtn")
+                {
+                    DateTime currentDate = DateTime.Now;
+                    DateTime dateDue = currentDate.AddDays(15);
+                    if (bookId != "" && cardId != "" && copyId != "")
+                        BookstoreProjectDatabase.AddLoan(new Loan(bookId, cardId, copyId, currentDate.ToString("dd/MM/yyyy"), dateDue.ToString("dd/MM/yyyy")));
+                }
             }
             BookstoreProjectDatabase.LoadBooks();
             BookstoreProjectDatabase.LoadLoan();
@@ -60,6 +65,38 @@ namespace BookstoreProject.Controllers
             BookstoreProjectDatabase.LoadLibraryCards();
             ViewBag.libraryCardList = BookstoreProjectDatabase.libraryCards;
             return View();
+        }
+
+        public IActionResult AddLibraryCard(string cardId, string nameStudent, string button)
+        {
+            Console.OutputEncoding = Encoding.Unicode;
+            if (cardId != "" && nameStudent != "")
+            {
+                switch (button)
+                {
+                    case "add":
+                        DateTime currentDate = DateTime.Now;
+                        DateTime dateDue = currentDate.AddYears(4);
+                        if (BookstoreProjectDatabase.AddLibraryCard(new LibraryCard(cardId, nameStudent, dateDue.ToString("dd/MM/yyyy"), true, false)))
+                        {
+                            BookstoreProjectDatabase.AddAccount(new Account(cardId, cardId, "Sinh viên"));
+                            Console.WriteLine("Thêm thẻ thành công");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Thêm thẻ thất bại");
+                        }
+                        break;
+                    case "delete":
+                        break;
+                    case "update":
+                        break;
+                }
+            }
+            Console.WriteLine("Tải lại dữ liệu");
+            BookstoreProjectDatabase.LoadLibraryCards();
+            ViewBag.libraryCardList = BookstoreProjectDatabase.libraryCards;
+            return View("LibraryCardManagement");
         }
 
         //Trang quản lý bản sao
