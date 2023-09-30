@@ -16,6 +16,14 @@
             this.borrowStatus = borrowStatus;
         }
 
+        public LibraryCard(string id, string name, bool useStatus, bool borrowStatus)
+        {
+            this.id = id;
+            this.name = name;
+            this.useStatus = useStatus;
+            this.borrowStatus = borrowStatus;
+        }
+
         public string getId()
         {
             return id;

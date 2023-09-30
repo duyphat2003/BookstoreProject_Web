@@ -67,31 +67,37 @@ namespace BookstoreProject.Controllers
             return View();
         }
 
-        public IActionResult AddLibraryCard(string cardId, string nameStudent, string button)
+        public IActionResult AddLibraryCard(string cardId, string nameStudent, string button, bool status, bool borrow)
         {
             Console.OutputEncoding = Encoding.Unicode;
-            if (cardId != "" && nameStudent != "")
-            {
+
                 switch (button)
                 {
                     case "add":
-                        DateTime currentDate = DateTime.Now;
-                        DateTime dateDue = currentDate.AddYears(4);
-                        if (BookstoreProjectDatabase.AddLibraryCard(new LibraryCard(cardId, nameStudent, dateDue.ToString("dd/MM/yyyy"), true, false)))
+                        if (cardId != "" && nameStudent != "")
                         {
-                            BookstoreProjectDatabase.AddAccount(new Account(cardId, cardId, "Sinh viên"));
-                            Console.WriteLine("Thêm thẻ thành công");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Thêm thẻ thất bại");
+                            DateTime currentDate = DateTime.Now;
+                            DateTime dateDue = currentDate.AddYears(4);
+                            if (BookstoreProjectDatabase.AddLibraryCard(new LibraryCard(cardId, nameStudent, dateDue.ToString("dd/MM/yyyy"), true, false)))
+                            {
+                                BookstoreProjectDatabase.AddAccount(new Account(cardId, cardId, "Sinh viên"));
+                                Console.WriteLine("Thêm thẻ thành công");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Thêm thẻ thất bại");
+                            }
                         }
                         break;
                     case "delete":
+                        if (cardId != "")
+                            BookstoreProjectDatabase.DeleteLibraryCard(cardId);
+                            BookstoreProjectDatabase.DeleteAccount(cardId);
                         break;
                     case "update":
+                        if (cardId != "" && nameStudent != "")
+                            BookstoreProjectDatabase.UpdateLibraryCard(new LibraryCard(cardId, nameStudent, status, borrow));
                         break;
-                }
             }
             Console.WriteLine("Tải lại dữ liệu");
             BookstoreProjectDatabase.LoadLibraryCards();

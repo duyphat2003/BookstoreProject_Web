@@ -681,12 +681,10 @@ namespace BookstoreProject.Firestore_Database
             return true;
         }
         // cập nhật thẻ thư viện
-        public static void UpdateLibraryCard(LibraryCard libraryCard, string borrowStatus, string useStatus)
+        public static void UpdateLibraryCard(LibraryCard libraryCard)
         {
-            if (!string.IsNullOrEmpty(borrowStatus))
-                libraryCardCollectionRef.Document(libraryCard.getId()).UpdateAsync("Borrow", borrowStatus);
-            if (!string.IsNullOrEmpty(useStatus))
-                libraryCardCollectionRef.Document(libraryCard.getId()).UpdateAsync("Status", useStatus);
+            libraryCardCollectionRef.Document(libraryCard.getId()).UpdateAsync("Borrow", libraryCard.getBorrowStatus());
+            libraryCardCollectionRef.Document(libraryCard.getId()).UpdateAsync("Status", libraryCard.getUseStatus());
         }
         // xóa thẻ thư viện - Manager
         public static void DeleteLibraryCard(string id) => libraryCardCollectionRef.Document(id).DeleteAsync();
