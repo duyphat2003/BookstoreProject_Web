@@ -2,11 +2,10 @@
 
 namespace BookstoreProject.Models
 {
-    public class LoginModel
+    public class LoginModel:Account
     {
         [Required]
-        [EmailAddress]
-        public string Email { get; set; }
+        public string Account { get; set; }
         [Required]
         public string Password { get; set; }
     }

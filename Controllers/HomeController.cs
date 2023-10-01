@@ -24,8 +24,6 @@ namespace BookstoreProject.Controllers
             BookstoreProjectDatabase.LoadBooks();
             BookstoreProjectDatabase.LoadGenre();
             BookstoreProjectDatabase.LoadBooksSortedWithCopies();
-
-
             //if (name != null)
             //{
             //    //Nếu có searchValue lấy ra danh sách book map vs searchValue
@@ -63,45 +61,16 @@ namespace BookstoreProject.Controllers
             return View();
         }
 
-
-        //Trang đăng nhập
-        public IActionResult Login()
+        public IActionResult GetMoreProduct(int page=1,int pageSize=5)
         {
-            return View();
-        }
-
-        // Trang đăng ký
-        public IActionResult Register()
-        {
-            return View();
-        }
-
-
-        //Trang quên mật khẩu
-        public IActionResult ForgotPassword()
-        {
-            return View();
+            BookstoreProjectDatabase.LoadBooksWithIntitalStatePage(page, pageSize);
+            return PartialView("_MoreProductPartial");
         }
 
         //Trang thông tin người dùng
-        public IActionResult UserInfo()
-        {
-            return View();
-        }
+
 
         //Trang lịch sử mượn
-        public IActionResult UserLoanHistory()
-        {
-            return View();
-        }
-
-        //Trang thông báo của người dùng    
-        public IActionResult UserNofi()
-        {
-            return View();
-        }
-
-
         public IActionResult Privacy()
         {
             return View();

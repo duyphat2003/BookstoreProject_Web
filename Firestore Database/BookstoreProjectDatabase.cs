@@ -1,5 +1,6 @@
 ﻿using BookstoreProject.Models;
 using Google.Cloud.Firestore;
+using System.Net;
 
 namespace BookstoreProject.Firestore_Database
 {
@@ -205,6 +206,8 @@ namespace BookstoreProject.Firestore_Database
             }
         }
 
+        
+
         public static List<Copy> LoadCopiesWithBookId(string bookId, string status)
         {
             List<Copy> copyArrayList = new List<Copy>();
@@ -223,6 +226,37 @@ namespace BookstoreProject.Firestore_Database
             }
             return copyArrayList;
         }
+
+        //Pagination
+        public static void LoadBooksWithIntitalStatePage(int  page, int pageSize)
+        {
+            books = new List<Book>();
+
+            Task<QuerySnapshot> bookIds = bookCollectionRef.GetSnapshotAsync();
+            bookIds.Wait();
+            bookIds.GetAwaiter().ToString().Skip((page - 1) * pageSize).Take(pageSize);
+
+            foreach (DocumentSnapshot bookId in bookIds.Result)
+            {
+                string content = "";
+                foreach (string arCon in bookId.GetValue<List<string>>("Content"))
+                {
+                    content += arCon + "\n";
+                }
+
+                books.Add(new Book(bookId.GetValue<string>("Id"),
+                                     bookId.GetValue<string>("Name"),
+                                     bookId.GetValue<string>("Author"),
+                                     bookId.GetValue<string>("Genre"),
+                                     content,
+                                     bookId.GetValue<string>("YearPublished"),
+                                     bookId.GetValue<string>("Publisher"),
+                                     bookId.GetValue<string>("URL")));
+
+                Console.WriteLine(bookId.GetValue<string>("Name"));
+            }
+        }
+
 
         // Tải sách với bản sao mà sách có tên chứa ký tự tìm kiếm
         public static void SearchBook(string name)
@@ -344,6 +378,7 @@ namespace BookstoreProject.Firestore_Database
                 Console.WriteLine("Đăng nhập thành công");
             }
         }
+
 
         // Tải Tài khoản - Manager
         public static void LoadAccounts()

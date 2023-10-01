@@ -1,4 +1,10 @@
 using BookstoreProject.Firestore_Database;
+using BookstoreProject.Models;
+using Google;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +22,16 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+//    .AddRoles<IdentityRole>()
+//    .AddEntityFrameworkStores<BookstoreContext>()
+//    .AddDefaultUI().
+//    AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(o => o.LoginPath = new PathString("/user/signin"));
+
 
 var app = builder.Build();
 
@@ -35,13 +51,14 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();
+app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-//pattern: "{controller=Home}/{action=Index}/{id?}");
-pattern: "{controller=Admin}/{action=Index}/{id?}");
+pattern: "{controller=Home}/{action=Index}/{id?}");
+//pattern: "{controller=Admin}/{action=Index}/{id?}");
 
 
 

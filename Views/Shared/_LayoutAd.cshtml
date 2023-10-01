@@ -26,7 +26,7 @@
     } *@
 
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-success bg-danger">
-        <h3>@Html.ActionLink("Trang chủ", "Index", "Admin", null, new { @class = "menu1" })</h3>
+        <h3>@Html.ActionLink("Trang chủ", "Index", "Home", null, new { @class = "menu1" })</h3>
         <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#">
             <i class="fas fa-bars" style=" font-size: 24px;"></i>
         </button>
@@ -48,7 +48,7 @@
                     @* <a class="dropdown-item" style="color:red" href="@Url.Action("Details", "TaiKhoans", new { id = u.MaNguoiDung  })"> Tài khoản : @u.Email</a> *@
 
                     <div class="dropdown-divider menu1"></div>
-                    <a class="dropdown-item" href="/User/DangXuat"> ĐĂNG XUẤT</a>
+                    <a class="dropdown-item" href="/User/LogOut"> ĐĂNG XUẤT</a>
                 </div>
             </li>
         </ul>
