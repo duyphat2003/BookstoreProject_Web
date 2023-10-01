@@ -92,7 +92,7 @@
                                     <span class="nav-item">@User.Identity.Name</span>
                                 </button>
                                 <ul class="dropdown-menu" style="top:unset;left:unset;">
-                                    @if (User.IsInRole("admin"))
+                                    @if (User.IsInRole("Quản lý") || User.IsInRole("Thủ kho") || User.IsInRole("Thủ thư"))
                                     {
                                         <li class="nav-item">
                                             <a class="nav-link text-dark" asp-area="" asp-controller="admin" asp-action="index">Admin Dashboard</a>

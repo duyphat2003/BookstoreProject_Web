@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Repository\**" />
+    <Content Remove="Repository\**" />
+    <EmbeddedResource Remove="Repository\**" />
+    <None Remove="Repository\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="Views\User\index.cshtml" />
   </ItemGroup>
 
@@ -37,10 +44,6 @@
     <ItemGroup>
         <PackageReference Include="FirebaseAdmin" Version="2.4.0" />
     </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Repository\" />
-  </ItemGroup>
 
     <ItemGroup>
         <Content Update="libraryproject-704cf-firebase-adminsdk-trb3v-b601c05ad2.json">
