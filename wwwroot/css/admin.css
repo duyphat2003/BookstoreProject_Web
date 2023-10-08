@@ -1,50 +1,64 @@
 ﻿
-.homePage {
-    padding: 20px;
-    background-color: #f0f0f0;
+body {
+    font-family: Arial, sans-serif;
 }
 
+
+.homePage {
+    background-color: #f5f5f5;
+    padding: 20px;
+}
 .title {
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 20px;
 }
-
-
 .products {
     display: flex;
     flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    padding: 0 10px;
 }
-
 
 .prod-item {
     margin: 10px;
     padding: 10px;
     background-color: #ffffff;
     border: 1px solid #ddd;
-    border-radius: 5px;
-    width: 200px;
+    border-radius: 10px;
+    text-align: center;
+    flex: 1 0 calc(25% - 20px);
+    max-width: calc(25% - 20px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
+    .prod-item .image {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+        .prod-item .image img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
 
+    .prod-item .title {
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
 
-.image img {
-    object-fit: cover; /* Hiển thị hình ảnh sao cho nó điền hết vào khu vực */
-    width: 30px;
-    height: 50px;
-}
-
-
-.title {
-    font-size: 16px;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-
-.price {
-    font-size: 14px;
-    color: #007BFF;
-}
+    .prod-item .price {
+        font-size: 12px;
+        color: #007bff;
+        margin-top: 5px;
+    }
 
 
 .button-container {
@@ -63,6 +77,47 @@
 }
 
     .button i {
-        margin-right: 5px; /* Khoảng cách giữa biểu tượng và chữ */
+        margin-right: 5px;
     }
+
+
+.dropbtn {
+    background-color: #ffffff;
+    color: black;
+    padding: 10px 16px;
+    font-size: 14px;
+    border: 2px solid #000000;
+    cursor: pointer;
+    width: 200px;
+    height: 50px;
+    text-align: left;
+}
+
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #ffffff;
+    min-width: 220px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+    
+    .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        display: block;
+        text-decoration: none;
+    }
+
+        
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
 

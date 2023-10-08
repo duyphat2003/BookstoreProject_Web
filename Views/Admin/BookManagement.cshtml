@@ -1,40 +1,40 @@
 ﻿@{
+    @using BookstoreProject.Firestore_Database;
+    @model List<Book>
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutAd.cshtml";
     List<Book> books = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.books;
     List<Genre> genres = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.genres;
     <link rel="stylesheet" type="text/css" href="~/css/admin.css">
+
 }
 
 <div class="homePage">
-    <div class="container-lg d-flex flex-column">
-        <div class="title"></div>
+    <div class="dropdown">
+        <button class="dropbtn">Thể loại</button>
+        <div class="dropdown-content">
+            <a href="#"> 1</a>
+            <a href="#">2</a>
+            <a href="#">3</a>
+        </div>
+    </div>
+</div>
+<br />
+<div class="title homePage">Quản lí sách</div>
+
+<div class="homePage">
+    
+    <div class="container-lg">
         <div class="products">
-            @if (books.Count > 10)
+            @foreach (var book in books)
             {
-                for (int i = 0; i < 10; i++)
-                {
-                    List<Copy> copies = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.LoadCopiesWithBookId(books[i].getId(), "Còn");
-                    string status = copies.Count > 0 ? "Còn" : "Hết";
-                    <div class="prod-item d-flex flex-column">
-                        <div class="image"><img src="@books[i].getUrlImage()" /></div>
-                        <div class="title">@books[i].getTitle()</div>
-                        <div class="price">Trạng thái: @status</div>
-                    </div>
-                }
-            }
-            else
-            {
-                foreach (var book in books)
-                {
-                    List<Copy> copies = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.LoadCopiesWithBookId(book.getId(), "Còn");
-                    string status = copies.Count > 0 ? "Còn" : "Hết";
-                    <div class="prod-item d-flex flex-column">
-                        <div class="image"><img src="@book.getUrlImage()" /></div>
-                        <div class="title">@book.getTitle()</div>
-                        <div class="price">Trạng thái: @status</div>
-                    </div>
-                }
+                List<Copy> copies = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.LoadCopiesWithBookId(book.getId(), "Còn");
+                string status = copies.Count > 0 ? "Còn" : "Hết";
+                <div class="prod-item">
+                    <div class="image"><img src="@book.getUrlImage()" alt="@book.getTitle()"></div>
+                    <div class="title">@book.getTitle()</div>
+                    
+                </div>
             }
         </div>
     </div>

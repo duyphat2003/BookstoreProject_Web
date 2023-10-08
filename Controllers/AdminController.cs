@@ -1,4 +1,5 @@
-﻿using BookstoreProject.Firestore_Database;
+﻿using Amazon.IdentityManagement.Model;
+using BookstoreProject.Firestore_Database;
 using BookstoreProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
@@ -23,6 +24,7 @@ namespace BookstoreProject.Controllers
         //Trang quản lý tài khoản
         public IActionResult AccountManagement()
         {
+            BookstoreProjectDatabase.LoadAccounts();
             return View();
         }
 

@@ -1,0 +1,77 @@
+﻿@{
+    @using BookstoreProject.Firestore_Database;
+    @model List<Account>
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutAd.cshtml";
+    List<Account> accounts = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.accounts;
+    <link rel="stylesheet" type="text/css" href="~/css/account.css">
+}
+<head>
+    <meta charset="utf-8" />
+</head>
+
+<div class="homePage">
+    <div class="homePage">
+        <div class="search-bar">
+            <input class="search-input" type="text" placeholder="Tìm kiếm...">
+        </div>
+        
+        <div class="dropdown">
+            <button class="dropbtn"><i class="fas fa-caret-down"></i> Công việc</button>
+            <div class="dropdown-content">
+                <ul>
+                    <li><a href="#">Quản lý</a></li>
+                    <li><a href="#">Thủ kho</a></li>
+                    <li><a href="#">Thủ thư</a></li>
+                    <li><a href="#">Sinh viên</a></li>
+                </ul>
+            </div>
+        </div>
+        </div>
+</div>
+<br />
+
+<div class="homePage">
+
+    <div class="container-lg">
+        <div class="products">
+            @foreach (var acc in accounts)
+            {
+               
+                String tt = "Thủ thư";
+                String tk = "Thủ kho";
+                String ql = "Quản lý";
+
+                <div class="prod-item">
+                    <div class="image">
+                        @if (acc.getRole() == null)
+                        {
+                            <div class="image">alt="@acc.getRole()"</div>
+                        }
+                       
+                        else if (acc.getRole() == tt)
+                        {
+                            <img src="~/lib/Admin/a2.jpg">
+                        }
+                        else if (acc.getRole() == tk)
+                        {
+                            <img src="~/lib/Admin/a3.jpg">
+                        }
+                        else if (acc.getRole() == ql)
+                        {
+                            <img src="~/lib/Admin/a1.jpg">
+                        }
+                        else
+                        {
+                            <img src="~/lib/Admin/a4.jpg">
+                        }
+                    </div>
+                    <div class="title">@acc.getAccount()</div>
+                    <div class="role">@acc.getRole()</div>
+                </div>
+            }
+        </div>
+    </div>
+
+</div>
+
