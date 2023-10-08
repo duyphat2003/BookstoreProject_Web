@@ -17,15 +17,127 @@ namespace BookstoreProject.Controllers
 
         //Trang chính
         public IActionResult Index()
-        {
+        {        
             return View();
         }
 
         //Trang quản lý tài khoản
         public IActionResult AccountManagement()
         {
-            BookstoreProjectDatabase.LoadAccounts();
+            switch(BookstoreProjectDatabase.accountInfo.getRole())
+            {
+                case "Quản lý":
+                    BookstoreProjectDatabase.GetAccountWithRoles(true);
+                    break;
+                case "Thủ thư":
+                    BookstoreProjectDatabase.GetAccountWithRoles(false);
+                    break;
+            }
+            ViewBag.accountList = BookstoreProjectDatabase.accounts;
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult ClickButtonAccount(string account, string password, string role, string button)
+        {
+            switch (button)
+            {
+                case "add":
+                    if (!string.IsNullOrEmpty(account) && account.Length == 10)
+                    {
+                        if (!BookstoreProjectDatabase.accountInfo.getRole().Equals("Quản lý") && account[2].Equals('D') && account[3].Equals('H'))
+                        {
+                            DateTime currentDate = DateTime.Now;
+                            DateTime dateDue = currentDate.AddYears(4);
+                            if (BookstoreProjectDatabase.AddAccount(new Account(account, account, "Sinh viên")))
+                            {
+                                Console.WriteLine("Thêm tài khoản thành công");
+                                if(BookstoreProjectDatabase.AddLibraryCard(new LibraryCard(account, "Không tên", dateDue.ToString("dd/MM/yyyy"), true, false)))
+                                {
+                                    Console.WriteLine("Thêm tài khoản thất bại ADdLib");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Thêm tài khoản thất bại ADdacC");
+                            }
+                        }
+                        else if (BookstoreProjectDatabase.accountInfo.getRole().Equals("Quản lý") && ((account[2].Equals('T') && account[3].Equals('T')) || (account[2].Equals('T') && account[3].Equals('K'))))
+                        {
+                            BookstoreProjectDatabase.AddAccount(new Account(account, password, role));
+                            Console.WriteLine("Thêm tài khoản thành công");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Thêm tài khoản thất bại :" + account[2] + account[3]);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Thêm tài khoản thất bại length: " + account.Length);
+                    }
+                    break;
+                case "delete":
+                    if (!string.IsNullOrEmpty(account) && account.Length == 10)
+                    {
+                        if (!BookstoreProjectDatabase.accountInfo.getRole().Equals("Quản lý") && account[2].Equals('D') && account[3].Equals('H') && BookstoreProjectDatabase.FindAccountsWithAccount(account, "Sinh viên"))
+                        {
+                            BookstoreProjectDatabase.DeleteAccount(account);
+                            BookstoreProjectDatabase.DeleteLibraryCard(account);
+                            Console.WriteLine("Xóa tài khoản thành công");
+
+                        }
+                        else if (BookstoreProjectDatabase.accountInfo.getRole().Equals("Quản lý") && ((account[2].Equals('T') && account[3].Equals('T') && BookstoreProjectDatabase.FindAccountsWithAccount(account, "Thủ thư")) || (account[2].Equals('T') && account[3].Equals('K') && BookstoreProjectDatabase.FindAccountsWithAccount(account, "Thủ kho"))))
+                        {
+                            BookstoreProjectDatabase.DeleteAccount(account);
+                            Console.WriteLine("Xóa tài khoản thành công");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Xóa tài khoản thất bại");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Xóa tài khoản thất bại");
+                    }
+                    break;
+                case "update":
+                    if (!string.IsNullOrEmpty(account) && account.Length == 10 && !string.IsNullOrEmpty(password))
+                    {
+                        if (!BookstoreProjectDatabase.accountInfo.getRole().Equals("Quản lý") && account[2].Equals('D') && account[3].Equals('H') && BookstoreProjectDatabase.FindAccountsWithAccount(account, "Sinh viên"))
+                        {
+                            BookstoreProjectDatabase.UpdateAccount(account, password, "Sinh viên");
+                            Console.WriteLine("Cập nhật tài khoản thành công");
+                        }
+                        else if (BookstoreProjectDatabase.accountInfo.getRole().Equals("Quản lý") && ((account[2].Equals('T') && account[3].Equals('T') && BookstoreProjectDatabase.FindAccountsWithAccount(account, "Thủ thư")) || (account[2].Equals('T') && account[3].Equals('K') && BookstoreProjectDatabase.FindAccountsWithAccount(account, "Thủ kho"))))
+                        {
+                            BookstoreProjectDatabase.UpdateAccount(account, password, role);
+                            Console.WriteLine("Cập nhật tài khoản thành công");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Cập nhật tài khoản thất bại");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Cập nhật tài khoản thất bại");
+                    }
+                    break;
+            }
+
+            switch (BookstoreProjectDatabase.accountInfo.getRole())
+            {
+                case "Quản lý":
+                    BookstoreProjectDatabase.GetAccountWithRoles(true);
+                    break;
+                case "Thủ thư":
+                    BookstoreProjectDatabase.GetAccountWithRoles(false);
+                    break;
+            }
+            ViewBag.accountList = BookstoreProjectDatabase.accounts;
+            return View("AccountManagement");
         }
 
         //Trang quản lý sách

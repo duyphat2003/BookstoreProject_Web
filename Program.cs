@@ -44,6 +44,7 @@ if (!app.Environment.IsDevelopment())
 
 }
 
+Console.OutputEncoding = System.Text.Encoding.Unicode;
 //Start Database ngoai nay, ha?n chê? go?i la?i trong t??ng controller
 BookstoreProjectDatabase.ConnectToFirestoreDB();
 
@@ -57,8 +58,8 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-//pattern: "{controller=Home}/{action=Index}/{id?}");
-pattern: "{controller=Admin}/{action=Index}/{id?}");
+pattern: "{controller=Home}/{action=Index}/{id?}");
+//pattern: "{controller=Admin}/{action=Index}/{id?}");
 
 
 

@@ -1,4 +1,5 @@
-﻿using BookstoreProject.Models;
+﻿using Amazon.IdentityManagement.Model;
+using BookstoreProject.Models;
 using Google.Cloud.Firestore;
 using System.Net;
 
@@ -392,6 +393,22 @@ namespace BookstoreProject.Firestore_Database
             }
         }
 
+        // Tải Tài khoản - Manager
+        public static bool FindAccountsWithAccount(string account, string role)
+        {
+            Task<QuerySnapshot> accountNames = accountCollectionRef.WhereEqualTo("Account", account).GetSnapshotAsync();
+            accountNames.Wait();
+            if (accountNames.Result.Count == 0)
+                return false;
+            else
+            {
+                foreach (DocumentSnapshot accountName in accountNames.Result)
+                    if (accountName.GetValue<string>("Role").Equals(role))
+                        return true;
+                return false;
+            }
+        }
+
         // tải thẻ sinh viên - Manager
         public static void LoadLibraryCards()
         {
@@ -460,23 +477,30 @@ namespace BookstoreProject.Firestore_Database
             }
         }
         //tạo lấy danh sách role
-        public static void GetAccountRoles()
+        public static void GetAccountWithRoles(bool isAdmin)
         {
-            List<string> roles = new List<string>();
+            accounts = new List<Account>();
             Task<QuerySnapshot> accountIds = accountCollectionRef.GetSnapshotAsync();
             accountIds.Wait();
 
             foreach (DocumentSnapshot accountId in accountIds.Result)
             {
-                
-                string role = accountId.GetValue<string>("Role");
-
-                if (!string.IsNullOrEmpty(role) && !roles.Contains(role))
+                if (isAdmin)
                 {
-                    roles.Add(role);
+                    if (accountId.GetValue<string>("Role").Equals("Thủ kho") || accountId.GetValue<string>("Role").Equals("Thủ thư"))
+                    {
+                        accounts.Add(new Account(accountId.GetValue<string>("Account"), accountId.GetValue<string>("Password"), accountId.GetValue<string>("Role")));
+                    }
                 }
-            }
+                else
+                {
+                    if (accountId.GetValue<string>("Role").Equals("Sinh viên"))
+                    {
+                        accounts.Add(new Account(accountId.GetValue<string>("Account"), accountId.GetValue<string>("Password"), accountId.GetValue<string>("Role")));
+                    }
+                }
 
+            }
         }
 
 
@@ -719,9 +743,16 @@ namespace BookstoreProject.Firestore_Database
         // Thêm thẻ thư viện - Manager
         public static bool AddLibraryCard(LibraryCard libraryCard)
         {
-            if (libraryCardCollectionRef.Document(libraryCard.getId()) != null)
+            Task<QuerySnapshot> LibCount = libraryCardCollectionRef.WhereEqualTo("Id", libraryCard.getId()).GetSnapshotAsync();
+            while (true)
             {
-                return false;
+                if (LibCount.IsCompleted)
+                {
+                    if (LibCount.Result.Count != 0)
+                        return false;
+                    else
+                        break;
+                }
             }
 
             Dictionary<string, object> libraryCardData = new Dictionary<string, object>();
@@ -760,9 +791,16 @@ namespace BookstoreProject.Firestore_Database
         // Thêm tài khoản - Manager
         public static bool AddAccount(Account account)
         {
-            if (accountCollectionRef.Document(account.getAccount()) != null)
+            Task<QuerySnapshot> accountCount =  accountCollectionRef.WhereEqualTo("Account", account.getAccount()).GetSnapshotAsync();
+            while(true)
             {
-                return false;
+                if(accountCount.IsCompleted)
+                {
+                    if (accountCount.Result.Count != 0)
+                        return false;
+                    else
+                        break;
+                }
             }
             Dictionary<string, object> newAccount = new Dictionary<string, object>();
             newAccount.Add("Account", account.getAccount());
@@ -774,7 +812,7 @@ namespace BookstoreProject.Firestore_Database
             return true;
         }
         // Cập nhật tài khoản - Manager
-        public static bool UpdateAccount(String account, String password)
+        public static bool UpdateAccount(string account, string password)
         {
             Task<QuerySnapshot> accId = accountCollectionRef.WhereEqualTo("Account", account).GetSnapshotAsync();
             while (true)
@@ -784,6 +822,25 @@ namespace BookstoreProject.Firestore_Database
                     if (accId.Result.Count != 0)
                     {
                         accountCollectionRef.Document(account).UpdateAsync("Password", password);
+                        return true;
+                    }
+                    else
+                        return false;
+                }
+            }
+        }
+
+        public static bool UpdateAccount(string account, string password, string role)
+        {
+            Task<QuerySnapshot> accId = accountCollectionRef.WhereEqualTo("Account", account).GetSnapshotAsync();
+            while (true)
+            {
+                if (accId.IsCompleted)
+                {
+                    if (accId.Result.Count != 0)
+                    {
+                        accountCollectionRef.Document(account).UpdateAsync("Password", password);
+                        accountCollectionRef.Document(account).UpdateAsync("Role", role);
                         return true;
                     }
                     else

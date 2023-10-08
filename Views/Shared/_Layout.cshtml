@@ -86,20 +86,27 @@
                         }
                         else
                         {
+                            Console.WriteLine("User.Claims.ElementAt(2).ToString() - User: " + User.Claims.ElementAt(2).Value);
                             <div class="mb-1"><img alt="Ảnh cá nhân" src="~/lib/user.png" width="25" height="25" /></div>
                             <div>
                                 <button type="button" class="btn dropdown-toggle  dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                                     <span class="nav-item">@User.Identity.Name</span>
                                 </button>
                                 <ul class="dropdown-menu" style="top:unset;left:unset;">
-                                    @if (User.IsInRole("Quản lý") || User.IsInRole("Thủ kho") || User.IsInRole("Thủ thư"))
+                                    @if (BookstoreProjectDatabase.accountInfo.getRole().Equals("Sinh viên"))
                                     {
+                                        Console.WriteLine("User.Claims.ElementAt(2).ToString(): Sinh viên");
+                                        <li class="nav-item">@Html.ActionLink("Thông tin tài khoản", "Profile", "User", null, new { @class = "nav-link"})</li>
+                                        <li class="nav-item">@Html.ActionLink("Danh sách yêu thích", "SavedProduct", "User", null, new { @class = "nav-link"})</li>
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("User.Claims.ElementAt(2).ToString() - if: " + User.Claims.ElementAt(2).Value);
                                         <li class="nav-item">
                                             <a class="nav-link text-dark" asp-area="" asp-controller="admin" asp-action="index">Admin Dashboard</a>
                                         </li>
                                     }
-                                    <li class="nav-item">@Html.ActionLink("Thông tin tài khoản", "Profile", "User", null, new { @class = "nav-link"})</li>
-                                    <li class="nav-item">@Html.ActionLink("Danh sách yêu thích", "SavedProduct", "User", null, new { @class = "nav-link"})</li>
+
                                     <li class="nav-item">@Html.ActionLink("Đăng xuất", "Logout", "User", null, new { @class = "nav-link",@style="color:var(--primary-color)" })</li>
                                 </ul>
                             </div>

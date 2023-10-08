@@ -39,30 +39,33 @@ namespace BookstoreProject.Controllers
         public async Task<IActionResult> SignIn(LoginDTO loginModel)
         {
             BookstoreProjectDatabase.SearchAccount(loginModel.Account, loginModel.Password);
+            BookstoreProjectDatabase.UpdateAccount(loginModel.Account, true);
             if (BookstoreProjectDatabase.accountInfo != null)
             {
                 var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.Name, BookstoreProjectDatabase.accountInfo.getAccount()),
+                        new Claim(ClaimTypes.SerialNumber, BookstoreProjectDatabase.accountInfo.getPassword()),
                         new Claim(ClaimTypes.Role, BookstoreProjectDatabase.accountInfo.getRole()),
                     };
 
-                var claimsIdentity = new ClaimsIdentity(
-                    claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
                 var authProperties = new AuthenticationProperties { };
 
-                await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity),
-                 authProperties);
-                return RedirectToAction("Index", "Home");
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity),authProperties);
+
+                if(BookstoreProjectDatabase.accountInfo.getRole().Equals("Sinh viên"))
+                    return RedirectToAction("Index", "Home");
+                else
+                    return RedirectToAction("Index", "Admin");
             }
             return View();
         }
         public async Task<ActionResult> LogOut()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            BookstoreProjectDatabase.UpdateAccount(BookstoreProjectDatabase.accountInfo.getAccount(), false);
             return RedirectToAction("Index", "Home");
         }
 
