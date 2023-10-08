@@ -459,6 +459,26 @@ namespace BookstoreProject.Firestore_Database
                 Console.WriteLine(accountName.GetValue<string>("Account"));
             }
         }
+        //tạo lấy danh sách role
+        public static void GetAccountRoles()
+        {
+            List<string> roles = new List<string>();
+            Task<QuerySnapshot> accountIds = accountCollectionRef.GetSnapshotAsync();
+            accountIds.Wait();
+
+            foreach (DocumentSnapshot accountId in accountIds.Result)
+            {
+                
+                string role = accountId.GetValue<string>("Role");
+
+                if (!string.IsNullOrEmpty(role) && !roles.Contains(role))
+                {
+                    roles.Add(role);
+                }
+            }
+
+        }
+
 
         public static void SortBookWithName(bool isAsc)
         {
