@@ -347,6 +347,35 @@ namespace BookstoreProject.Firestore_Database
             }
         }
 
+        // Tải sách theo thể loại
+        public static List<Book> LoadNameBooksWithGenre(string genreName)
+        {
+            List<Book> booksWithGenre = new List<Book>();
+
+            string content = "";
+            Task<QuerySnapshot> bookIds = bookCollectionRef.WhereEqualTo("Genre", genreName).GetSnapshotAsync();
+
+            bookIds.Wait();
+            foreach (DocumentSnapshot id in bookIds.Result)
+            {
+                content = "";
+                foreach (string arCon in id.GetValue<List<string>>("Content"))
+                {
+                    content += arCon + "\n";
+                }
+                booksWithGenre.Add(new Book(id.Id,
+                        id.GetValue<string>("Name"),
+                        id.GetValue<string>("Author"),
+                        id.GetValue<string>("Genre"),
+                        content,
+                        id.GetValue<string>("YearPublished"),
+                        id.GetValue<string>("Publisher"),
+                        id.GetValue<string>("URL")));
+                Console.WriteLine("Book name " + id.Id + " : " + id.GetValue<string>("Name"));
+            }
+            return booksWithGenre;
+        }
+
         // Login
         public static void SearchAccount(string account, string password)
         {
@@ -356,9 +385,13 @@ namespace BookstoreProject.Firestore_Database
             if (accountName.Result.Count != 0)
             {
                 foreach (DocumentSnapshot name in accountName.Result)
-                    if (name.GetValue<string>("Password").Equals(password))
+                { 
+                    if (name.GetValue<string>("Password").Equals(password) && !name.GetValue<bool>("isLogin"))
+                    {
                         accountInfo = new Account(name.GetValue<string>("Account"), name.GetValue<string>("Password"), name.GetValue<string>("Role"));
-
+                        UpdateAccount(account, true);
+                    }
+                }
                 if (string.IsNullOrEmpty(accountInfo.getAccount()))
                     Console.WriteLine("Tài khoản hoặc mật khẩu bị sai");
             }

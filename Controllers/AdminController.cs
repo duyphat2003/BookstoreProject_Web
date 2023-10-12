@@ -1,7 +1,11 @@
 ﻿using Amazon.IdentityManagement.Model;
+using Amazon.SimpleEmail.Model;
 using BookstoreProject.Firestore_Database;
 using BookstoreProject.Models;
+using Humanizer.Localisation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Security.Policy;
 using System.Text;
 
 namespace BookstoreProject.Controllers
@@ -140,11 +144,81 @@ namespace BookstoreProject.Controllers
             return View("AccountManagement");
         }
 
+        Book book = new Book();
         //Trang quản lý sách
-        public IActionResult BookManagement()
+        public IActionResult BookManagement(string nameGenre)
         {
-            BookstoreProjectDatabase.LoadBooks();
+            if (string.IsNullOrEmpty(nameGenre))
+                BookstoreProjectDatabase.LoadBooks();
+            else
+                BookstoreProjectDatabase.LoadBooksWithGenre(nameGenre);
+            BookstoreProjectDatabase.LoadGenre();
+
+            ViewBag.BookContent = book;
+            Console.WriteLine("BookManagement book: " + book.getId());
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult LoadContentBookWithId(string idBook)
+        {
+            book = BookstoreProjectDatabase.LoadContentBookWithId(idBook);
+
+            BookstoreProjectDatabase.LoadBooks();
+            BookstoreProjectDatabase.LoadGenre();
+            ViewBag.BookContent = book;
+            Console.WriteLine("LoadContentBookWithId book: " + book.getId());
+            return RedirectToAction("BookManagement", "Admin");
+        }
+
+        [HttpPost]
+        public IActionResult ManageBookManagement(string idBook, string name, string genre, string author, string content, string yearPublished, string Publisher, string urlImage, string button)
+        {
+            Book book1 = new Book();
+            switch (button)
+            {
+                case "add":
+                    if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(author) && !string.IsNullOrEmpty(content) && !string.IsNullOrEmpty(Publisher) && !string.IsNullOrEmpty(urlImage))
+                    {
+                        List<Book> books = BookstoreProjectDatabase.LoadNameBooksWithGenre(genre);
+                        string id = "";
+                        switch (genre)
+                        {
+                            case "Kỹ năng sống":
+                                id += "KNS";
+                                break;
+                            case "Marketing":
+                                id += "MKG";
+                                break;
+                            case "Manga":
+                                id += "Manga";
+                                break;
+                            case "Ngoại ngữ":
+                                id += "NN";
+                                break;
+                            case "Novel":
+                                id += "Novel";
+                                break;
+                        }
+                        Console.WriteLine("Sách mới:\n" + id + (books.Count + 1).ToString() + "\n" + name + "\n" + author + "\n" + content + "\n" + yearPublished + "\n" + Publisher + "\n" + urlImage);
+                        BookstoreProjectDatabase.AddBook(new Book(id + (books.Count + 1).ToString(), name, author, genre, content, yearPublished, Publisher, urlImage));
+                    }
+                    break;
+                case "delete":
+                    BookstoreProjectDatabase.DeleteBook(idBook);
+                    break;
+                case "update":
+                    if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(author) && !string.IsNullOrEmpty(content) && !string.IsNullOrEmpty(Publisher) && !string.IsNullOrEmpty(urlImage))
+                    {
+                        BookstoreProjectDatabase.UpdateBook(new Book(idBook, name, author, genre, content, yearPublished, Publisher, urlImage));
+                    }
+                    break;
+            }
+
+            BookstoreProjectDatabase.LoadBooks();
+            BookstoreProjectDatabase.LoadGenre();
+            ViewBag.BookContent = book1;
+            return RedirectToAction("BookManagement", "Admin");
         }
 
         //Trang quản lý phiếu mượn
@@ -212,7 +286,7 @@ namespace BookstoreProject.Controllers
                         if (cardId != "" && nameStudent != "")
                             BookstoreProjectDatabase.UpdateLibraryCard(new LibraryCard(cardId, nameStudent, status, borrow));
                         break;
-            }
+                }
             Console.WriteLine("Tải lại dữ liệu");
             BookstoreProjectDatabase.LoadLibraryCards();
             ViewBag.libraryCardList = BookstoreProjectDatabase.libraryCards;

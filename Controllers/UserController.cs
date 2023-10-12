@@ -39,7 +39,6 @@ namespace BookstoreProject.Controllers
         public async Task<IActionResult> SignIn(LoginDTO loginModel)
         {
             BookstoreProjectDatabase.SearchAccount(loginModel.Account, loginModel.Password);
-            BookstoreProjectDatabase.UpdateAccount(loginModel.Account, true);
             if (BookstoreProjectDatabase.accountInfo != null)
             {
                 var claims = new List<Claim>
