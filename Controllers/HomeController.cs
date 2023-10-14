@@ -44,10 +44,22 @@ namespace BookstoreProject.Controllers
         }
 
         // Trang danh sách sản phẩm
-        public IActionResult BookList(string nameGenre)
+        public IActionResult BookList()
+        {
+            return View();
+        }
+
+        public IActionResult LoadBooksWithGenre(string nameGenre)
         {
             BookstoreProjectDatabase.LoadBooksWithGenre(nameGenre);
-            return View();
+            return RedirectToAction("BookList", "Home");
+        }
+
+        [HttpPost]
+        public IActionResult LoadBooksWithName(string name)
+        {
+            BookstoreProjectDatabase.LoadBooksWithKeyword(name);
+            return RedirectToAction("BookList", "Home");
         }
 
 

@@ -38,7 +38,7 @@
                                     foreach (Genre genre in BookstoreProjectDatabase.genres)
                                     {
                                         <li>
-                                            <a href="@Url.Action("BookList", "Home", new { nameGenre = genre.getName()})"> @genre.getName()</a>
+                                            <a href="@Url.Action("LoadBooksWithGenre", "Home", new { nameGenre = genre.getName()})"> @genre.getName()</a>
                                         </li>
                                     }
                                 }
@@ -53,7 +53,7 @@
                     </div>
 
                     <div class="navbar-expand-lg d-flex flex-row" style="width:300px">
-                        <form action="/" method=post style="width:100%" class="d-flex flex-row">
+                        <form action="~/Home/LoadBooksWithName" method=post style="width:100%" class="d-flex flex-row">
                             <div style="width:85%">
                                 <input type="text" name="name" placeholder="Tìm kiếm sản phẩm mong muốn" style="width:100%" />
                             </div>
