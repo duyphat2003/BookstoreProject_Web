@@ -1,6 +1,7 @@
 ﻿using Amazon.IdentityManagement.Model;
 using BookstoreProject.Models;
 using Google.Cloud.Firestore;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace BookstoreProject.Firestore_Database
@@ -641,6 +642,31 @@ namespace BookstoreProject.Firestore_Database
             }
         }
 
+        public static void LoadLoanWithId(string id)
+        {
+            LoadBooks();
+            loans = new List<Loan>();
+            Task<QuerySnapshot> loanIds = loanCollectionRef.GetSnapshotAsync();
+            loanIds.Wait();
+            foreach (DocumentSnapshot loanId in loanIds.Result)
+            {
+                foreach (Book book in books)
+                {
+                    Task<QuerySnapshot> bookCopyIds = loanCollectionRef.Document(id).Collection(book.getId()).GetSnapshotAsync();
+                    bookCopyIds.Wait();
+                    foreach (DocumentSnapshot bookCopyId in bookCopyIds.Result)
+                    {
+                        loans.Add(new Loan(book.getId(),
+                                loanId.Id,
+                                bookCopyId.GetValue<string>("BookCopyId"),
+                                bookCopyId.GetValue<string>("BorrowDate"),
+                                bookCopyId.GetValue<string>("DateDue")));
+                        Console.WriteLine(book.getId() + ", " + loanId.Id);
+                    }
+                }
+            }
+        }
+
         public static void SortLoan(bool isAsc)
         {
             loans = new List<Loan>();
@@ -861,7 +887,7 @@ namespace BookstoreProject.Firestore_Database
                         return false;
                 }
             }
-        }
+        } 
 
         public static bool UpdateAccount(string account, string password, string role)
         {

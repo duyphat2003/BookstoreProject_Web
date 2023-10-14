@@ -44,8 +44,9 @@ namespace BookstoreProject.Controllers
         }
 
         // Trang danh sách sản phẩm
-        public IActionResult BookList()
+        public IActionResult BookList(string nameGenre)
         {
+            BookstoreProjectDatabase.LoadBooksWithGenre(nameGenre);
             return View();
         }
 
@@ -74,10 +75,19 @@ namespace BookstoreProject.Controllers
         }
 
         //Trang thông tin người dùng
-
+        public IActionResult UserInfo(string id)
+        {
+            BookstoreProjectDatabase.LoadLoanWithId(id);   
+            return View();
+        }
 
         //Trang lịch sử mượn
-        public IActionResult Privacy()
+        public IActionResult UserLoanHistory()
+        {
+            return View();
+        }
+        //Trang thông báo của người dùng 
+        public IActionResult UserNofi()
         {
             return View();
         }

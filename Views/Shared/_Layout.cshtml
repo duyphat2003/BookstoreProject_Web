@@ -38,7 +38,7 @@
                                     foreach (Genre genre in BookstoreProjectDatabase.genres)
                                     {
                                         <li>
-                                            <a href="@Url.Action("index", "bookgenre", new { nameGenre = genre.getName()})"> @genre.getName()</a>
+                                            <a href="@Url.Action("BookList", "Home", new { nameGenre = genre.getName()})"> @genre.getName()</a>
                                         </li>
                                     }
                                 }
