@@ -1,0 +1,155 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewBag.Title = "Librarycardmanagement";
+    Layout = "~/Views/Shared/_LayoutAd.cshtml";
+    <link rel="stylesheet" type="text/css" href="~/css/admin.css">
+    List<LibraryCard> libraryCards = ViewBag.libraryCardList;
+}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0px;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 30%;
+        margin-top: 5px;
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 2px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    .buttons {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+        .buttons button {
+            margin-right: 10px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+            .buttons button:hover {
+                background-color: #0056b3;
+            }
+
+
+    /* CSS cho bảng */
+    #library-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+        #library-table th, #library-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #library-table th {
+            background-color: #f2f2f2;
+        }
+
+    /* CSS cho tiêu đề */
+    h4 {
+        text-align: left;
+        padding-top: 10px;
+    }
+
+    h2 {
+        text-align: center;
+        margin-top: 5px;
+        background-color: #FF6A6A;
+        padding: 5px;
+        color: white;
+    }
+</style>
+
+<h2>Quản Lí Bản Sao Sách</h2>
+<h4>Thông tin bản sao sách</h4>
+<form action="~/Admin/AddLibraryCard">
+    <table>
+        <tr>
+            <th>STT</th>
+            <th>ID sách</th>
+            <th>Trạng thái</th>
+            <th>Ghi chú</th>
+
+        </tr>
+        <tr>
+            <td><input name="cardId" type="text"></td>
+            <td><input name="IDbook" type="text"></td>
+            <td><input name="status" type="checkbox"></td>
+            <td><input name="note" type="text"></td>
+        </tr>
+
+
+    </table>
+
+    <div class="buttons">
+        <button name="button" value="add"><i class="fas fa-plus"></i> Thêm</button>
+        <button name="button" value="delete"> <i class="fas fa-trash-alt"></i> Xóa</button>
+        <button name="button" value="update"><i class="fas fa-edit"></i> Sửa</button>
+    </div>
+</form>
+
+<h4>Bảng thông tin bản sao sách</h4>
+<table id="library-table">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th>ID sách</th>
+            <th>Trạng thái</th>
+            <th>Ghi chú</th>      
+        </tr>
+
+        @* @foreach (LibraryCard libraryCard in libraryCards)
+        {
+            <tr>
+                <th>@libraryCard.getId()</th>
+                <th>@libraryCard.getName()</th>
+                <th>@libraryCard.getExpirationDate()</th>
+                @if (libraryCard.getUseStatus())
+                {
+                    <th><input type="checkbox" checked="checked"></th>
+                }
+                else
+                {
+                    <th><input type="checkbox"></th>
+                }
+
+                @if (libraryCard.getBorrowStatus())
+                {
+                    <th><input type="checkbox" checked="checked"></th>
+                }
+                else
+                {
+                    <th><input type="checkbox"></th>
+                }
+            </tr>
+        } *@
+    </thead>
+
+</table>
