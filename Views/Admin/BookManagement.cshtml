@@ -1,6 +1,6 @@
 ﻿@{
     @using BookstoreProject.Firestore_Database;
-@using System.Globalization;
+    @using System.Globalization;
     @model List<Book>
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutAd.cshtml";
@@ -176,7 +176,7 @@
                                 @{
                                     for (int i = 0; i <= 10; i++)
                                     {
-                                        DateTime lastYear = DateTime.Today.AddYears(-i);
+                                        lastYear = DateTime.Today.AddYears(-i);
                                         string s = lastYear.ToString("yyyy", CultureInfo.InvariantCulture);
                                         if (s.Equals(@book.getYearPublished()))
                                         {

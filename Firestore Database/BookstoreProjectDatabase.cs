@@ -1,6 +1,7 @@
 ﻿using Amazon.IdentityManagement.Model;
 using BookstoreProject.Models;
 using Google.Cloud.Firestore;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace BookstoreProject.Firestore_Database
@@ -376,6 +377,52 @@ namespace BookstoreProject.Firestore_Database
             return booksWithGenre;
         }
 
+        // Tải sách theo thể loại
+        public static void LoadBooksWithKeyword(string keyword)
+        {
+            books = new List<Book>();
+
+            string content = "";
+            Task<QuerySnapshot> bookIds = bookCollectionRef.GetSnapshotAsync();
+
+            bookIds.Wait();
+            foreach (DocumentSnapshot id in bookIds.Result)
+            {
+                if (id.GetValue<string>("Name").Contains(keyword))
+                {
+                    content = "";
+                    foreach (string arCon in id.GetValue<List<string>>("Content"))
+                    {
+                        content += arCon + "\n";
+                    }
+                    books.Add(new Book(id.Id,
+                            id.GetValue<string>("Name"),
+                            id.GetValue<string>("Author"),
+                            id.GetValue<string>("Genre"),
+                            content,
+                            id.GetValue<string>("YearPublished"),
+                            id.GetValue<string>("Publisher"),
+                            id.GetValue<string>("URL")));
+                    Console.WriteLine("Book name " + id.Id + " : " + id.GetValue<string>("Name"));
+                }
+            }
+            copies = new List<Copy>();
+
+            foreach (Book book in books)
+            {
+                Task<QuerySnapshot> copyIds = copyCollectionRef.Document(book.getId()).Collection("BookCopy").GetSnapshotAsync();
+                copyIds.Wait();
+                foreach (DocumentSnapshot copy in copyIds.Result)
+                {
+                    copies.Add(new Copy(copy.Id,
+                            book.getId(),
+                            copy.GetValue<string>("Status"),
+                            copy.GetValue<string>("Notes")));
+                    Console.WriteLine("Copy id " + copy.Id + ", book id " + book.getId());
+                }
+            }
+        }
+
         // Login
         public static void SearchAccount(string account, string password)
         {
@@ -641,6 +688,31 @@ namespace BookstoreProject.Firestore_Database
             }
         }
 
+        public static void LoadLoanWithId(string id)
+        {
+            LoadBooks();
+            loans = new List<Loan>();
+            Task<QuerySnapshot> loanIds = loanCollectionRef.GetSnapshotAsync();
+            loanIds.Wait();
+            foreach (DocumentSnapshot loanId in loanIds.Result)
+            {
+                foreach (Book book in books)
+                {
+                    Task<QuerySnapshot> bookCopyIds = loanCollectionRef.Document(id).Collection(book.getId()).GetSnapshotAsync();
+                    bookCopyIds.Wait();
+                    foreach (DocumentSnapshot bookCopyId in bookCopyIds.Result)
+                    {
+                        loans.Add(new Loan(book.getId(),
+                                loanId.Id,
+                                bookCopyId.GetValue<string>("BookCopyId"),
+                                bookCopyId.GetValue<string>("BorrowDate"),
+                                bookCopyId.GetValue<string>("DateDue")));
+                        Console.WriteLine(book.getId() + ", " + loanId.Id);
+                    }
+                }
+            }
+        }
+
         public static void SortLoan(bool isAsc)
         {
             loans = new List<Loan>();
@@ -861,7 +933,7 @@ namespace BookstoreProject.Firestore_Database
                         return false;
                 }
             }
-        }
+        } 
 
         public static bool UpdateAccount(string account, string password, string role)
         {

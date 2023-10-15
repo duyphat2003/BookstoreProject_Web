@@ -49,6 +49,19 @@ namespace BookstoreProject.Controllers
             return View();
         }
 
+        public IActionResult LoadBooksWithGenre(string nameGenre)
+        {
+            BookstoreProjectDatabase.LoadBooksWithGenre(nameGenre);
+            return RedirectToAction("BookList", "Home");
+        }
+
+        [HttpPost]
+        public IActionResult LoadBooksWithName(string name)
+        {
+            BookstoreProjectDatabase.LoadBooksWithKeyword(name);
+            return RedirectToAction("BookList", "Home");
+        }
+
 
         //Trang chi tiết sản phẩm
         public IActionResult Details(string id)
@@ -74,10 +87,19 @@ namespace BookstoreProject.Controllers
         }
 
         //Trang thông tin người dùng
-
+        public IActionResult UserInfo(string id)
+        {
+            BookstoreProjectDatabase.LoadLoanWithId(id);   
+            return View();
+        }
 
         //Trang lịch sử mượn
-        public IActionResult Privacy()
+        public IActionResult UserLoanHistory()
+        {
+            return View();
+        }
+        //Trang thông báo của người dùng 
+        public IActionResult UserNofi()
         {
             return View();
         }
