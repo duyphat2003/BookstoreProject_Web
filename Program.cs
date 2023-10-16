@@ -1,4 +1,10 @@
 using BookstoreProject.Firestore_Database;
+using BookstoreProject.Models;
+using Google;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +23,16 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+//    .AddRoles<IdentityRole>()
+//    .AddEntityFrameworkStores<BookstoreContext>()
+//    .AddDefaultUI().
+//    AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(o => o.LoginPath = new PathString("/user/signin"));
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -28,6 +44,7 @@ if (!app.Environment.IsDevelopment())
 
 }
 
+Console.OutputEncoding = System.Text.Encoding.Unicode;
 //Start Database ngoai nay, ha?n chê? go?i la?i trong t??ng controller
 BookstoreProjectDatabase.ConnectToFirestoreDB();
 
@@ -35,6 +52,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();
+app.UseAuthentication();
 
 app.UseAuthorization();
 

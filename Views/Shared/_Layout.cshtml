@@ -27,18 +27,18 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                
+
                 <div class="test">
                     <ul id="menu">
                         <li>
                             <a href="#" id="menuTitle"><img alt="Lỗi ảnh" src="~/lib/menu.png" width="25" height="25" /><span class="arrow arrow-down"></span></a>
-                            
+
                             <ul class="dropdown_menu">
                                 @{
                                     foreach (Genre genre in BookstoreProjectDatabase.genres)
                                     {
                                         <li>
-                                            <a href="@Url.Action("index", "bookgenre", new { nameGenre = genre.getName()})"> @genre.getName()</a>
+                                            <a href="@Url.Action("LoadBooksWithGenre", "Home", new { nameGenre = genre.getName()})"> @genre.getName()</a>
                                         </li>
                                     }
                                 }
@@ -53,10 +53,10 @@
                     </div>
 
                     <div class="navbar-expand-lg d-flex flex-row" style="width:300px">
-                        <form action="/" method=post style="width:100%" class="d-flex flex-row">
+                        <form action="~/Home/LoadBooksWithName" method=post style="width:100%" class="d-flex flex-row">
                             <div style="width:85%">
                                 <input type="text" name="name" placeholder="Tìm kiếm sản phẩm mong muốn" style="width:100%" />
-                             </div>
+                            </div>
                             <input type="submit" class="btn" id="btnProceed" value="Tìm" style="border:1px grey solid; padding:3px;color:#b81f32" />
                         </form>
 
@@ -77,11 +77,40 @@
                         </div>
                     </div>
                     <div class="flex-column align-items-center d-flex me-4">
-                        <div class="mb-1"><img alt="Lỗi ảnh" src="~/lib/user.png" width="25" height="25" /></div>
-                        <div>
-                            @* <a href="@Url.Action("signin", "user", new { mess = "Hello"})"> Copy</a> *@
-                            <a class="nav-item">@Html.ActionLink("Đăng nhập", "SignIn", "User", null, new { @class = "nav-link", mess = "Hello"})</a>
-                        </div>
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <div class="mb-1"><img alt="Lỗi ảnh" src="~/lib/user.png" width="25" height="25" /></div>
+                            <div>
+                                <a class="nav-item">@Html.ActionLink("Đăng nhập", "SignIn", "user", null, new { @class = "nav-link" })</a>
+                            </div>
+                        }
+                        else
+                        {
+                            Console.WriteLine("User.Claims.ElementAt(2).ToString() - User: " + User.Claims.ElementAt(2).Value);
+                            <div class="mb-1"><img alt="Ảnh cá nhân" src="~/lib/user.png" width="25" height="25" /></div>
+                            <div>
+                                <button type="button" class="btn dropdown-toggle  dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="nav-item">@User.Identity.Name</span>
+                                </button>
+                                <ul class="dropdown-menu" style="top:unset;left:unset;">
+                                    @if (BookstoreProjectDatabase.accountInfo.getRole().Equals("Sinh viên"))
+                                    {
+                                        Console.WriteLine("User.Claims.ElementAt(2).ToString(): Sinh viên");
+                                        <li class="nav-item">@Html.ActionLink("Thông tin tài khoản", "Profile", "User", null, new { @class = "nav-link"})</li>
+                                        <li class="nav-item">@Html.ActionLink("Danh sách yêu thích", "SavedProduct", "User", null, new { @class = "nav-link"})</li>
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("User.Claims.ElementAt(2).ToString() - if: " + User.Claims.ElementAt(2).Value);
+                                        <li class="nav-item">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="admin" asp-action="index">Admin Dashboard</a>
+                                        </li>
+                                    }
+
+                                    <li class="nav-item">@Html.ActionLink("Đăng xuất", "Logout", "User", null, new { @class = "nav-link",@style="color:var(--primary-color)" })</li>
+                                </ul>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -95,7 +124,9 @@
     </div>
 
     <footer class="border-top container text-muted">
-        &copy; 2023 - BookstoreProject - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+
+        <div>
+        </div>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -122,5 +153,20 @@
     }, function () {
         // khi thẻ dropdown_menu li bị hover thì submenusubmenu thuộc thẻ li đó sẽ trượt lên(ẩnẩn)
         $('.submenu', this).slideUp();
+    });
+</script>
+
+<script>
+    var page = 2;
+    var pageSize = 5;
+
+    $("#showMore").click(function () {
+        $.ajax({
+            url: "/Home/GetMoreProduct?page=" + page + "&pageSize=" + pageSize,
+            success: function (data) {
+                $("#products").append(data);
+                page++;
+            }
+        });
     });
 </script>

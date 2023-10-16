@@ -1,0 +1,153 @@
+﻿@using BookstoreProject.Firestore_Database;
+@{
+    Layout = "~/Views/Shared/_LayoutAd.cshtml";
+    List<Account> accounts = ViewBag.accountList;
+    <link rel="stylesheet" type="text/css" href="~/css/account.css">
+}
+<head>
+    <meta charset="utf-8" />
+</head>
+
+<div class="homePage">
+    <h2>Quản Lí Tài Khoản</h2>
+    <h4>Thông tin tài khoản</h4>
+    <form action="~/Admin/ClickButtonAccount" method="post">
+        <table>
+            <tr>
+                <th>Tài khoản</th>
+                @if (BookstoreProjectDatabase.accountInfo.getRole().Equals("Quản lý"))
+                {
+                    <th>Vai trò</th>
+                }
+            </tr>
+            <tr>
+                <td><input id="account" name="account" type="text" maxlength="10" required></td>
+                @if(BookstoreProjectDatabase.accountInfo.getRole().Equals("Quản lý"))
+                {
+                    <td>
+                        <select id="role" name="role">
+                            <option value="Thủ thư">Thủ thư</option>
+                            <option value="Thủ kho">Thủ kho</option>
+                        </select>
+                    </td>
+                }
+
+            </tr>
+
+
+        </table>
+
+        <div class="buttons">
+            <button name="button" value="add"><i class="fas fa-plus"></i> Thêm</button>
+        </div>
+    </form>
+
+    <form action="~/Admin/ClickButtonAccount" method="post">
+        <table>
+            <tr>
+                <th>Tài khoản</th>
+                <th>Mật khẩu</th>
+                @if (BookstoreProjectDatabase.accountInfo.getRole().Equals("Quản lý"))
+                {
+                    <th>Vai trò</th>
+                }
+
+            </tr>
+            <tr>
+                <td><input name="account" type="text" maxlength="10" required></td>
+                <td><input name="password" type="password" maxlength="20" required></td>
+                @if (BookstoreProjectDatabase.accountInfo.getRole().Equals("Quản lý"))
+                {
+                    <td>
+                        <select name="role">
+                            <option value="Thủ thư">Thủ thư</option>
+                            <option value="Thủ kho">Thủ kho</option>
+                        </select>
+                    </td>
+                }
+
+            </tr>
+
+
+        </table>
+
+        <div class="buttons">
+            <button name="button" value="update"><i class="fas fa-edit"></i> Sửa</button>
+        </div>
+    </form>
+
+    <form action="~/Admin/ClickButtonAccount" method="post">
+        <table>
+            <tr>
+                <th>Tài khoản</th>
+
+            </tr>
+            <tr>
+                <td><input name="account" type="text" maxlength="10" required></td>
+
+           </tr>
+
+
+        </table>
+
+        <div class="buttons">
+            <button name="button" value="delete"> <i class="fas fa-trash-alt"></i> Xóa</button>
+        </div>
+    </form>
+
+    <div class="homePage">
+        <div class="search-bar">
+            <input class="search-input" type="text" placeholder="Tìm kiếm...">
+        </div>
+    </div>
+</div>
+<br />
+
+<div class="homePage">
+
+
+
+    <h4>Bảng Thông Tin Tài Khoản</h4>
+
+    <div class="container-lg">
+        <div class="products">
+            @foreach (var acc in accounts)
+            {
+               
+                String tt = "Thủ thư";
+                String tk = "Thủ kho";
+                String ql = "Quản lý";
+
+                <div class="prod-item">
+                    <div class="image">
+                        @if (acc.getRole() == null)
+                        {
+                            <div class="image">alt="@acc.getRole()"</div>
+                        }
+                       
+                        else if (acc.getRole() == tt)
+                        {
+                            <img src="~/lib/Admin/a2.jpg">
+                        }
+                        else if (acc.getRole() == tk)
+                        {
+                            <img src="~/lib/Admin/a3.jpg">
+                        }
+                        else if (acc.getRole() == ql)
+                        {
+                            <img src="~/lib/Admin/a1.jpg">
+                        }
+                        else
+                        {
+                            <img src="~/lib/Admin/a4.jpg">
+                        }
+                    </div>
+                    <div class="title">@acc.getAccount()</div>
+                    <div class="role">@acc.getRole()</div>
+                </div>
+            }
+        </div>
+    </div>
+
+</div>
+

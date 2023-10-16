@@ -47,6 +47,7 @@
                                     <div class="price">Trạng thái: @status</div>
                                 </a>
                             </div>
+
                             <style>
                                 .prod-item {
                                     display: flex;
@@ -119,7 +120,10 @@
                             </div>
                         }
                     }
-
+                    <div class="moreSection">
+                        <button id="showMore" class="moreButton">More</button>
+                        @* <a class="moreButton">@Html.ActionLink("Xem thêm", "SignIn", "Home", null, new { @class = "nav-link"}) *@
+                    </div>
                 </div>
             </div>
 
@@ -149,9 +153,9 @@
                                     <div class="title">@booksSorted[i].getTitle()</div>
                                     <div class="price">Trạng thái: @status</div>
                                 </a>
-                            </div>                            
+                            </div>
                         }
-                       
+
                     }
                     else
                     {
@@ -177,3 +181,4 @@
         </div>
     </div>
 </div>
+

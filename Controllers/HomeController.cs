@@ -21,11 +21,15 @@ namespace BookstoreProject.Controllers
         //Trang chính
         public IActionResult Index(string name)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                BookstoreProjectDatabase.accountInfo = new Account(User.Claims.ElementAt(0).Value, User.Claims.ElementAt(1).Value, User.Claims.ElementAt(2).Value);
+                Console.WriteLine("User.Claims.ElementAt(2).ToString(): " + User.Claims.ElementAt(2).Value);
+            }
+
             BookstoreProjectDatabase.LoadBooks();
             BookstoreProjectDatabase.LoadGenre();
             BookstoreProjectDatabase.LoadBooksSortedWithCopies();
-
-
             //if (name != null)
             //{
             //    //Nếu có searchValue lấy ra danh sách book map vs searchValue
@@ -43,6 +47,19 @@ namespace BookstoreProject.Controllers
         public IActionResult BookList()
         {
             return View();
+        }
+
+        public IActionResult LoadBooksWithGenre(string nameGenre)
+        {
+            BookstoreProjectDatabase.LoadBooksWithGenre(nameGenre);
+            return RedirectToAction("BookList", "Home");
+        }
+
+        [HttpPost]
+        public IActionResult LoadBooksWithName(string name)
+        {
+            BookstoreProjectDatabase.LoadBooksWithKeyword(name);
+            return RedirectToAction("BookList", "Home");
         }
 
 
@@ -68,29 +85,16 @@ namespace BookstoreProject.Controllers
             return View();
         }
 
-
-        //Trang đăng nhập
-        public IActionResult Login()
+        public IActionResult GetMoreProduct(int page=1,int pageSize=5)
         {
-            return View();
-        }
-
-        // Trang đăng ký
-        public IActionResult Register()
-        {
-            return View();
-        }
-
-
-        //Trang quên mật khẩu
-        public IActionResult ForgotPassword()
-        {
-            return View();
+            BookstoreProjectDatabase.LoadBooksWithIntitalStatePage(page, pageSize);
+            return PartialView("_MoreProductPartial");
         }
 
         //Trang thông tin người dùng
-        public IActionResult UserInfo()
+        public IActionResult UserInfo(string id)
         {
+            BookstoreProjectDatabase.LoadLoanWithId(id);   
             return View();
         }
 
@@ -99,15 +103,8 @@ namespace BookstoreProject.Controllers
         {
             return View();
         }
-
-        //Trang thông báo của người dùng    
+        //Trang thông báo của người dùng 
         public IActionResult UserNofi()
-        {
-            return View();
-        }
-
-
-        public IActionResult Privacy()
         {
             return View();
         }

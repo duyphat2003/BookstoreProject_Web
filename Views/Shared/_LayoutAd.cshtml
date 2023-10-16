@@ -48,7 +48,7 @@
                     @* <a class="dropdown-item" style="color:red" href="@Url.Action("Details", "TaiKhoans", new { id = u.MaNguoiDung  })"> Tài khoản : @u.Email</a> *@
 
                     <div class="dropdown-divider menu1"></div>
-                    <a class="dropdown-item" href="/User/DangXuat"> ĐĂNG XUẤT</a>
+                    <a class="dropdown-item" href="/User/LogOut"> ĐĂNG XUẤT</a>
                 </div>
             </li>
         </ul>
@@ -69,7 +69,7 @@
                         </div>
                         <br />
                         <div style="padding-left: 20px;">
-                            <a href="@Url.Action("Index", "Books")" style="color: white;">
+                            <a href="@Url.Action("Bookcopymanagement", "Admin")" style="color: white;">
                                 <i class="fas fa-copy" style="margin-right: 5px;"></i>
                                 Quản lí sách bản sao
                             </a>
@@ -83,8 +83,8 @@
                         </div>
                         <br />
                         <div style="padding-left: 20px;">
-                            <a href="@Url.Action("Index", "Books")" style="color: white;">
-                                <i class="fas fa-user-secret" style="margin-right: 5px;"></i>
+                            <a href="@Url.Action("AccountManagement", "Admin")" style="color: white;">
+                                <i class="fas fa-user" style="margin-right: 5px;"></i>
                                 Quản lí tài khoản
                             </a>
                         </div>

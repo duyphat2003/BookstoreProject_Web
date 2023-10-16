@@ -1,7 +1,11 @@
-﻿using BookstoreProject.Models;
+﻿using BookstoreProject.Firestore_Database;
 using Firebase.Auth;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Security.Claims;
+using BookstoreProject.Dto;
 
 namespace BookstoreProject.Controllers
 {
@@ -32,60 +36,64 @@ namespace BookstoreProject.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SignIn(LoginModel loginModel)
+        public async Task<IActionResult> SignIn(LoginDTO loginModel)
         {
-            try
+            BookstoreProjectDatabase.SearchAccount(loginModel.Account, loginModel.Password);
+            if (BookstoreProjectDatabase.accountInfo != null)
             {
-                //log in an existing user
-                var fbAuthLink = await _auth
-                                .SignInWithEmailAndPasswordAsync(loginModel.Email, loginModel.Password);
-                string token = fbAuthLink.FirebaseToken;
-                //save the token to a session variable
-                if (token != null)
-                {
-                    HttpContext.Session.SetString("_UserToken", token);
-                    return RedirectToAction("index","home");
-                }
-            }
-            catch (FirebaseAuthException ex)
-            {
-                var firebaseEx = JsonConvert.DeserializeObject<FirebaseError>(ex.ResponseData);
-                ModelState.AddModelError(String.Empty, firebaseEx.error.message);
-                return View(loginModel);
-            }
+                var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, BookstoreProjectDatabase.accountInfo.getAccount()),
+                        new Claim(ClaimTypes.SerialNumber, BookstoreProjectDatabase.accountInfo.getPassword()),
+                        new Claim(ClaimTypes.Role, BookstoreProjectDatabase.accountInfo.getRole()),
+                    };
 
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                var authProperties = new AuthenticationProperties { };
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity),authProperties);
+
+                if(BookstoreProjectDatabase.accountInfo.getRole().Equals("Sinh viên"))
+                    return RedirectToAction("Index", "Home");
+                else
+                    return RedirectToAction("Index", "Admin");
+            }
             return View();
         }
-
-        [HttpPost]
-        public async Task<IActionResult> Registration(LoginModel loginModel)
+        public async Task<ActionResult> LogOut()
         {
-            try
-            {
-                //create the user
-                await _auth.CreateUserWithEmailAndPasswordAsync(loginModel.Email, loginModel.Password);
-                //log in the new user
-                var fbAuthLink = await _auth
-                                .SignInWithEmailAndPasswordAsync(loginModel.Email, loginModel.Password);
-                string token = fbAuthLink.FirebaseToken;
-                //saving the token in a session variable
-                if (token != null)
-                {
-                    HttpContext.Session.SetString("_UserToken", token);
-
-                    return RedirectToAction("index", "home");
-                }
-            }
-            catch (FirebaseAuthException ex)
-            {
-                var firebaseEx = JsonConvert.DeserializeObject<FirebaseError>(ex.ResponseData);
-                ModelState.AddModelError(String.Empty, firebaseEx.error.message);
-                return View(loginModel);
-            }
-
-            return View();
-
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            BookstoreProjectDatabase.UpdateAccount(BookstoreProjectDatabase.accountInfo.getAccount(), false);
+            return RedirectToAction("Index", "Home");
         }
+
+        //[HttpPost]
+        //public async Task<IActionResult> Registration(SignUpDTO loginModel)
+        //{
+        //    BookstoreProjectDatabase.SearchAccount(loginModel.Account, loginModel.Password);
+        //    if (BookstoreProjectDatabase.accountInfo != null)
+        //    {
+        //        throw new Exception("This account is already created.");
+        //    }
+
+        //    BookstoreProjectDatabase.AddAccount(loginModel);
+        //    var claims = new List<Claim>
+        //            {
+        //                new Claim(ClaimTypes.Name, BookstoreProjectDatabase.accountInfo.getAccount()),
+        //                new Claim(ClaimTypes.Role, BookstoreProjectDatabase.accountInfo.getRole()),
+        //            };
+        //    var claimsIdentity = new ClaimsIdentity(
+        //            claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+        //    var authProperties = new AuthenticationProperties { };
+
+        //    await HttpContext.SignInAsync(
+        //    CookieAuthenticationDefaults.AuthenticationScheme,
+        //    new ClaimsPrincipal(claimsIdentity),
+        //     authProperties);
+        //    return RedirectToAction("Index", "Home");
+        //}
 
     }
 }

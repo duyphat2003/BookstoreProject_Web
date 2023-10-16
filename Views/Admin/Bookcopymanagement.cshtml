@@ -1,4 +1,7 @@
-﻿@{
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
     ViewBag.Title = "Librarycardmanagement";
     Layout = "~/Views/Shared/_LayoutAd.cshtml";
     <link rel="stylesheet" type="text/css" href="~/css/admin.css">
@@ -84,22 +87,22 @@
     }
 </style>
 
-<h2>Quản Lí Thẻ</h2>
-<h4>Thông tin thẻ sinh viên</h4>
+<h2>Quản Lí Bản Sao Sách</h2>
+<h4>Thông tin bản sao sách</h4>
 <form action="~/Admin/AddLibraryCard">
     <table>
         <tr>
-            <th>Mã thẻ</th>
-            <th>Tên sinh viên</th>
-            <th>Sử dụng</th>
-            <th>Đang mượn</th>
+            <th>STT</th>
+            <th>ID sách</th>
+            <th>Trạng thái</th>
+            <th>Ghi chú</th>
 
         </tr>
         <tr>
             <td><input name="cardId" type="text"></td>
-            <td><input name="nameStudent" type="text"></td>
+            <td><input name="IDbook" type="text"></td>
             <td><input name="status" type="checkbox"></td>
-            <td><input name="borrow" type="checkbox"></td>
+            <td><input name="note" type="text"></td>
         </tr>
 
 
@@ -112,24 +115,23 @@
     </div>
 </form>
 
-<h4>Bảng thông tin thẻ thư viện</h4>
+<h4>Bảng thông tin bản sao sách</h4>
 <table id="library-table">
     <thead>
         <tr>
-            <th>Mã thẻ</th>
-            <th>Tên sinh viên</th>
-            <th>Ngày hết hạn</th>
+            <th>STT</th>
+            <th>ID sách</th>
             <th>Trạng thái</th>
-            <th>Đang mượn</th>
+            <th>Ghi chú</th>      
         </tr>
 
-        @foreach(LibraryCard libraryCard in libraryCards)
+        @* @foreach (LibraryCard libraryCard in libraryCards)
         {
             <tr>
                 <th>@libraryCard.getId()</th>
                 <th>@libraryCard.getName()</th>
                 <th>@libraryCard.getExpirationDate()</th>
-                @if(libraryCard.getUseStatus())
+                @if (libraryCard.getUseStatus())
                 {
                     <th><input type="checkbox" checked="checked"></th>
                 }
@@ -147,7 +149,7 @@
                     <th><input type="checkbox"></th>
                 }
             </tr>
-        }
+        } *@
     </thead>
 
 </table>
