@@ -2,94 +2,159 @@
 @{
     ViewData["Title"] = "Details";
     Book book = ViewBag.meomeo;
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 }
 
     <div class="product-details-container">
-        <h2 style="text-align: center; margin-bottom: 20px;">CHI TIẾT</h2>
-        <hr />
-
-    <div class="row">
+        <div class="row">
             <div class="col-md-4">
                 <img class="product-image" " src=" @book.getUrlImage()" alt="Ảnh sách">
+
+                <div class="add-to-cart-button">
+                    <button class="btn btn-warning">Thêm vào giỏ hàng</button>
+                </div>
             </div>
+
             <div class="col-md-8">
                 <h4 class="product-title">@book.getTitle()</h4>
-                <p class="product-author">
-                    <span style="font-weight: bold">Tác giả :</span>@book.getAuthor()
-                </p>
-                <p class="product-genre">
-                    <span style="font-weight: bold">Thể loại: @book.getGenre()
-                </p>
-                <p class="product-content">
-                    <span style="font-weight: bold">Nội dung: </span>@book.getContent()
-                </p>
-                <p class="product-YearPublished">
-                    <span style="font-weight: bold">Năm xuất bản: </span>@book.getYearPublished() 
-                </p>
-                <p class="product-Publisher">
-                    <span style="font-weight: bold">Nhà xuất bản: </span>@book.getPublisher()
-                </p>
+                <div class="group_1">
+                    <div class="product-Publisher">
+                        <span> Nhà xuất bản: </span> @book.getPublisher()
+                    </div>
+                    <div class="product-author">
+                        <span> Tác giả: </span> @book.getAuthor()
+                    </div>
+                </div>
+                <div class="group_2">
+                    <div class="product-YearPublished">
+                        <span> Năm sản xuất : </span> @book.getYearPublished()
+                    </div>
+                    <div class="product-genre">
+                        <span> Thể loại: </span> @book.getGenre()
+                    </div>
+                </div>
+                <div class="box">
+                    <p>Nội dung: @book.getContent() </p>
+                    <a herf ="javascript:void();" class="readmore-btn"> Đọc thêm </a>
+                </div>
             </div>
         </div>
     </div>
 
 <style>
+    /* Phần tổng container */
     .product-details-container {
-        width: 100%;
-        padding: 20px;
-    }
-
-    h2 {
-        text-align: center;
-        font-size: 28px;
-        margin-bottom: 20px;
-    }
-
-    .row {
-        display: flex;
-        flex-wrap: wrap;
         background-color: #fff;
         border: 1px solid #ddd;
+        border-radius: 5px;
+        margin: 20px;
         padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
-    .col-md-4 {
-        width: 40%;
-        margin-right: 10%;
-    }
-
+    /* Hình ảnh sách */
     .product-image {
-        width: 100%;
+        max-width: 100%;
         height: auto;
+        border: 1px solid #ddd;
+        border-radius: 5px;
     }
 
-    .col-md-8 {
-        width: 50%;
-    }
-
+    /* Tiêu đề sách */
     .product-title {
-        font-size: 24px;
-        font-weight: bold;
+        font-size: 28px;
+        color: #333;
+        margin-top: 10px;
+        text-align: center;
+    }
+
+    /* Phần chi tiết */
+    .group_1, .group_2 {
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    /* Nhà xuất bản và Tác giả */
+    .product-Publisher, .product-author {
+        margin-bottom: 10px;
+       
+    }
+
+    /* Thể loại và Năm sản xuất */
+    .product-genre, .product-YearPublished {
         margin-bottom: 10px;
     }
 
-    .product-author,
-    .product-genre,
-    .product-content,
-    .product-YearPublished,
-    .product-Publisher,
-    .product-id {
-        margin-top: 10px;
-        font-size: 16px;
+    /* Định dạng phần nhãn */
+    span {
+        font-weight: bold;
+        color: #555;
     }
 
-        .product-author span,
-        .product-genre span,
-        .product-content span,
-        .product-YearPublished span,
-        .product-Publisher span,
-        .product-id span {
-            font-weight: bold;
+    /* Định dạng link và tiêu đề sách */
+    a {
+        text-decoration: none;
+        color: #007bff;
+    }
+
+        a:hover {
+            text-decoration: underline;
         }
 
+    .add-to-cart-button button {
+        background-color: #FFA500; /* Màu cam nhạt */
+        color: #fff; /* Màu chữ trắng */
+        border: none;
+        padding: 10px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        
+    }
+    .btn btn-warning{
+        justify-content: center;
+    }
+
+        .add-to-cart-button button:hover {
+            background-color: #FF8C00; /* Màu cam nhạt khi di chuột vào */
+        }
+
+    .box p{
+        font-size: 15px;
+        line-height:24px;
+        height:90px;
+        overflow: hidden;
+    }
+
+    .box a {
+        background-color:#2196f3;
+        color: #fff;
+        border: 1px black;
+        border-radius: 8px;
+        text-decoration: none;
+        padding: 2px 5px;
+        margin-top: 7px
+    }
+    .box a:hover{
+        box-shadow: 0 5px 5px rgba(0,0,0,0.2);
+    }
+    .box.showContent p{
+        height: auto;
+    }
+    .box.showContent a.readmore-btn{
+        color: red;
+    }
+
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    $(".readmore-btn").on('click', function () {
+        $(this).parent().toggleClass("showContent");
+        // Shorthand if-else statement
+        var replaceText = $(this).parent().hasClass("showContent") ? "Ẩn bớt" : "Đọc thêm";
+        $(this).text(replaceText);
+    });
+</script>   
