@@ -107,7 +107,7 @@
                             List<Copy> copies = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.LoadCopiesWithBookId(book.getId(), "Còn");
                             string status = copies.Count > 0 ? "Còn" : "Hết";
                             <div class="prod-item d-flex flex-column">
-                                <a href="@Url.Action("Details", "Home", new { id = book.getId() })">
+                                <a href="@Url.Action("Details", "Home", new { id = book.getId()})">
 
                                     <div class="image">
                                         <img style="object-fit: cover; width: 100%; height: 100%;" src="@book.getUrlImage()" />
