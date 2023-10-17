@@ -16,10 +16,10 @@ namespace BookstoreProject.Firestore_Database
         static string ACCOUNT = "Account"; // Tên bảng
         static string projectId = "libraryproject-704cf"; // project id of Bookstore
 
-        public static string QUANLY = "Quản lý";
-        public static string THUTHU = "Thủ thư";
-        public static string THUKHO = "Thủ kho";
-        public static string SINHVIEN = "Sinh viên";
+        public static string QUANLY = "QuanLy";
+        public static string THUTHU = "ThuThu";
+        public static string THUKHO = "ThuKho";
+        public static string SINHVIEN = "SinhVien";
 
         public static List<Book> books; // sách
         public static List<Genre> genres; // thể loại

@@ -29,16 +29,6 @@ namespace BookstoreProject.Controllers
             BookstoreProjectDatabase.LoadBooks();
             BookstoreProjectDatabase.LoadGenre();
             BookstoreProjectDatabase.LoadBooksSortedWithCopies();
-            //if (name != null)
-            //{
-            //    //Nếu có searchValue lấy ra danh sách book map vs searchValue
-            //    BookstoreProjectDatabase.SearchBook(name);
-            //}
-            //else
-            //{
-            //    //Không có searchValue , load lại Bookdata
-            //    BookstoreProjectDatabase.LoadBooks();
-            //}
             return View();
         }
 
@@ -76,12 +66,16 @@ namespace BookstoreProject.Controllers
         // Trang giỏ hàng
         public IActionResult Cart()
         {
-            BookstoreProjectDatabase.ConnectToFirestoreDB();
             BookstoreProjectDatabase.LoadGenre();
             Book book = BookstoreProjectDatabase.LoadContentBookWithId("KNS001");
             ViewBag.meomeo = book;
 
             return View();
+        }
+
+        public IActionResult AddCart()
+        {
+            return RedirectToAction("Cart", "Home");
         }
 
         public IActionResult GetMoreProduct(int page=1,int pageSize=5)
