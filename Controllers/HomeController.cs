@@ -76,6 +76,11 @@ namespace BookstoreProject.Controllers
         // Trang giỏ hàng
         public IActionResult Cart()
         {
+            BookstoreProjectDatabase.ConnectToFirestoreDB();
+            BookstoreProjectDatabase.LoadGenre();
+            Book book = BookstoreProjectDatabase.LoadContentBookWithId("KNS001");
+            ViewBag.meomeo = book;
+
             return View();
         }
 
