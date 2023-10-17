@@ -16,6 +16,11 @@ namespace BookstoreProject.Firestore_Database
         static string ACCOUNT = "Account"; // Tên bảng
         static string projectId = "libraryproject-704cf"; // project id of Bookstore
 
+        public static string QUANLY = "Quản lý";
+        public static string THUTHU = "Thủ thư";
+        public static string THUKHO = "Thủ kho";
+        public static string SINHVIEN = "Sinh viên";
+
         public static List<Book> books; // sách
         public static List<Genre> genres; // thể loại
         public static List<Copy> copies; // bản sao của sách
@@ -225,6 +230,30 @@ namespace BookstoreProject.Firestore_Database
                             id.GetValue<string>("Status"),
                             id.GetValue<string>("Notes")));
                 }
+            }
+            return copyArrayList;
+        }
+
+
+        public static Copy LoadCopyInfo(string bookId, string copId)
+        {
+            Task<DocumentSnapshot> copyIds = copyCollectionRef.Document(bookId).Collection("BookCopy").Document(copId).GetSnapshotAsync();
+            copyIds.Wait();
+            return new Copy(copId, bookId, copyIds.Result.GetValue<string>("Status"), copyIds.Result.GetValue<string>("Notes"));
+        }
+
+        public static List<Copy> LoadCopiesWithBookId(string bookId)
+        {
+            List<Copy> copyArrayList = new List<Copy>();
+
+            Task<QuerySnapshot> copyIds = copyCollectionRef.Document(bookId).Collection("BookCopy").GetSnapshotAsync();
+            copyIds.Wait();
+            foreach (DocumentSnapshot id in copyIds.Result)
+            {
+                copyArrayList.Add(new Copy(id.Id,
+                           bookId,
+                           id.GetValue<string>("Status"),
+                           id.GetValue<string>("Notes")));
             }
             return copyArrayList;
         }
@@ -445,7 +474,7 @@ namespace BookstoreProject.Firestore_Database
             else
                 Console.WriteLine("Tài khoản hoặc mật khẩu bị sai");
 
-            if (!string.IsNullOrEmpty(accountInfo.getRole()) && accountInfo.getRole().Equals("Sinh viên"))
+            if (!string.IsNullOrEmpty(accountInfo.getRole()) && accountInfo.getRole().Equals(SINHVIEN))
             {
                 Task<QuerySnapshot> libraryCardInfo = libraryCardCollectionRef.WhereEqualTo("Id", accountInfo.getAccount()).GetSnapshotAsync();
                 libraryCardInfo.Wait();

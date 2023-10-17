@@ -2,10 +2,10 @@
 using Amazon.SimpleEmail.Model;
 using BookstoreProject.Firestore_Database;
 using BookstoreProject.Models;
-using Humanizer.Localisation;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Security.Policy;
+using System.Linq;
 using System.Text;
 
 namespace BookstoreProject.Controllers
@@ -21,14 +21,14 @@ namespace BookstoreProject.Controllers
 
         //Trang chính
         public IActionResult Index()
-        {        
+        {
             return View();
         }
 
         //Trang quản lý tài khoản
         public IActionResult AccountManagement()
         {
-            switch(BookstoreProjectDatabase.accountInfo.getRole())
+            switch (BookstoreProjectDatabase.accountInfo.getRole())
             {
                 case "Quản lý":
                     BookstoreProjectDatabase.GetAccountWithRoles(true);
@@ -49,14 +49,14 @@ namespace BookstoreProject.Controllers
                 case "add":
                     if (!string.IsNullOrEmpty(account) && account.Length == 10)
                     {
-                        if (!BookstoreProjectDatabase.accountInfo.getRole().Equals("Quản lý") && account[2].Equals('D') && account[3].Equals('H'))
+                        if (!BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.QUANLY) && account[2].Equals('D') && account[3].Equals('H'))
                         {
                             DateTime currentDate = DateTime.Now;
                             DateTime dateDue = currentDate.AddYears(4);
                             if (BookstoreProjectDatabase.AddAccount(new Account(account, account, "Sinh viên")))
                             {
                                 Console.WriteLine("Thêm tài khoản thành công");
-                                if(BookstoreProjectDatabase.AddLibraryCard(new LibraryCard(account, "Không tên", dateDue.ToString("dd/MM/yyyy"), true, false)))
+                                if (BookstoreProjectDatabase.AddLibraryCard(new LibraryCard(account, "Không tên", dateDue.ToString("dd/MM/yyyy"), true, false)))
                                 {
                                     Console.WriteLine("Thêm tài khoản thất bại ADdLib");
                                 }
@@ -66,7 +66,7 @@ namespace BookstoreProject.Controllers
                                 Console.WriteLine("Thêm tài khoản thất bại ADdacC");
                             }
                         }
-                        else if (BookstoreProjectDatabase.accountInfo.getRole().Equals("Quản lý") && ((account[2].Equals('T') && account[3].Equals('T')) || (account[2].Equals('T') && account[3].Equals('K'))))
+                        else if (BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.QUANLY) && ((account[2].Equals('T') && account[3].Equals('T')) || (account[2].Equals('T') && account[3].Equals('K'))))
                         {
                             BookstoreProjectDatabase.AddAccount(new Account(account, password, role));
                             Console.WriteLine("Thêm tài khoản thành công");
@@ -84,14 +84,14 @@ namespace BookstoreProject.Controllers
                 case "delete":
                     if (!string.IsNullOrEmpty(account) && account.Length == 10)
                     {
-                        if (!BookstoreProjectDatabase.accountInfo.getRole().Equals("Quản lý") && account[2].Equals('D') && account[3].Equals('H') && BookstoreProjectDatabase.FindAccountsWithAccount(account, "Sinh viên"))
+                        if (!BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.QUANLY) && account[2].Equals('D') && account[3].Equals('H') && BookstoreProjectDatabase.FindAccountsWithAccount(account, BookstoreProjectDatabase.SINHVIEN))
                         {
                             BookstoreProjectDatabase.DeleteAccount(account);
                             BookstoreProjectDatabase.DeleteLibraryCard(account);
                             Console.WriteLine("Xóa tài khoản thành công");
 
                         }
-                        else if (BookstoreProjectDatabase.accountInfo.getRole().Equals("Quản lý") && ((account[2].Equals('T') && account[3].Equals('T') && BookstoreProjectDatabase.FindAccountsWithAccount(account, "Thủ thư")) || (account[2].Equals('T') && account[3].Equals('K') && BookstoreProjectDatabase.FindAccountsWithAccount(account, "Thủ kho"))))
+                        else if (BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.QUANLY) && ((account[2].Equals('T') && account[3].Equals('T') && BookstoreProjectDatabase.FindAccountsWithAccount(account, BookstoreProjectDatabase.THUTHU)) || (account[2].Equals('T') && account[3].Equals('K') && BookstoreProjectDatabase.FindAccountsWithAccount(account, BookstoreProjectDatabase.THUKHO))))
                         {
                             BookstoreProjectDatabase.DeleteAccount(account);
                             Console.WriteLine("Xóa tài khoản thành công");
@@ -109,12 +109,12 @@ namespace BookstoreProject.Controllers
                 case "update":
                     if (!string.IsNullOrEmpty(account) && account.Length == 10 && !string.IsNullOrEmpty(password))
                     {
-                        if (!BookstoreProjectDatabase.accountInfo.getRole().Equals("Quản lý") && account[2].Equals('D') && account[3].Equals('H') && BookstoreProjectDatabase.FindAccountsWithAccount(account, "Sinh viên"))
+                        if (!BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.QUANLY) && account[2].Equals('D') && account[3].Equals('H') && BookstoreProjectDatabase.FindAccountsWithAccount(account, BookstoreProjectDatabase.SINHVIEN))
                         {
-                            BookstoreProjectDatabase.UpdateAccount(account, password, "Sinh viên");
+                            BookstoreProjectDatabase.UpdateAccount(account, password, BookstoreProjectDatabase.SINHVIEN);
                             Console.WriteLine("Cập nhật tài khoản thành công");
                         }
-                        else if (BookstoreProjectDatabase.accountInfo.getRole().Equals("Quản lý") && ((account[2].Equals('T') && account[3].Equals('T') && BookstoreProjectDatabase.FindAccountsWithAccount(account, "Thủ thư")) || (account[2].Equals('T') && account[3].Equals('K') && BookstoreProjectDatabase.FindAccountsWithAccount(account, "Thủ kho"))))
+                        else if (BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.QUANLY) && ((account[2].Equals('T') && account[3].Equals('T') && BookstoreProjectDatabase.FindAccountsWithAccount(account, BookstoreProjectDatabase.THUTHU)) || (account[2].Equals('T') && account[3].Equals('K') && BookstoreProjectDatabase.FindAccountsWithAccount(account, BookstoreProjectDatabase.THUKHO))))
                         {
                             BookstoreProjectDatabase.UpdateAccount(account, password, role);
                             Console.WriteLine("Cập nhật tài khoản thành công");
@@ -259,34 +259,34 @@ namespace BookstoreProject.Controllers
         {
             Console.OutputEncoding = Encoding.Unicode;
 
-                switch (button)
-                {
-                    case "add":
-                        if (cardId != "" && nameStudent != "")
+            switch (button)
+            {
+                case "add":
+                    if (cardId != "" && nameStudent != "")
+                    {
+                        DateTime currentDate = DateTime.Now;
+                        DateTime dateDue = currentDate.AddYears(4);
+                        if (BookstoreProjectDatabase.AddLibraryCard(new LibraryCard(cardId, nameStudent, dateDue.ToString("dd/MM/yyyy"), true, false)))
                         {
-                            DateTime currentDate = DateTime.Now;
-                            DateTime dateDue = currentDate.AddYears(4);
-                            if (BookstoreProjectDatabase.AddLibraryCard(new LibraryCard(cardId, nameStudent, dateDue.ToString("dd/MM/yyyy"), true, false)))
-                            {
-                                BookstoreProjectDatabase.AddAccount(new Account(cardId, cardId, "Sinh viên"));
-                                Console.WriteLine("Thêm thẻ thành công");
-                            }
-                            else
-                            {
-                                Console.WriteLine("Thêm thẻ thất bại");
-                            }
+                            BookstoreProjectDatabase.AddAccount(new Account(cardId, cardId, BookstoreProjectDatabase.SINHVIEN));
+                            Console.WriteLine("Thêm thẻ thành công");
                         }
-                        break;
-                    case "delete":
-                        if (cardId != "")
-                            BookstoreProjectDatabase.DeleteLibraryCard(cardId);
-                            BookstoreProjectDatabase.DeleteAccount(cardId);
-                        break;
-                    case "update":
-                        if (cardId != "" && nameStudent != "")
-                            BookstoreProjectDatabase.UpdateLibraryCard(new LibraryCard(cardId, nameStudent, status, borrow));
-                        break;
-                }
+                        else
+                        {
+                            Console.WriteLine("Thêm thẻ thất bại");
+                        }
+                    }
+                    break;
+                case "delete":
+                    if (cardId != "")
+                        BookstoreProjectDatabase.DeleteLibraryCard(cardId);
+                    BookstoreProjectDatabase.DeleteAccount(cardId);
+                    break;
+                case "update":
+                    if (cardId != "" && nameStudent != "")
+                        BookstoreProjectDatabase.UpdateLibraryCard(new LibraryCard(cardId, nameStudent, status, borrow));
+                    break;
+            }
             Console.WriteLine("Tải lại dữ liệu");
             BookstoreProjectDatabase.LoadLibraryCards();
             ViewBag.libraryCardList = BookstoreProjectDatabase.libraryCards;
@@ -296,7 +296,61 @@ namespace BookstoreProject.Controllers
         //Trang quản lý bản sao
         public IActionResult BookCopyManagement()
         {
+            BookstoreProjectDatabase.LoadBooks();
+            BookstoreProjectDatabase.LoadCopies();
+            ViewBag.CopyId = new Copy();
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult LoadCopy(string idBook)
+        {
+            ViewBag.ListCopy = BookstoreProjectDatabase.LoadCopiesWithBookId(idBook);
+
+            BookstoreProjectDatabase.LoadBooks();
+            BookstoreProjectDatabase.LoadCopies();
+            ViewBag.BookId = idBook;
+            return RedirectToAction("BookCopyManagement", "Admin");
+        }
+
+        [HttpPost]
+        public IActionResult LoadInfoCopy(string idBook, string idCopy)
+        {
+            Copy copy = BookstoreProjectDatabase.LoadCopyInfo(idBook, idCopy);
+            BookstoreProjectDatabase.LoadBooks();
+            BookstoreProjectDatabase.LoadCopies();
+            ViewBag.BookId = idBook;
+            ViewBag.CopyId = copy;
+            return RedirectToAction("BookCopyManagement", "Admin");
+        }
+
+
+        [HttpPost]
+        public IActionResult AddBookCopy(string bookId, string status, string notes)
+        {
+            List<Copy> copies = BookstoreProjectDatabase.LoadCopiesWithBookId(bookId);
+            BookstoreProjectDatabase.AddBookCopy(new Copy((copies.Count + 1).ToString(), bookId, status, notes));
+            BookstoreProjectDatabase.LoadBooks();
+            BookstoreProjectDatabase.LoadCopies();
+            return RedirectToAction("BookCopyManagement", "Admin");
+        }
+
+        [HttpPost]
+        public IActionResult UpdateBookCopy(string id, string bookId, string status, string notes)
+        {
+            BookstoreProjectDatabase.UpdateBookCopy(new Copy(id, bookId, status, notes));
+            BookstoreProjectDatabase.LoadBooks();
+            BookstoreProjectDatabase.LoadCopies();
+            return RedirectToAction("BookCopyManagement", "Admin");
+        }
+
+        [HttpPost]
+        public IActionResult DeleteBookCopy(string id, string bookId)
+        {
+            BookstoreProjectDatabase.DeleteBookCopy(bookId, id);
+            BookstoreProjectDatabase.LoadBooks();
+            BookstoreProjectDatabase.LoadCopies();
+            return RedirectToAction("BookCopyManagement", "Admin");
         }
 
         //Trang quản lý thể loại
