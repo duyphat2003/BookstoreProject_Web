@@ -15,19 +15,19 @@
         <table>
             <tr>
                 <th>Tài khoản</th>
-                @if (BookstoreProjectDatabase.accountInfo.getRole().Equals("Quản lý"))
+                @if (BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.QUANLY))
                 {
                     <th>Vai trò</th>
                 }
             </tr>
             <tr>
                 <td><input id="account" name="account" type="text" maxlength="10" required></td>
-                @if(BookstoreProjectDatabase.accountInfo.getRole().Equals("Quản lý"))
+                @if (BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.QUANLY))
                 {
                     <td>
                         <select id="role" name="role">
-                            <option value="Thủ thư">Thủ thư</option>
-                            <option value="Thủ kho">Thủ kho</option>
+                            <option value="@BookstoreProjectDatabase.THUTHU">Thủ thư</option>
+                            <option value="@BookstoreProjectDatabase.THUKHO">Thủ kho</option>
                         </select>
                     </td>
                 }
@@ -47,7 +47,7 @@
             <tr>
                 <th>Tài khoản</th>
                 <th>Mật khẩu</th>
-                @if (BookstoreProjectDatabase.accountInfo.getRole().Equals("Quản lý"))
+                @if (BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.QUANLY))
                 {
                     <th>Vai trò</th>
                 }
@@ -56,12 +56,12 @@
             <tr>
                 <td><input name="account" type="text" maxlength="10" required></td>
                 <td><input name="password" type="password" maxlength="20" required></td>
-                @if (BookstoreProjectDatabase.accountInfo.getRole().Equals("Quản lý"))
+                @if (BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.QUANLY))
                 {
                     <td>
                         <select name="role">
-                            <option value="Thủ thư">Thủ thư</option>
-                            <option value="Thủ kho">Thủ kho</option>
+                            <option value="@BookstoreProjectDatabase.THUTHU">Thủ thư</option>
+                            <option value="@BookstoreProjectDatabase.THUKHO">Thủ kho</option>
                         </select>
                     </td>
                 }
@@ -113,11 +113,6 @@
         <div class="products">
             @foreach (var acc in accounts)
             {
-               
-                String tt = "Thủ thư";
-                String tk = "Thủ kho";
-                String ql = "Quản lý";
-
                 <div class="prod-item">
                     <div class="image">
                         @if (acc.getRole() == null)
@@ -125,15 +120,15 @@
                             <div class="image">alt="@acc.getRole()"</div>
                         }
                        
-                        else if (acc.getRole() == tt)
+                        else if (acc.getRole() == BookstoreProjectDatabase.THUTHU)
                         {
                             <img src="~/lib/Admin/a2.jpg">
                         }
-                        else if (acc.getRole() == tk)
+                        else if (acc.getRole() == BookstoreProjectDatabase.THUKHO)
                         {
                             <img src="~/lib/Admin/a3.jpg">
                         }
-                        else if (acc.getRole() == ql)
+                        else if (acc.getRole() == BookstoreProjectDatabase.QUANLY)
                         {
                             <img src="~/lib/Admin/a1.jpg">
                         }

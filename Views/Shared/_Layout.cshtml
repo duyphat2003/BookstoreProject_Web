@@ -93,7 +93,7 @@
                                     <span class="nav-item">@User.Identity.Name</span>
                                 </button>
                                 <ul class="dropdown-menu" style="top:unset;left:unset;">
-                                    @if (BookstoreProjectDatabase.accountInfo.getRole().Equals("Sinh viên"))
+                                    @if (BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.SINHVIEN))
                                     {
                                         Console.WriteLine("User.Claims.ElementAt(2).ToString(): Sinh viên");
                                         <li class="nav-item">@Html.ActionLink("Thông tin tài khoản", "Profile", "User", null, new { @class = "nav-link"})</li>

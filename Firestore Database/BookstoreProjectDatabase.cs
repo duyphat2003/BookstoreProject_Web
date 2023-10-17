@@ -596,14 +596,14 @@ namespace BookstoreProject.Firestore_Database
             {
                 if (isAdmin)
                 {
-                    if (accountId.GetValue<string>("Role").Equals("Thủ kho") || accountId.GetValue<string>("Role").Equals("Thủ thư"))
+                    if (accountId.GetValue<string>("Role").Equals(THUKHO) || accountId.GetValue<string>("Role").Equals(THUTHU))
                     {
                         accounts.Add(new Account(accountId.GetValue<string>("Account"), accountId.GetValue<string>("Password"), accountId.GetValue<string>("Role")));
                     }
                 }
                 else
                 {
-                    if (accountId.GetValue<string>("Role").Equals("Sinh viên"))
+                    if (accountId.GetValue<string>("Role").Equals(SINHVIEN))
                     {
                         accounts.Add(new Account(accountId.GetValue<string>("Account"), accountId.GetValue<string>("Password"), accountId.GetValue<string>("Role")));
                     }

@@ -1,11 +1,6 @@
-﻿using Amazon.IdentityManagement.Model;
-using Amazon.SimpleEmail.Model;
-using BookstoreProject.Firestore_Database;
+﻿using BookstoreProject.Firestore_Database;
 using BookstoreProject.Models;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using System.Text;
 
 namespace BookstoreProject.Controllers
@@ -24,16 +19,16 @@ namespace BookstoreProject.Controllers
         {
             return View();
         }
-
         //Trang quản lý tài khoản
         public IActionResult AccountManagement()
         {
+
             switch (BookstoreProjectDatabase.accountInfo.getRole())
             {
-                case "Quản lý":
+                case "QuanLy":
                     BookstoreProjectDatabase.GetAccountWithRoles(true);
                     break;
-                case "Thủ thư":
+                case "ThuThu":
                     BookstoreProjectDatabase.GetAccountWithRoles(false);
                     break;
             }
@@ -53,7 +48,7 @@ namespace BookstoreProject.Controllers
                         {
                             DateTime currentDate = DateTime.Now;
                             DateTime dateDue = currentDate.AddYears(4);
-                            if (BookstoreProjectDatabase.AddAccount(new Account(account, account, "Sinh viên")))
+                            if (BookstoreProjectDatabase.AddAccount(new Account(account, account, BookstoreProjectDatabase.SINHVIEN)))
                             {
                                 Console.WriteLine("Thêm tài khoản thành công");
                                 if (BookstoreProjectDatabase.AddLibraryCard(new LibraryCard(account, "Không tên", dateDue.ToString("dd/MM/yyyy"), true, false)))
@@ -133,10 +128,10 @@ namespace BookstoreProject.Controllers
 
             switch (BookstoreProjectDatabase.accountInfo.getRole())
             {
-                case "Quản lý":
+                case "QuanLy":
                     BookstoreProjectDatabase.GetAccountWithRoles(true);
                     break;
-                case "Thủ thư":
+                case "ThuThu":
                     BookstoreProjectDatabase.GetAccountWithRoles(false);
                     break;
             }
@@ -299,6 +294,7 @@ namespace BookstoreProject.Controllers
             BookstoreProjectDatabase.LoadBooks();
             BookstoreProjectDatabase.LoadCopies();
             ViewBag.CopyId = new Copy();
+            ViewBag.BookId = "";
             return View();
         }
 
