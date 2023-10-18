@@ -2,10 +2,13 @@
 @{
     ViewBag.Title = "Bookcopymanagement";
     Layout = "~/Views/Shared/_LayoutAd.cshtml";
-    List<Copy> copies = ViewBag.ListCopy;
-    string bookId = ViewBag.BookId;
-    Copy copy = ViewBag.CopyId;
 
+    string bookId = "";
+    bookId = ViewBag.bookId;
+    Copy currentCopy = new Copy();
+    currentCopy = ViewBag.currentCopy;
+    List<Copy> copies = new List<Copy>();
+    copies = ViewBag.copies;
     <link rel="stylesheet" type="text/css" href="~/css/admin.css">
 }
 
@@ -96,6 +99,7 @@
             <th>ID sách</th>
             <th>Trạng thái</th>
             <th>Ghi chú</th>
+            <th></th>
         </tr>
 
         <tr>
@@ -116,148 +120,167 @@
                 </select>
             </td>
             <td><input name="notes" type="text"></td>
-        </tr>
-
-        <tr>
             <td><input type="submit" value="Thêm"></td>
         </tr>
 
     </table>
 </form>
 
-
 <form action="~/Admin/LoadCopy" method="post">
     <table>
         <tr>
-            <th>ID sách</th>
+            <th>Id Sách</th>
+            <th></th>
         </tr>
         <tr>
+            @if (string.IsNullOrEmpty(bookId))
+            {
+                Console.WriteLine("bookId " + bookId);
+                <td>
+                    <select name="bookId">
+                        @foreach (Book book in BookstoreProjectDatabase.books)
+                        {
+                            <option value="@book.getId()">@book.getId() - @book.getTitle()</option>
+                        }
+                    </select>
+
+                </td>
+            }
+            else
+            {
+                Console.WriteLine("bookId " + bookId);
+                Console.WriteLine("copies " + copies.Count());
+                <td>
+                    <select name="bookId">
+                        @foreach (Book book in BookstoreProjectDatabase.books)
+                        {
+                            if (bookId.Equals(book.getId()))
+                            {
+                                <option value="@book.getId()" selected>@book.getId() - @book.getTitle()</option>
+                            }
+                            else
+                            {
+                                <option value="@book.getId()">@book.getId() - @book.getTitle()</option>
+                            }
+                        }
+                    </select>
+                </td>
+            }
             <td>
-                <select name="idBook">
-                    @foreach (Book book in BookstoreProjectDatabase.books)
-                    {
-                        <option value="@book.getId()">@book.getId()</option>
-                    }
-                </select>
+                <input type="submit" value="Lọc"/>
             </td>
-        </tr>
-        <tr>
-            <td><input type="submit" value="Lọc"></td>
         </tr>
     </table>
 </form>
 
-<form action="~/Admin/LoadInfoCopy" method="post">
-    @if (!string.IsNullOrEmpty(bookId))
-    {
+@if (copies.Count > 0)
+{
+    <form action="~/Admin/LoadInfoCopy" method="post">
         <table>
             <tr>
-                <th>ID bản sao</th>
-                <th>ID sách</th>
+                <th>Id Sách</th>
+                <th>Id Bản Sao</th>
+                <th></th>
             </tr>
             <tr>
+                @{
+                    Console.WriteLine("bookId " + bookId);
+                    Console.WriteLine("copies " + copies.Count());
+                    <td><input name="bookId" value="@bookId" readonly /></td>
+
+                    @if (string.IsNullOrEmpty(currentCopy.getId()))
+                    {
+                        <td>
+                            <select name="id">
+                                @foreach (Copy copy in copies)
+                                {
+                                    <option value="@copy.getId()">@copy.getId()</option>
+                                }
+                            </select>
+                        </td>
+                    }
+                    else
+                    {
+                        currentCopy = ViewBag.currentCopy;
+                        Console.WriteLine("currentCopy " + currentCopy.getId());
+                        <td>
+                            <select name="id">
+                                @foreach (Copy copy in copies)
+                                {
+                                    if (currentCopy.getId().Equals(copy.getId()))
+                                    {
+                                        <option value="@copy.getId()" selected>@copy.getId()</option>
+
+                                    }
+                                    else
+                                    {
+                                        <option value="@copy.getId()">@copy.getId()</option>
+
+                                    }
+                                }
+                            </select>
+                        </td>
+                    }
+                }
                 <td>
-                    <select name="id">
-                        @foreach (Copy copy1 in copies)
-                        {
-                            <option value="@copy1.getId()">@copy1.getId()</option>
-                        }
-                    </select>
+                    <input type="submit" name="button" value="Lấy thông tin" />
+                    <input type="submit" name="button" value="Xóa" />
                 </td>
-                <td><input name="bookId" type="text" value="@bookId" disabled="true"></td>
-            </tr>
-            <tr>
-                <td><input type="submit" value="Lấy"></td>
             </tr>
         </table>
-    }
-</form>
-
-<form action="~/Admin/UpdateBookCopy" method="post">
-    @if (!string.IsNullOrEmpty(bookId) && copy.getId() != "")
-    {
+    </form>
+}
+@if (!string.IsNullOrEmpty(currentCopy.getId()))
+{
+    <form action="~/Admin/UpdateBookCopy" method="post">
         <table>
             <tr>
-                <th>STT</th>
                 <th>ID sách</th>
+                <th>ID bản sao</th>
                 <th>Trạng thái</th>
                 <th>Ghi chú</th>
                 <th></th>
-
             </tr>
             <tr>
-                <td><input name="id" type="text" value="@copy.getId()" disabled="true"></td>
-                <td><input name="bookId" type="text" value="@bookId" disabled="true"></td>
+                <td><input name="bookId" value="@currentCopy.getBookId()" readonly /></td>
+                <td><input name="id" value="@currentCopy.getId()" readonly /></td>
                 <td>
                     <select name="status">
-                        @switch (copy.getNotes())
+                        @switch (currentCopy.getStatus())
                         {
-                             case "Còn":
-                                <option value="Còn" selected ="true">Còn</option>
+                            case "Còn":
+                                <option value="Còn" selected>Còn</option>
                                 <option value="Cho mượn">Cho mượn</option>
                                 <option value="Mất">Mất</option>
                                 <option value="Hỏng">Hỏng</option>
                                 break;
                             case "Cho mượn":
                                 <option value="Còn">Còn</option>
-                                <option value="Cho mượn" selected="true">Cho mượn</option>
+                                <option value="Cho mượn" selected>Cho mượn</option>
                                 <option value="Mất">Mất</option>
                                 <option value="Hỏng">Hỏng</option>
                                 break;
                             case "Mất":
                                 <option value="Còn">Còn</option>
                                 <option value="Cho mượn">Cho mượn</option>
-                                <option value="Mất" selected="true">Mất</option>
+                                <option value="Mất" selected>Mất</option>
                                 <option value="Hỏng">Hỏng</option>
                                 break;
                             case "Hỏng":
                                 <option value="Còn">Còn</option>
                                 <option value="Cho mượn">Cho mượn</option>
                                 <option value="Mất">Mất</option>
-                                <option value="Hỏng" selected="true">Hỏng</option>
+                                <option value="Hỏng" selected>Hỏng</option>
                                 break;
                         }
                     </select>
                 </td>
-                <td><input name="note" type="text" value="@copy.getNotes()"></td>
+                <td><input name="notes" type="text" value="@currentCopy.getNotes()"></td>
+                <td><input name="send" type="submit" value="Cập nhật"></td>
             </tr>
-            <tr>
-                <td><input type="submit" value="Cập nhật"></td>
-            </tr>
-
-
         </table>
-    }
-</form>
- 
-
-<form action="~/Admin/DeleteBookCopy" method="post">
-    @if (!string.IsNullOrEmpty(bookId))
-    {
-        <table>
-            <tr>
-                <th>STT</th>
-                <th>ID sách</th>
-
-            </tr>
-            <tr>
-                @foreach (Copy copy1 in copies)
-                {
-                    <select name="id">
-                        <option value="@copy1.getId()">@copy1.getId()</option>
-                    </select>
-                }
-                <td><input name="bookId" type="text" value="@bookId" disabled="true"></td>
-            </tr>
-
-            <tr>
-                <td><input type="submit" value="Xóa"></td>
-            </tr>
-
-        </table>
-    }
-</form>
-
+    </form>
+}
 <h4>Bảng thông tin bản sao sách</h4>
 <table id="library-table">
     <thead>

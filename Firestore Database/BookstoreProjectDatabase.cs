@@ -255,6 +255,7 @@ namespace BookstoreProject.Firestore_Database
                            id.GetValue<string>("Status"),
                            id.GetValue<string>("Notes")));
             }
+            Console.WriteLine("copyArrayList LoadCopiesWithBookId: " + copyArrayList.Count());
             return copyArrayList;
         }
 

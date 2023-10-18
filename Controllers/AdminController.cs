@@ -1,6 +1,7 @@
 ﻿using BookstoreProject.Firestore_Database;
 using BookstoreProject.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Text;
 
 namespace BookstoreProject.Controllers
@@ -293,31 +294,44 @@ namespace BookstoreProject.Controllers
         {
             BookstoreProjectDatabase.LoadBooks();
             BookstoreProjectDatabase.LoadCopies();
-            ViewBag.CopyId = new Copy();
-            ViewBag.BookId = "";
+            ViewBag.copies = new List<Copy>();
+            ViewBag.bookId = "";
+            ViewBag.currentCopy = new Copy();
+            Console.WriteLine("ViewBag.bookId " + ViewBag.bookId);
             return View();
         }
 
-        [HttpPost]
-        public IActionResult LoadCopy(string idBook)
+    
+        public IActionResult LoadCopy(string bookId)
         {
-            ViewBag.ListCopy = BookstoreProjectDatabase.LoadCopiesWithBookId(idBook);
-
             BookstoreProjectDatabase.LoadBooks();
             BookstoreProjectDatabase.LoadCopies();
-            ViewBag.BookId = idBook;
-            return RedirectToAction("BookCopyManagement", "Admin");
+            ViewBag.copies = BookstoreProjectDatabase.LoadCopiesWithBookId(bookId);
+            ViewBag.bookId = bookId;
+            Console.WriteLine("ViewBag.bookId " + ViewBag.bookId);
+            ViewBag.currentCopy = new Copy();
+            return View("BookCopyManagement");
         }
 
-        [HttpPost]
-        public IActionResult LoadInfoCopy(string idBook, string idCopy)
+      
+        public IActionResult LoadInfoCopy(string bookId, string id, string button)
         {
-            Copy copy = BookstoreProjectDatabase.LoadCopyInfo(idBook, idCopy);
+            if(button.Equals("Lấy thông tin")) 
+            {
+                ViewBag.copies = BookstoreProjectDatabase.LoadCopiesWithBookId(bookId);
+                ViewBag.bookId = bookId;
+                ViewBag.currentCopy = BookstoreProjectDatabase.LoadCopyInfo(bookId, id);
+            }
+            else if(button.Equals("Xóa"))
+            {
+                ViewBag.copies = new List<Copy>();
+                ViewBag.bookId = "";
+                ViewBag.currentCopy = new Copy();
+                BookstoreProjectDatabase.DeleteBookCopy(bookId, id);
+            }
             BookstoreProjectDatabase.LoadBooks();
             BookstoreProjectDatabase.LoadCopies();
-            ViewBag.BookId = idBook;
-            ViewBag.CopyId = copy;
-            return RedirectToAction("BookCopyManagement", "Admin");
+            return View("BookCopyManagement");
         }
 
 
@@ -328,7 +342,10 @@ namespace BookstoreProject.Controllers
             BookstoreProjectDatabase.AddBookCopy(new Copy((copies.Count + 1).ToString(), bookId, status, notes));
             BookstoreProjectDatabase.LoadBooks();
             BookstoreProjectDatabase.LoadCopies();
-            return RedirectToAction("BookCopyManagement", "Admin");
+            ViewBag.copies = new List<Copy>();
+            ViewBag.bookId = "";
+            ViewBag.currentCopy = new Copy();
+            return View("BookCopyManagement");
         }
 
         [HttpPost]
@@ -337,7 +354,10 @@ namespace BookstoreProject.Controllers
             BookstoreProjectDatabase.UpdateBookCopy(new Copy(id, bookId, status, notes));
             BookstoreProjectDatabase.LoadBooks();
             BookstoreProjectDatabase.LoadCopies();
-            return RedirectToAction("BookCopyManagement", "Admin");
+            ViewBag.copies = new List<Copy>();
+            ViewBag.bookId = "";
+            ViewBag.currentCopy = new Copy();
+            return View("BookCopyManagement");
         }
 
         [HttpPost]
@@ -346,7 +366,10 @@ namespace BookstoreProject.Controllers
             BookstoreProjectDatabase.DeleteBookCopy(bookId, id);
             BookstoreProjectDatabase.LoadBooks();
             BookstoreProjectDatabase.LoadCopies();
-            return RedirectToAction("BookCopyManagement", "Admin");
+            ViewBag.copies = new List<Copy>();
+            ViewBag.bookId = "";
+            ViewBag.currentCopy = new Copy();
+            return View("BookCopyManagement");
         }
 
         //Trang quản lý thể loại
