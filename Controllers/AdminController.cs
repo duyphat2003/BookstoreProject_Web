@@ -377,5 +377,17 @@ namespace BookstoreProject.Controllers
         {
             return View();
         }
+
+        public IActionResult ReportManagement()
+        {
+            BookstoreProjectDatabase.LoadBooks();
+            BookstoreProjectDatabase.LoadCopies();
+            BookstoreProjectDatabase.LoadAccounts();
+            BookstoreProjectDatabase.LoadLoan();
+            BookstoreProjectDatabase.LoadLibraryCards();
+
+
+            return View();
+        }
     }
 }

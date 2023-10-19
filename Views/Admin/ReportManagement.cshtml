@@ -1,0 +1,187 @@
+﻿@using BookstoreProject.Firestore_Database;
+
+@{
+    ViewData["Title"] = "ReportManagement";
+    Layout = "~/Views/Shared/_LayoutAd.cshtml";
+    <link href="~/css/report.css" rel="stylesheet" />
+    <script src="~/js/reportchart.js"></script>
+
+}
+
+<h4>Thống kê</h4>
+
+<table class="tb tb-hover">
+    <tr>
+        <th>Tổng số sách</th>
+        <td>@BookstoreProjectDatabase.books.Count()</td>
+    </tr>
+    <tr>
+        <th>Tổng số bản sao</th>
+        <td>@BookstoreProjectDatabase.copies.Count()</td>
+    </tr>
+    <tr>
+        <th>Tổng số tài khoản</th>
+        <td>@BookstoreProjectDatabase.accounts.Count()</td>
+    </tr>
+    <tr>
+        <th>Tổng số thẻ thư viện</th>
+        <td>@BookstoreProjectDatabase.libraryCards.Count()</td>
+    </tr>
+    <tr>
+        <th>Tổng số phiếu mượn</th>
+        <td>@BookstoreProjectDatabase.loans.Count()</td>
+    </tr>
+</table>
+
+<style>
+    .tb {
+        width: 400%;
+        display: flex;
+        padding: 1px;
+    }
+
+        .tb tr {
+            color: #000000;
+            border-bottom: 1px solid #484848;
+            font-size: 12px;
+        }
+
+        .tb th {
+            width: 250%;
+            padding: 5px 5px;
+        }
+
+        .tb td {
+            width: 150%;
+            padding: 5px 2px;
+        }
+
+        .tb.tb-hover tr:hover {
+            background: #202020;
+            color: #696969;
+        }
+
+</style>
+
+<h4>Tổng bản sao</h4>
+
+<table class="tb1 tb1-hover">
+    <tr>
+        <th>Sách</th>
+        <th>Tổng số bản sao</th>
+    </tr>
+    @{
+        foreach (Book book in BookstoreProjectDatabase.books)
+        {
+            <tr>
+                @{List<Copy> copies = BookstoreProjectDatabase.LoadCopiesWithBookId(book.getId(), "Còn");
+                    <td>@book.getTitle()</td>
+                    <td class="sl">@copies.Count()</td>
+                 }
+            </tr>
+        }
+    }
+</table>
+
+
+<style>
+    .tb1 {
+        width: 400%;
+        display: flex;
+        padding: 1px;
+    }
+
+        .tb1 tr {
+            color: #000000;
+            border-bottom: 1px solid #484848;
+            font-size: 12px;
+        }
+
+        .tb1 th {
+            padding: 5px 5px;
+            text-align: center;
+        }
+
+        .tb1 td {
+            padding: 5px 2px;
+        }
+
+        .tb1 .sl {
+            text-align: center;
+            padding: 5px 2px;
+        }
+
+        .tb1.tb1-hover tr:hover {
+            background: #202020;
+            color: #696969;
+        }
+
+</style>
+
+
+<h4>Bảng tổng quát</h4>
+
+<table class="tb2 tb2-hover">
+    <tr>
+        <th>Sách</th>
+        <th>Còn</th>
+        <th>Cho mượn</th>
+        <th>Mất</th>
+        <th>Hỏng</th>
+    </tr>
+    @{
+        foreach (Book book in BookstoreProjectDatabase.books)
+        {
+
+            <tr>
+                @{
+                    <td class="ts">@book.getTitle()</td>
+                    List<Copy> copies = BookstoreProjectDatabase.LoadCopiesWithBookId(book.getId(), "Còn");
+                    <td>@copies.Count()</td>
+                    copies = BookstoreProjectDatabase.LoadCopiesWithBookId(book.getId(), "Cho mượn");
+                    <td>@copies.Count()</td>
+                    copies = BookstoreProjectDatabase.LoadCopiesWithBookId(book.getId(), "Mất");
+                    <td>@copies.Count()</td>
+                    copies = BookstoreProjectDatabase.LoadCopiesWithBookId(book.getId(), "Hỏng");
+                    <td>@copies.Count()</td>
+                }
+            </tr>
+        }
+    }
+
+</table>
+<style>
+    .tb2 {
+        width: 400%;
+        display: flex;
+        padding: 1px;
+    }
+
+        .tb2 tr {
+            color: #000000;
+            border-bottom: 1px solid #484848;
+            font-size: 12px;
+        }
+
+        .tb2 th {
+            padding: 5px 5px;
+            text-align: center;
+        }
+
+        .tb2 .ts {
+            padding: 5px 5px;
+            text-align: left
+        }
+
+        .tb2 td {
+            text-align: center;
+            padding: 5px 2px;
+        }
+
+        .tb2.tb2-hover tr:hover {
+            background: #202020;
+            color: #696969;
+        }
+
+</style>
+
