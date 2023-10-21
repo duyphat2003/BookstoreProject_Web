@@ -386,6 +386,7 @@ namespace BookstoreProject.Controllers
             BookstoreProjectDatabase.LoadLoan();
             BookstoreProjectDatabase.LoadLibraryCards();
 
+            
 
             return View();
         }
