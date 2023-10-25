@@ -1,0 +1,382 @@
+﻿@using BookstoreProject.Firestore_Database;
+
+@{
+    List<int> copiesCounts = new List<int>();
+    List<int> copiesCounts1 = new List<int>();
+    List<int> copiesCounts2 = new List<int>();
+    List<int> copiesCounts3 = new List<int>();
+    List<int> copiesCounts4 = new List<int>();
+    List<string> barColors = new List<string>();
+    List<string> bookNames = new List<string>();
+    foreach(Book book1 in BookstoreProjectDatabase.books)
+    {
+        List<Copy> copies1 = BookstoreProjectDatabase.LoadCopiesWithBookId(book1.getId());
+        List<Copy> copies2 = BookstoreProjectDatabase.LoadCopiesWithBookId(book1.getId(), "Còn");
+        List<Copy> copies3 = BookstoreProjectDatabase.LoadCopiesWithBookId(book1.getId(), "Cho mượn");
+        List<Copy> copies4 = BookstoreProjectDatabase.LoadCopiesWithBookId(book1.getId(), "Mất");
+        List<Copy> copies5 = BookstoreProjectDatabase.LoadCopiesWithBookId(book1.getId(), "Hỏng");
+        if (copies1.Count() <= 0)
+        {
+            copiesCounts.Add(0);
+        }
+        else
+        {
+            copiesCounts.Add(copies1.Count());
+        }
+
+        if (copies2.Count() <= 0)
+        {
+            copiesCounts1.Add(0);
+        }
+        else
+        {
+            copiesCounts1.Add(copies2.Count());
+        }
+
+        if (copies3.Count() <= 0)
+        {
+            copiesCounts2.Add(0);
+        }
+        else
+        {
+            copiesCounts2.Add(copies3.Count());
+        }
+
+        if (copies4.Count() <= 0)
+        {
+            copiesCounts3.Add(0);
+        }
+        else
+        {
+            copiesCounts3.Add(copies4.Count());
+        }
+
+
+        if (copies5.Count() <= 0)
+        {
+            copiesCounts4.Add(0);
+        }
+        else
+        {
+            copiesCounts4.Add(copies5.Count());
+        }
+
+        bookNames.Add(book1.getTitle());
+        barColors.Add("red");
+    }
+
+    ViewData["Title"] = "ReportManagement";
+    Layout = "~/Views/Shared/_LayoutAd.cshtml";
+}
+
+<h4>Thống kê</h4>
+
+<table class="tb tb-hover">
+    <tr>
+        <th>Tổng số sách</th>
+        <td>@BookstoreProjectDatabase.books.Count()</td>
+    </tr>
+    <tr>
+        <th>Tổng số bản sao</th>
+        <td>@BookstoreProjectDatabase.copies.Count()</td>
+    </tr>
+    <tr>
+        <th>Tổng số tài khoản</th>
+        <td>@BookstoreProjectDatabase.accounts.Count()</td>
+    </tr>
+    <tr>
+        <th>Tổng số thẻ thư viện</th>
+        <td>@BookstoreProjectDatabase.libraryCards.Count()</td>
+    </tr>
+    <tr>
+        <th>Tổng số phiếu mượn</th>
+        <td>@BookstoreProjectDatabase.loans.Count()</td>
+    </tr>
+</table>
+
+<canvas id="myGeneralChart" style="width:100%;max-width:1000px"></canvas>
+
+<style>
+    .tb {
+        width: 400%;
+        display: flex;
+        padding: 1px;
+    }
+
+        .tb tr {
+            color: #000000;
+            border-bottom: 1px solid #484848;
+            font-size: 12px;
+        }
+
+        .tb th {
+            width: 250%;
+            padding: 5px 5px;
+        }
+
+        .tb td {
+            width: 150%;
+            padding: 5px 2px;
+        }
+
+        .tb.tb-hover tr:hover {
+            background: #202020;
+            color: #696969;
+        }
+
+</style>
+
+<h4>Tổng bản sao</h4>
+
+<table class="tb1 tb1-hover">
+    <tr>
+        <th>Sách</th>
+        <th>Tổng số bản sao</th>
+    </tr>
+    @{
+        foreach (Book book in BookstoreProjectDatabase.books)
+        {
+            <tr>
+                @{
+                    List<Copy> copies = BookstoreProjectDatabase.LoadCopiesWithBookId(book.getId());
+                    <td>@book.getTitle()</td>
+                    <td class="sl">@copies.Count()</td>
+                }
+            </tr>
+        }
+    }
+</table>
+<canvas id="myGeneralCopyChart" style="width:100%;max-width:1000px"></canvas>
+
+<style>
+    .tb1 {
+        width: 400%;
+        display: flex;
+        padding: 1px;
+    }
+
+        .tb1 tr {
+            color: #000000;
+            border-bottom: 1px solid #484848;
+            font-size: 12px;
+        }
+
+        .tb1 th {
+            padding: 5px 5px;
+            text-align: center;
+        }
+
+        .tb1 td {
+            padding: 5px 2px;
+        }
+
+        .tb1 .sl {
+            text-align: center;
+            padding: 5px 2px;
+        }
+
+        .tb1.tb1-hover tr:hover {
+            background: #202020;
+            color: #696969;
+        }
+
+</style>
+
+
+<h4>Bảng tổng quát</h4>
+
+<table class="tb2 tb2-hover">
+    <tr>
+        <th>Sách</th>
+        <th>Còn</th>
+        <th>Cho mượn</th>
+        <th>Mất</th>
+        <th>Hỏng</th>
+    </tr>
+    @{
+        foreach (Book book in BookstoreProjectDatabase.books)
+        {
+            <tr>
+                @{
+                    <td class="ts">@book.getTitle()</td>
+                    List<Copy> copies = BookstoreProjectDatabase.LoadCopiesWithBookId(book.getId(), "Còn");
+                    <td>@copies.Count()</td>
+                    copies = BookstoreProjectDatabase.LoadCopiesWithBookId(book.getId(), "Cho mượn");
+                    <td>@copies.Count()</td>
+                    copies = BookstoreProjectDatabase.LoadCopiesWithBookId(book.getId(), "Mất");
+                    <td>@copies.Count()</td>
+                    copies = BookstoreProjectDatabase.LoadCopiesWithBookId(book.getId(), "Hỏng");
+                    <td>@copies.Count()</td>
+                }
+            </tr>
+        }
+    }
+
+</table>
+<canvas id="myGeneralCopyEachBooksChart" style="width:100%;max-width:1000px"></canvas>
+<canvas id="myGeneralCopyEachBooksChart1" style="width:100%;max-width:1000px"></canvas>
+<canvas id="myGeneralCopyEachBooksChart2" style="width:100%;max-width:1000px"></canvas>
+<canvas id="myGeneralCopyEachBooksChart3" style="width:100%;max-width:1000px"></canvas>
+
+<style>
+    .tb2 {
+        width: 400%;
+        display: flex;
+        padding: 1px;
+    }
+
+        .tb2 tr {
+            color: #000000;
+            border-bottom: 1px solid #484848;
+            font-size: 12px;
+        }
+
+        .tb2 th {
+            padding: 5px 5px;
+            text-align: center;
+        }
+
+        .tb2 .ts {
+            padding: 5px 5px;
+            text-align: left
+        }
+
+        .tb2 td {
+            text-align: center;
+            padding: 5px 2px;
+        }
+
+        .tb2.tb2-hover tr:hover {
+            background: #202020;
+            color: #696969;
+        }
+
+</style>
+
+
+
+<script>
+    var xValues = ["Tổng số sách", "Tổng số bản sao", "Tổng số tài khoản", "Tổng số thẻ thư viện", "Tổng số phiếu mượn"];
+    var yValues = [@BookstoreProjectDatabase.books.Count(), @BookstoreProjectDatabase.copies.Count(), @BookstoreProjectDatabase.accounts.Count(), @BookstoreProjectDatabase.libraryCards.Count(), @BookstoreProjectDatabase.loans.Count(), 0];
+    var barColors = ["red", "green", "blue", "orange", "brown"];
+
+    new Chart("myGeneralChart", {
+        type: "bar",
+        data: {
+            labels: xValues,
+            datasets: [{
+                backgroundColor: barColors,
+                data: yValues
+            }]
+        },
+        options: {
+            legend: { display: false },
+            title: {
+                display: true,
+                text: "Tổng quát"
+            }
+        }
+    });    
+    //--------------------------------------------------------------------------------------------------------------------
+    let xValues1 = @Html.Raw(Json.Serialize(bookNames));
+   
+    let yValues1 = @Html.Raw(Json.Serialize(copiesCounts));
+    let yValues2 = @Html.Raw(Json.Serialize(copiesCounts1));
+    let yValues3 = @Html.Raw(Json.Serialize(copiesCounts2));
+    let yValues4 = @Html.Raw(Json.Serialize(copiesCounts3));
+    let yValues5 = @Html.Raw(Json.Serialize(copiesCounts4));
+    
+    let barColors1 = @Html.Raw(Json.Serialize(barColors));
+
+    new Chart("myGeneralCopyChart", {
+        type: "bar",
+        data: {
+            labels: xValues1,
+            datasets: [{
+                backgroundColor: barColors1,
+                data: yValues1
+            }]
+        },
+        options: {
+            legend: { display: false },
+            title: {
+                display: true,
+                text: "Tổng số bản sao của từng sách"
+            }
+        }
+    });
+    //--------------------------------------------------------------------------------------------------------------------
+
+    new Chart("myGeneralCopyEachBooksChart", {
+        type: "bar",
+        data: {
+            labels: xValues1,
+            datasets: [{
+                backgroundColor: barColors1,
+                data: yValues2
+            }]
+        },
+        options: {
+            legend: { display: false },
+            title: {
+                display: true,
+                text: "Tổng số bản sao có trạng thái còn của từng sách"
+            }
+        }
+    });
+
+    new Chart("myGeneralCopyEachBooksChart1", {
+        type: "bar",
+        data: {
+            labels: xValues1,
+            datasets: [{
+                backgroundColor: barColors1,
+                data: yValues3
+            }]
+        },
+        options: {
+            legend: { display: false },
+            title: {
+                display: true,
+                text: "Tổng số bản sao có trạng thái cho mượn của từng sách"
+            }
+        }
+    });
+
+    new Chart("myGeneralCopyEachBooksChart2", {
+        type: "bar",
+        data: {
+            labels: xValues1,
+            datasets: [{
+                backgroundColor: barColors1,
+                data: yValues4
+            }]
+        },
+        options: {
+            legend: { display: false },
+            title: {
+                display: true,
+                text: "Tổng số bản sao có trạng thái mất của từng sách"
+            }
+        }
+    });
+
+    new Chart("myGeneralCopyEachBooksChart3", {
+        type: "bar",
+        data: {
+            labels: xValues1,
+            datasets: [{
+                backgroundColor: barColors1,
+                data: yValues5
+            }]
+        },
+        options: {
+            legend: { display: false },
+            title: {
+                display: true,
+                text: "Tổng số bản sao có trạng thái hỏng của từng sách"
+            }
+        }
+    });
+</script>
+

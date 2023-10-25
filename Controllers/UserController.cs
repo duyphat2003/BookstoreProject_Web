@@ -45,8 +45,7 @@ namespace BookstoreProject.Controllers
         public async Task<IActionResult> SignIn(LoginDTO loginModel)
         {
             BookstoreProjectDatabase.SearchAccount(loginModel.Account, loginModel.Password);
-            BookstoreProjectDatabase.UpdateAccount(loginModel.Account, true);
-            if (BookstoreProjectDatabase.accountInfo != null)
+            if (!string.IsNullOrEmpty(BookstoreProjectDatabase.accountInfo.getAccount()))
             {
                 var claims = new List<Claim>
                     {
@@ -61,14 +60,14 @@ namespace BookstoreProject.Controllers
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity),authProperties);
 
-                if(BookstoreProjectDatabase.accountInfo.getRole().Equals("Sinh viên"))
+                if(BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.SINHVIEN))
                     return RedirectToAction("Index", "Home");
                 else
                     return RedirectToAction("Index", "Admin");
             }
             return View();
         }
-        public async Task<ActionResult> LogOut()
+        public async Task<IActionResult> LogOut()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             BookstoreProjectDatabase.UpdateAccount(BookstoreProjectDatabase.accountInfo.getAccount(), false);

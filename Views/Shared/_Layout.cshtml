@@ -38,7 +38,7 @@
                                     foreach (Genre genre in BookstoreProjectDatabase.genres)
                                     {
                                         <li>
-                                            <a href="@Url.Action("index", "bookgenre", new { nameGenre = genre.getName()})"> @genre.getName()</a>
+                                            <a href="@Url.Action("LoadBooksWithGenre", "Home", new { nameGenre = genre.getName()})"> @genre.getName()</a>
                                         </li>
                                     }
                                 }
@@ -53,7 +53,7 @@
                     </div>
 
                     <div class="navbar-expand-lg d-flex flex-row" style="width:300px">
-                        <form action="/" method=post style="width:100%" class="d-flex flex-row">
+                        <form action="~/Home/LoadBooksWithName" method=post style="width:100%" class="d-flex flex-row">
                             <div style="width:85%">
                                 <input type="text" name="name" placeholder="Tìm kiếm sản phẩm mong muốn" style="width:100%" />
                             </div>
@@ -73,7 +73,7 @@
                     <div class="flex-column align-items-center d-flex me-4">
                         <div class="mb-1"><img alt="Lỗi ảnh" src="~/lib/shopping-cart.png" width="25" height="25" /></div>
                         <div>
-                            <a class="nav-item">@Html.ActionLink("Giỏ hàng", "SignIn", "User", null, new { @class = "nav-link"})</a>
+                            <a class="nav-item">@Html.ActionLink("Giỏ hàng", "Cart", "Home", null, new { @class = "nav-link"})</a>
                         </div>
                     </div>
                     <div class="flex-column align-items-center d-flex me-4">
@@ -93,7 +93,7 @@
                                     <span class="nav-item">@User.Identity.Name</span>
                                 </button>
                                 <ul class="dropdown-menu" style="top:unset;left:unset;">
-                                    @if (BookstoreProjectDatabase.accountInfo.getRole().Equals("Sinh viên"))
+                                    @if (BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.SINHVIEN))
                                     {
                                         Console.WriteLine("User.Claims.ElementAt(2).ToString(): Sinh viên");
                                         <li class="nav-item">@Html.ActionLink("Thông tin tài khoản", "Profile", "User", null, new { @class = "nav-link"})</li>

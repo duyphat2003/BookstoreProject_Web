@@ -1,10 +1,12 @@
 ﻿@{
     @using BookstoreProject.Firestore_Database;
+    @using System.Globalization;
     @model List<Book>
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutAd.cshtml";
     List<Book> books = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.books;
     List<Genre> genres = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.genres;
+
     <link rel="stylesheet" type="text/css" href="~/css/admin.css">
 
 }
@@ -13,29 +15,238 @@
     <div class="dropdown">
         <button class="dropbtn">Thể loại</button>
         <div class="dropdown-content">
-            <a href="#"> 1</a>
-            <a href="#">2</a>
-            <a href="#">3</a>
+            @foreach (Genre genre in genres)
+            {
+                <a href="~/Admin/BookManagement?nameGenre=@genre.getName()">@genre.getName()</a>
+            }
         </div>
     </div>
 </div>
 <br />
+                           
+<form action="~/Admin/ManageBookManagement" method="post" style="margin-bottom:10px">
+    <fieldset>
+        <legend>
+            <h4>Thông tin sách</h4>
+        </legend>
+    <table>
+        <tr>
+            <th>Tên sách</th>
+            <td><input name="name" type="text" required></td>
+        </tr>
+        <tr>
+            <th>Thể loại</th>
+                <td>
+
+                    <select name="genre">
+                        @{
+                            foreach (Genre genre in genres)
+                            {
+                                <option value="@genre.getName()">
+                                    @genre.getName()
+                                </option>
+                            }
+                        }
+                    </select>
+                </td>
+        </tr>
+         <tr>
+            <th>Tác giả</th>
+                <td><input name="author" type="text" required></td>
+         </tr>
+
+        <tr>
+            <th>Nội dung</th>
+                <td><textarea name="content" rows="3" cols="40" required></textarea></td>
+        </tr>
+
+        <tr>
+            <th>Năm xuất bản</th>
+                <td>
+                    <select name="yearPublished">
+                        @{DateTime lastYear = DateTime.Today.AddYears(-11);
+                            for(int i = 0; i <= 10; i++)
+                            {
+                                lastYear = lastYear.AddYears(1);
+                                string s = lastYear.ToString("yyyy", CultureInfo.InvariantCulture);
+                                <option value="@s">
+                                    @s
+                                </option>
+                            }
+                        }
+                    </select>
+                </td>
+        </tr>
+
+        <tr>
+            <th>Nhà xuất bản</th>
+                <td><input name="Publisher" type="text" required></td>
+        </tr>
+
+            <tr>
+                <th>Hình ảnh</th>
+                <td><input name="urlImage" type="url" required></td>
+            </tr>
+
+    </table>
+
+    <div class="buttons" style="margin-top:10px">
+            <button name="button" value="add"><i class="fas fa-plus"></i> Thêm</button>
+    </div>
+    </fieldset>
+</form>
+
+<table>
+    <tr>
+        <th>Mã sách</th>
+        <td>
+            <form action="~/Admin/LoadContentBookWithId" method="post">
+                <select name="idBook">
+                    @foreach (Book book1 in books)
+                    {
+                        <option value="@book1.getId()">
+                            @book1.getId()
+                        </option>
+                    }
+                </select>
+                <input type="submit" value="Lấy" />
+            </form>
+        </td>
+    </tr>
+</table>
+
+<form action="~/Admin/ManageBookManagement" method="post" style="margin-bottom:10px">
+    <fieldset>
+        <legend>
+            <h4>Thông tin sách</h4>
+        </legend>
+        <table>
+            @{ 
+                Book book = ViewBag.BookContent;
+                if(!string.IsNullOrEmpty(book.getId()))
+                {
+                    <tr>
+                        <th>Mã sách</th>
+                        <td><input name="idBook" id="idBook" type="text" disable ="true" value="@book.getId()"></td>
+                    </tr>
+                        <tr>
+                            <th>Tên sách</th>
+                            <td><input name="name" id="name" type="text" required value="@book.getTitle()"></td>
+                        </tr>
+                        <tr>
+                            <th>Thể loại</th>
+                        <td>
+
+                            <select name="genre">
+                                @{
+                                    foreach (Genre genre in genres)
+                                    {
+                                        if (genre.getName().Equals(@book.getGenre()))
+                                        {
+                                            <option value="@genre.getName()" selected>
+                                                @genre.getName()
+                                            </option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@genre.getName()">
+                                                @genre.getName()
+                                            </option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </td>
+                        </tr>
+                        <tr>
+                            <th>Tác giả</th>
+                            <td><input name="author" id="author" type="text" required value="@book.getAuthor()"></td>
+                        </tr>
+
+                        <tr>
+                            <th>Nội dung</th>
+                            <td><textarea name="content" id="content" rows="3" cols="40">@book.getContent()</textarea></td>
+                        </tr>
+
+                    <tr>
+                        <th>Năm xuất bản</th>
+                        <td>
+                            <select name="yearPublished">
+                                @{
+                                    for (int i = 0; i <= 10; i++)
+                                    {
+                                        DateTime lastYear1 = DateTime.Today.AddYears(-i);
+                                        string s1 = lastYear1.ToString("yyyy", CultureInfo.InvariantCulture);
+                                        if (s1.Equals(@book.getYearPublished()))
+                                        {
+                                            <option value="@s1" selected>
+                                                @s1
+                                            </option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@s1">
+                                                @s1
+                                            </option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </td>
+                        </tr>
+
+                        <tr>
+                            <th>Nhà xuất bản</th>
+                            <td><input name="Publisher" id="Publisher" type="text" required value="@book.getPublisher()"></td>
+                        </tr>
+
+                        <tr>
+                            <th>Hình ảnh</th>
+                            <td><input name="urlImage" id="urlImage" type="url" required value="@book.getUrlImage()"></td>
+                        </tr>                
+                }
+            }
+        </table>
+
+        <div class="buttons" style="margin-top:10px">
+            <button name="button" value="update"><i class="fas fa-edit"></i> Sửa</button>
+        </div>
+    </fieldset>
+</form>
+
+<table>
+    <tr>
+        <th>Mã sách</th>
+        <td>
+            <form action="~/Admin/ManageBookManagement" method="post">
+                <select name="idBook">
+                    @foreach (Book book1 in books)
+                    {
+                        <option value="@book1.getId()">
+                            @book1.getId()
+                        </option>
+                    }
+                </select>
+                <button name="button" value="delete"><i class="fas fa-trash"></i> Xóa</button>
+            </form>
+        </td>
+    </tr>
+</table>
+
 <div class="title homePage">Quản lí sách</div>
 
 <div class="homePage">
     
     <div class="container-lg">
         <div class="products">
-            @foreach (var book in books)
+            @foreach (var book2 in books)
             {
-                List<Copy> copies = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.LoadCopiesWithBookId(book.getId(), "Còn");
-                string status = copies.Count > 0 ? "Còn" : "Hết";
                 <div class="prod-item">
-                    <div class="image"><img src="@book.getUrlImage()" alt="@book.getTitle()"></div>
-                    <div class="title">@book.getTitle()</div>
-                    
+                    <div class="image"><img src="@book2.getUrlImage()" alt="@book2.getTitle()"></div>
+                    <div class="title2">@book2.getTitle()</div>
                 </div>
             }
         </div>
     </div>
 </div>
+

@@ -7,6 +7,8 @@
         string status;
         string notes;
 
+        public Copy() { }
+
         public Copy(string id, string bookId, string status, string notes)
         {
             this.id = id;

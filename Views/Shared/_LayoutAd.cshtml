@@ -1,4 +1,5 @@
-﻿
+﻿@using BookstoreProject.Firestore_Database;
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +13,7 @@
     <link href="~/css/styles.css" rel="stylesheet" />
     <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
     <style type="text/css">
         .menu1 {
             color: white;
@@ -48,7 +49,7 @@
                     @* <a class="dropdown-item" style="color:red" href="@Url.Action("Details", "TaiKhoans", new { id = u.MaNguoiDung  })"> Tài khoản : @u.Email</a> *@
 
                     <div class="dropdown-divider menu1"></div>
-                    <a class="dropdown-item" href="/User/LogOut"> ĐĂNG XUẤT</a>
+                    <a class="dropdown-item" href="/User/LogOut">ĐĂNG XUẤT</a>
                 </div>
             </li>
         </ul>
@@ -60,50 +61,71 @@
                     <div class="nav">
                         <div class="sb-sidenav-menu-heading" style="color:red"> <h5>DANH SÁCH</h5></div>
                         <p style="font-size: 12px; padding: 10px;">QUẢN LÍ</p>
-                        <div style="padding-left: 20px;">
-                            <a href="@Url.Action("BookManagement", "Admin")" style="color: white;">
-                                @* text-decoration: none; *@
-                                <i class="fas fa-book" style="margin-right: 5px;"></i>
-                                Quản lí sách
-                            </a>
-                        </div>
-                        <br />
-                        <div style="padding-left: 20px;">
-                            <a href="@Url.Action("Index", "Books")" style="color: white;">
-                                <i class="fas fa-copy" style="margin-right: 5px;"></i>
-                                Quản lí sách bản sao
-                            </a>
-                        </div>
-                        <br />
-                        <div style="padding-left: 20px;">
-                            <a href="@Url.Action("Librarycardmanagement", "Admin")" style="color: white;">
-                                <i class="fas fa-address-card" style="margin-right: 5px;"></i>
-                                Quản lí thẻ
-                            </a>
-                        </div>
-                        <br />
-                        <div style="padding-left: 20px;">
-                            <a href="@Url.Action("AccountManagement", "Admin")" style="color: white;">
-                                <i class="fas fa-user" style="margin-right: 5px;"></i>
-                                Quản lí tài khoản
-                            </a>
-                        </div>
-                        <br />
-                        <p style="font-size: 12px; padding: 10px;">CHỨC NĂNG</p>
-                        <div style="padding-left: 20px;">
-                            <a href="@Url.Action("Loanmanagement", "Admin")" style="color: white;">
-                                <i class="fas fa-newspaper" style="margin-right: 5px;"></i>
-                                Phiếu mượn
-                            </a>                           
-                        </div>
-                        <br />
-                        <p style="font-size: 12px; padding: 10px;">THỐNG KÊ</p>
-                        <div style="padding-left: 20px;">
-                            <a href="@Url.Action("Index", "Books")" style="color: white;">
-                                <i class="fas fa-chart-line" style="margin-right: 5px;"></i>
-                                Thống kê chung
-                            </a>
-                        </div>
+                        @if (BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.QUANLY) || BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.THUKHO))
+                        {
+                            <div style="padding-left: 20px;">
+                                <a href="@Url.Action("BookManagement", "Admin")" style="color: white;">
+                                    @* text-decoration: none; *@
+                                    <i class="fas fa-book" style="margin-right: 5px;"></i>
+                                    Quản lí sách
+                                </a>
+                            </div>
+
+                        }
+                        @if (BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.QUANLY) || BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.THUKHO))
+                        {
+                            <br />
+
+                            <div style="padding-left: 20px;">
+                                <a href="@Url.Action("Bookcopymanagement", "Admin")" style="color: white;">
+                                    <i class="fas fa-copy" style="margin-right: 5px;"></i>
+                                    Quản lí sách bản sao
+                                </a>
+                            </div>
+                 
+                        }
+                        @if (BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.QUANLY) || BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.THUTHU))
+                        {
+                            <br />
+                            <div style="padding-left: 20px;">
+                                <a href="@Url.Action("Librarycardmanagement", "Admin")" style="color: white;">
+                                    <i class="fas fa-address-card" style="margin-right: 5px;"></i>
+                                    Quản lí thẻ
+                                </a>
+                            </div>
+                        }
+                        @if (BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.QUANLY) || BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.THUTHU))
+                        {
+                            <br />
+                            <div style="padding-left: 20px;">
+                                <a href="@Url.Action("AccountManagement", "Admin")" style="color: white;">
+                                    <i class="fas fa-user" style="margin-right: 5px;"></i>
+                                    Quản lí tài khoản
+                                </a>
+                            </div>
+                        }
+                        @if (BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.QUANLY) || BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.THUTHU))
+                        {
+                            <br />
+                            <p style="font-size: 12px; padding: 10px;">CHỨC NĂNG</p>
+                            <div style="padding-left: 20px;">
+                                <a href="@Url.Action("Loanmanagement", "Admin")" style="color: white;">
+                                    <i class="fas fa-newspaper" style="margin-right: 5px;"></i>
+                                    Phiếu mượn
+                                </a>
+                            </div>
+                        }
+                        @if (BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.QUANLY))
+                        {
+                            <br />
+                            <p style="font-size: 12px; padding: 10px;">THỐNG KÊ</p>
+                            <div style="padding-left: 20px;">
+                                <a href="@Url.Action("ReportManagement", "Admin")" style="color: white;">
+                                    <i class="fas fa-chart-line" style="margin-right: 5px;"></i>
+                                    Thống kê chung
+                                </a>
+                            </div>
+                        }
                     </div>
                 </div>
 

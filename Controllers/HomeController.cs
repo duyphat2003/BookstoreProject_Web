@@ -38,6 +38,12 @@ namespace BookstoreProject.Controllers
                 BookstoreProjectDatabase.LoadGenre();
                 BookstoreProjectDatabase.LoadBooksSortedWithCopies();
             }
+<<<<<<< HEAD
+=======
+            BookstoreProjectDatabase.LoadBooks();
+            BookstoreProjectDatabase.LoadGenre();
+            BookstoreProjectDatabase.LoadBooksSortedWithCopies();
+>>>>>>> 34e957cddfb1f7afc8e62ec9b85ea53a9094d993
             return View();
         }
 
@@ -45,6 +51,19 @@ namespace BookstoreProject.Controllers
         public IActionResult BookList()
         {
             return View();
+        }
+
+        public IActionResult LoadBooksWithGenre(string nameGenre)
+        {
+            BookstoreProjectDatabase.LoadBooksWithGenre(nameGenre);
+            return RedirectToAction("BookList", "Home");
+        }
+
+        [HttpPost]
+        public IActionResult LoadBooksWithName(string name)
+        {
+            BookstoreProjectDatabase.LoadBooksWithKeyword(name);
+            return RedirectToAction("BookList", "Home");
         }
 
 
@@ -62,7 +81,16 @@ namespace BookstoreProject.Controllers
         // Trang giỏ hàng
         public IActionResult Cart()
         {
+            BookstoreProjectDatabase.LoadGenre();
+            Book book = BookstoreProjectDatabase.LoadContentBookWithId("KNS001");
+            ViewBag.meomeo = book;
+
             return View();
+        }
+
+        public IActionResult AddCart()
+        {
+            return RedirectToAction("Cart", "Home");
         }
 
         public IActionResult GetMoreProduct(int page=1,int pageSize=5)
@@ -72,10 +100,19 @@ namespace BookstoreProject.Controllers
         }
 
         //Trang thông tin người dùng
-
+        public IActionResult UserInfo(string id)
+        {
+            BookstoreProjectDatabase.LoadLoanWithId(id);   
+            return View();
+        }
 
         //Trang lịch sử mượn
-        public IActionResult Privacy()
+        public IActionResult UserLoanHistory()
+        {
+            return View();
+        }
+        //Trang thông báo của người dùng 
+        public IActionResult UserNofi()
         {
             return View();
         }
