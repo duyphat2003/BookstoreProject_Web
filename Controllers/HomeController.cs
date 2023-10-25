@@ -25,21 +25,19 @@ namespace BookstoreProject.Controllers
             {
                 BookstoreProjectDatabase.accountInfo = new Account(User.Claims.ElementAt(0).Value, User.Claims.ElementAt(1).Value, User.Claims.ElementAt(2).Value);
                 Console.WriteLine("User.Claims.ElementAt(2).ToString(): " + User.Claims.ElementAt(2).Value);
+            }          
+            if (name != null)
+            {
+                //Nếu có searchValue lấy ra danh sách book map vs searchValue
+                BookstoreProjectDatabase.SearchBook(name);
             }
-
-            BookstoreProjectDatabase.LoadBooks();
-            BookstoreProjectDatabase.LoadGenre();
-            BookstoreProjectDatabase.LoadBooksSortedWithCopies();
-            //if (name != null)
-            //{
-            //    //Nếu có searchValue lấy ra danh sách book map vs searchValue
-            //    BookstoreProjectDatabase.SearchBook(name);
-            //}
-            //else
-            //{
-            //    //Không có searchValue , load lại Bookdata
-            //    BookstoreProjectDatabase.LoadBooks();
-            //}
+            else
+            {
+                //Không có searchValue , load lại Bookdata
+                BookstoreProjectDatabase.LoadBooks();
+                BookstoreProjectDatabase.LoadGenre();
+                BookstoreProjectDatabase.LoadBooksSortedWithCopies();
+            }
             return View();
         }
 

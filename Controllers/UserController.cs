@@ -6,12 +6,20 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Security.Claims;
 using BookstoreProject.Dto;
+using BookstoreProject.Models;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Text;
+using System.ComponentModel.DataAnnotations;
 
 namespace BookstoreProject.Controllers
 {
     public class UserController : Controller
     {
         private readonly ILogger<UserController> _logger;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IEmailSender _emailSender;
 
         private FirebaseAuthProvider _auth;
         private static string _apiKey = "AIzaSyCjA_B3IWRegYfuYpe_j_7sPbbksrBbbDI";
@@ -21,14 +29,12 @@ namespace BookstoreProject.Controllers
             _logger = logger;
             _auth = new FirebaseAuthProvider(new FirebaseConfig(_apiKey));
         }
+
         public IActionResult Index()
         {
             return View();
         }
-        public IActionResult Registration()
-        {
-            return View();
-        }
+
 
         public IActionResult SignIn()
         {
@@ -69,31 +75,43 @@ namespace BookstoreProject.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDTO dtos)
+        {
+            bool user= BookstoreProjectDatabase.UpdateAccount(dtos.Account, dtos.ConfirmPassword);
+            if (!user)
+            {
+                throw new ArgumentException("Sai tài khoản");
+            }
+            else
+            {
+                return RedirectToAction("SignIn", "User");
+            }
+        }
+
+        //Email Service is not working while using firebase
+        //Not sure
+
         //[HttpPost]
-        //public async Task<IActionResult> Registration(SignUpDTO loginModel)
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> ForgotPassword(ForgotPasswordDTO dtos)
         //{
-        //    BookstoreProjectDatabase.SearchAccount(loginModel.Account, loginModel.Password);
-        //    if (BookstoreProjectDatabase.accountInfo != null)
-        //    {
-        //        throw new Exception("This account is already created.");
-        //    }
-
-        //    BookstoreProjectDatabase.AddAccount(loginModel);
-        //    var claims = new List<Claim>
-        //            {
-        //                new Claim(ClaimTypes.Name, BookstoreProjectDatabase.accountInfo.getAccount()),
-        //                new Claim(ClaimTypes.Role, BookstoreProjectDatabase.accountInfo.getRole()),
-        //            };
-        //    var claimsIdentity = new ClaimsIdentity(
-        //            claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-        //    var authProperties = new AuthenticationProperties { };
-
-        //    await HttpContext.SignInAsync(
-        //    CookieAuthenticationDefaults.AuthenticationScheme,
-        //    new ClaimsPrincipal(claimsIdentity),
-        //     authProperties);
-        //    return RedirectToAction("Index", "Home");
+        //    if (!ModelState.IsValid)
+        //        return View(dtos);
+        //    var user = await _userManager.FindByEmailAsync(dtos.Email);
+        //    if (user == null)
+        //        return RedirectToAction(nameof(ForgotPasswordConfirmation));
+        //    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        //    var callback = Url.Action(nameof(ResetPassword), "Account", new { token, email = user.Email }, Request.Scheme);
+        //    var message = new Message(new string[] { user.Email }, "Reset password token", callback, null);
+        //    await _emailSender.SendEmailAsync(message);
+        //    return RedirectToAction(nameof(ForgotPasswordConfirmation));
         //}
 
     }

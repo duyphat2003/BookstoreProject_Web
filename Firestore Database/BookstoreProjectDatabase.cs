@@ -868,6 +868,7 @@ namespace BookstoreProject.Firestore_Database
             }
         }
 
+
         // Xóa tài khoản - Manager
         public static void DeleteAccount(string nameAccount) => accountCollectionRef.Document(nameAccount).DeleteAsync();
     }

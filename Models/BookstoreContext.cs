@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Amazon.SimpleNotificationService.Model;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 namespace BookstoreProject.Models
 {
@@ -8,6 +10,7 @@ namespace BookstoreProject.Models
            : base(options)
         {
         }
+
     }
    
 }
