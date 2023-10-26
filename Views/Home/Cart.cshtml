@@ -2,7 +2,9 @@
 @{
     ViewData["Title"] = "Cart";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    Book book = ViewBag.meomeo;
+    List<Book> books = ViewBag.bookcart; 
+    List<Copy> copies = ViewBag.copiescart;
+    List<Copy> copies1 = ViewBag.copieschosencart;
 }
 
 <body>
@@ -11,22 +13,77 @@
     </header>
     <div class="container">
 
-        <div class="item_cart"  style="display:flex">
-            <div class="checkbox_cart" style="display:flex">
-                    <input class="check_box" type="checkbox" id="myCheckbox">
-            </div>
-                
-                <img class="img_pro_cart" style="display:flex"  src=" @book.getUrlImage()" alt="Ảnh sách">
-    
-            <div class="group-info" style="display:flex">
-                <div class="namePro" > @book.getTitle() </div>
-                <div class="tacGia"> @book.getAuthor()</div>
-            </div>
-            <div class"remote-cart" > xóa</div>
-        </div>
-        <a class="btn-add-to-muon" href="@Url.Action("Add", "YeuThich")">
+        @{
+            if (books.Count() > 0 && copies.Count() > 0 && copies1.Count() > 0)
+            {
+                foreach (Copy copy in copies)
+                {
+                    foreach (Book book in books)
+                    {
+                        if (copy.getBookId().Equals(book.getId()))
+                        {
+                            bool isExist = false;
+                            foreach (Copy copy1 in copies1)
+                            {
+                                if (copy.getId().Equals(copy1.getId()))
+                                {
+                                    isExist = true;
+                                    break;
+                                }
+                            }
+
+                            if (!isExist)
+                            {
+                                <div class="item_cart" style="display:flex">
+                                    <div class="checkbox_cart" style="display:flex">
+                                        <input class="check_box" type="checkbox" id="myCheckbox" href="~/Home/AddOrRemoveItem?copy=@copy">
+                                    </div>
+
+                                    <img class="img_pro_cart" style="display:flex" src=" @book.getUrlImage()" alt="Ảnh sách">
+
+                                    <div class="group-info" style="display:flex">
+                                        <div class="namePro"> @book.getTitle() </div>
+                                        <div class="tacGia"> @book.getAuthor()</div>
+                                    </div>
+                                    <div class"remote-cart">
+                                        <a href="~/Home/RemoveItem?book=@book&copy=@copy">
+                                            Xóa
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="item_cart" style="display:flex">
+                                    <div class="checkbox_cart" style="display:flex">
+                                        <input class="check_box" type="checkbox" id="myCheckbox" checked href="~/Home/AddOrRemoveItem?copy=@copy">
+                                    </div>
+
+                                    <img class="img_pro_cart" style="display:flex" src=" @book.getUrlImage()" alt="Ảnh sách">
+
+                                    <div class="group-info" style="display:flex">
+                                        <div class="namePro"> @book.getTitle() </div>
+                                        <div class="tacGia"> @book.getAuthor()</div>
+                                    </div>
+                                    <div class"remote-cart">
+                                        <a href="~/Home/RemoveItem?book=@book&copy=@copy">
+                                            Xóa
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+       
+        <a class="btn-add-to-muon" href="~/Home/Borrow">
             Mượn ngay
         </a>
+
     </div>
 </body>
 

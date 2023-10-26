@@ -121,7 +121,7 @@ namespace BookstoreProject.Firestore_Database
                 string content = "";
                 foreach (string arCon in bookId.GetValue<List<string>>("Content"))
                 {
-                    content += arCon + "\n";
+                    content += arCon + "\n\n";
                 }
 
                 book = new Book(bookId.GetValue<string>("Id"),
