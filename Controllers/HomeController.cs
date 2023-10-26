@@ -31,22 +31,10 @@ namespace BookstoreProject.Controllers
                 BookstoreProjectDatabase.accountInfo = new Account(User.Claims.ElementAt(0).Value, User.Claims.ElementAt(1).Value, User.Claims.ElementAt(2).Value);
                 Console.WriteLine("User.Claims.ElementAt(2).ToString(): " + User.Claims.ElementAt(2).Value);
             }
-            else
-            {
-                BookstoreProjectDatabase.accountInfo = new Account("", "", "");
-                Console.WriteLine("accountInfo: " + BookstoreProjectDatabase.accountInfo.getAccount());
-            }
-
-            if (!IsIn)
-            {
-                IsIn = true;
-                books = new List<Book>();
-                copies1 = new List<Copy>();
-                copyChosen = new List<Copy>();
-            }
             BookstoreProjectDatabase.LoadBooks();
             BookstoreProjectDatabase.LoadGenre();
             BookstoreProjectDatabase.LoadBooksSortedWithCopies();
+>>>>>>> 34e957cddfb1f7afc8e62ec9b85ea53a9094d993
             return View();
         }
 

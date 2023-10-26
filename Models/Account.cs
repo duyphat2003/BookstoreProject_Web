@@ -6,7 +6,6 @@
         private string password;
         private string role;
 
-
         public Account()
         {
 

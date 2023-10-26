@@ -1,11 +1,26 @@
+<<<<<<< HEAD
+﻿//using Amazon.IdentityManagement.Model;
+using Amazon.IdentityManagement.Model;
+using BookstoreProject.Dto;
+using BookstoreProject.Firestore_Database;
+=======
 ﻿using BookstoreProject.Firestore_Database;
+>>>>>>> 34e957cddfb1f7afc8e62ec9b85ea53a9094d993
 using BookstoreProject.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+<<<<<<< HEAD
+using System.Security.Claims;
+=======
 using System.Net;
+>>>>>>> 34e957cddfb1f7afc8e62ec9b85ea53a9094d993
 using System.Text;
 
 namespace BookstoreProject.Controllers
 {
+    [Authorize(Policy = "Admin")]
     public class AdminController : Controller
     {
         private readonly ILogger<AdminController> _logger;
@@ -21,6 +36,7 @@ namespace BookstoreProject.Controllers
             return View();
         }
         //Trang quản lý tài khoản
+        [Authorize(Policy = "Admin",Roles = "ThuThu,QuanLy")]
         public IActionResult AccountManagement()
         {
 
@@ -142,7 +158,13 @@ namespace BookstoreProject.Controllers
 
         Book book = new Book();
         //Trang quản lý sách
+<<<<<<< HEAD
+        [Authorize(Policy = "Admin", Roles = "ThuKho,QuanLy")]
+
+        public IActionResult BookManagement()
+=======
         public IActionResult BookManagement(string nameGenre)
+>>>>>>> 34e957cddfb1f7afc8e62ec9b85ea53a9094d993
         {
             if (string.IsNullOrEmpty(nameGenre))
                 BookstoreProjectDatabase.LoadBooks();
@@ -218,6 +240,7 @@ namespace BookstoreProject.Controllers
         }
 
         //Trang quản lý phiếu mượn
+        [Authorize(Policy = "Admin", Roles = "ThuThu,QuanLy")]
         public IActionResult LoanManagement()
         {
             BookstoreProjectDatabase.LoadBooks();
@@ -226,6 +249,7 @@ namespace BookstoreProject.Controllers
             return View();
         }
 
+        [Authorize(Policy = "Admin", Roles = "ThuThu,QuanLy")]
         public IActionResult AddLoan(string copyId, string bookId, string cardId, string button)
         {
             if (cardId != "" && bookId != "" && cardId != "")
@@ -243,7 +267,9 @@ namespace BookstoreProject.Controllers
             ViewBag.loanList = BookstoreProjectDatabase.loans;
             return View("LoanManagement");
         }
+
         //Trang quản lý thẻ thư viện
+        [Authorize(Policy = "Admin", Roles = "ThuThu,QuanLy")]
         public IActionResult LibraryCardManagement()
         {
             BookstoreProjectDatabase.LoadLibraryCards();
@@ -251,6 +277,7 @@ namespace BookstoreProject.Controllers
             return View();
         }
 
+        [Authorize(Policy = "Admin", Roles = "ThuThu,QuanLy")]
         public IActionResult AddLibraryCard(string cardId, string nameStudent, string button, bool status, bool borrow)
         {
             Console.OutputEncoding = Encoding.Unicode;
@@ -289,7 +316,22 @@ namespace BookstoreProject.Controllers
             return View("LibraryCardManagement");
         }
 
+        //Quản lí tài khoản => (thêm tài khoản nhân viên)
+        //[HttpPost]
+        //public async Task<IActionResult> Registration(SignUpDTO dtos)
+        //{
+        //    BookstoreProjectDatabase.SearchAccount(dtos.Account, dtos.Password);
+        //    if (BookstoreProjectDatabase.accountInfo != null)
+        //    {
+        //        throw new Exception("This account is already created.");
+        //    }
+        //    Account account = new Account(dtos.Account, dtos.Password, dtos.Role);
+        //    BookstoreProjectDatabase.AddAccount(account);
+        //    return RedirectToAction("AccountManagement", "Admin");
+        //}
+
         //Trang quản lý bản sao
+        [Authorize(Policy = "Admin", Roles = "ThuKho,QuanLy")]
         public IActionResult BookCopyManagement()
         {
             BookstoreProjectDatabase.LoadBooks();
@@ -373,6 +415,7 @@ namespace BookstoreProject.Controllers
         }
 
         //Trang quản lý thể loại
+        [Authorize(Policy = "Admin", Roles = "QuanLy")]
         public IActionResult GenreManagement()
         {
             return View();
