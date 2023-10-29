@@ -1,4 +1,5 @@
-﻿using BookstoreProject.Firestore_Database;
+﻿using BookstoreProject.Controllers;
+using BookstoreProject.Firestore_Database;
 using BookstoreProject.Models;
 using Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -57,6 +58,7 @@ if (!app.Environment.IsDevelopment())
 Console.OutputEncoding = System.Text.Encoding.Unicode;
 //Start Database ngoai nay, ha?n chê? go?i la?i trong t??ng controller
 BookstoreProjectDatabase.ConnectToFirestoreDB();
+CartList.CreateCart();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

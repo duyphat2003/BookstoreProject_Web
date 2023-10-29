@@ -1,21 +1,15 @@
-<<<<<<< HEAD
-﻿//using Amazon.IdentityManagement.Model;
+using Amazon.IdentityManagement.Model;
 using Amazon.IdentityManagement.Model;
 using BookstoreProject.Dto;
 using BookstoreProject.Firestore_Database;
-=======
 ﻿using BookstoreProject.Firestore_Database;
->>>>>>> 34e957cddfb1f7afc8e62ec9b85ea53a9094d993
 using BookstoreProject.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-<<<<<<< HEAD
 using System.Security.Claims;
-=======
 using System.Net;
->>>>>>> 34e957cddfb1f7afc8e62ec9b85ea53a9094d993
 using System.Text;
 
 namespace BookstoreProject.Controllers
@@ -158,13 +152,8 @@ namespace BookstoreProject.Controllers
 
         Book book = new Book();
         //Trang quản lý sách
-<<<<<<< HEAD
         [Authorize(Policy = "Admin", Roles = "ThuKho,QuanLy")]
-
-        public IActionResult BookManagement()
-=======
         public IActionResult BookManagement(string nameGenre)
->>>>>>> 34e957cddfb1f7afc8e62ec9b85ea53a9094d993
         {
             if (string.IsNullOrEmpty(nameGenre))
                 BookstoreProjectDatabase.LoadBooks();

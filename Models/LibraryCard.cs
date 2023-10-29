@@ -7,6 +7,7 @@
         string expirationDate;
         bool useStatus;
         bool borrowStatus;
+
         public LibraryCard(string id, string name, string expirationDate, bool useStatus, bool borrowStatus)
         {
             this.id = id;
@@ -23,6 +24,8 @@
             this.useStatus = useStatus;
             this.borrowStatus = borrowStatus;
         }
+
+        public LibraryCard() { }
 
         public string getId()
         {

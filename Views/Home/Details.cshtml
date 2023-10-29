@@ -12,7 +12,19 @@
             <div class="col-md-4">
                 <img class="product-image" src="@book.getUrlImage()" alt="Ảnh sách"/>
             <div class="add-to-cart-button">
-                <button class="btn btn-warning" type="submit"><a href="~/Home/AddCart?book=@book">Thêm vào giỏ hàng</a></button>
+                <button class="btn btn-warning" type="submit">
+                    <form action="~/Home/AddCart" method="post">
+                        <input type="text" name="id" value="@book.getId()" hidden/>
+                        <input type="text" name="title" value="@book.getTitle()" hidden />
+                        <input type="text" name="author" value="@book.getAuthor()" hidden />
+                        <input type="text" name="genre" value="@book.getGenre()" hidden />
+                        <input type="text" name="content" value="@book.getContent()" hidden />
+                        <input type="text" name="yearPublished" value="@book.getYearPublished()" hidden />
+                        <input type="text" name="publisher" value="@book.getPublisher()" hidden />
+                        <input type="text" name="urlImage" value="@book.getUrlImage()" hidden />
+                        <input type="submit" value="Thêm vào giỏ hàng" />
+                    </form>
+                </button>
             </div>
 
             </div>

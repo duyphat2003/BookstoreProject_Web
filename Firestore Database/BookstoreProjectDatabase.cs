@@ -553,6 +553,24 @@ namespace BookstoreProject.Firestore_Database
         }
 
         // tải thẻ sinh viên - Manager
+        public static LibraryCard LoadLibraryCardWithId(string id)
+        {
+            LibraryCard libraryCard = new LibraryCard();
+            Task<QuerySnapshot> libraryCardIds = libraryCardCollectionRef.WhereEqualTo("Id", id).GetSnapshotAsync();
+            libraryCardIds.Wait();
+            foreach (DocumentSnapshot libraryCardId in libraryCardIds.Result)
+            {
+                libraryCard = new LibraryCard(libraryCardId.GetValue<string>("Id"),
+                         libraryCardId.GetValue<string>("Name"),
+                         libraryCardId.GetValue<string>("ExpirationDate"),
+                         libraryCardId.GetValue<bool>("Status"),
+                         libraryCardId.GetValue<bool>("Borrow")); 
+            }
+
+            return libraryCard;
+        }
+
+        // tải thẻ sinh viên - Manager
         public static void LoadLibraryCardsWithName(string name)
         {
             libraryCards = new List<LibraryCard>();
@@ -983,6 +1001,7 @@ namespace BookstoreProject.Firestore_Database
                 }
             }
         }
+
 
         // Cập nhật tài khoản - Manager
         public static bool UpdateAccount(string account, bool isLogin)

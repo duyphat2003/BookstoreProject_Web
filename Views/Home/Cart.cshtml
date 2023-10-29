@@ -2,9 +2,12 @@
 @{
     ViewData["Title"] = "Cart";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    List<Book> books = ViewBag.bookcart; 
+    List<Book> books = ViewBag.bookcart;
     List<Copy> copies = ViewBag.copiescart;
-    List<Copy> copies1 = ViewBag.copieschosencart;
+ //   List<Copy> copies1 = ViewBag.copieschosencart;
+    Console.WriteLine("books Cartcs: " + books.Count());
+    Console.WriteLine("copies Cartcs: " + copies.Count());
+ //   Console.WriteLine("copies1 Cartcs: " + copies1.Count());
 }
 
 <body>
@@ -14,7 +17,7 @@
     <div class="container">
 
         @{
-            if (books.Count() > 0 && copies.Count() > 0 && copies1.Count() > 0)
+            if (books.Count() > 0 && copies.Count() > 0)
             {
                 foreach (Copy copy in copies)
                 {
@@ -22,22 +25,22 @@
                     {
                         if (copy.getBookId().Equals(book.getId()))
                         {
-                            bool isExist = false;
-                            foreach (Copy copy1 in copies1)
-                            {
-                                if (copy.getId().Equals(copy1.getId()))
-                                {
-                                    isExist = true;
-                                    break;
-                                }
-                            }
+                            // bool isExist = false;
+                            // foreach (Copy copy1 in copies1)
+                            // {
+                            //     if (copy.getId().Equals(copy1.getId()))
+                            //     {
+                            //         isExist = true;
+                            //         break;
+                            //     }
+                            // }
 
-                            if (!isExist)
-                            {
+                            // if (!isExist)
+                            // {
                                 <div class="item_cart" style="display:flex">
-                                    <div class="checkbox_cart" style="display:flex">
-                                        <input class="check_box" type="checkbox" id="myCheckbox" href="~/Home/AddOrRemoveItem?copy=@copy">
-                                    </div>
+                                    // <div class="checkbox_cart" style="display:flex">
+                                    //     <input class="check_box" type="checkbox" id="myCheckbox" href="~/Home/AddOrRemoveItem?copy=@copy">
+                                    // </div>
 
                                     <img class="img_pro_cart" style="display:flex" src=" @book.getUrlImage()" alt="Ảnh sách">
 
@@ -51,27 +54,27 @@
                                         </a>
                                     </div>
                                 </div>
-                            }
-                            else
-                            {
-                                <div class="item_cart" style="display:flex">
-                                    <div class="checkbox_cart" style="display:flex">
-                                        <input class="check_box" type="checkbox" id="myCheckbox" checked href="~/Home/AddOrRemoveItem?copy=@copy">
-                                    </div>
+                            // }
+                            // else
+                            // {
+                            //     <div class="item_cart" style="display:flex">
+                            //         <div class="checkbox_cart" style="display:flex">
+                            //             <input class="check_box" type="checkbox" id="myCheckbox" checked href="~/Home/AddOrRemoveItem?copy=@copy">
+                            //         </div>
 
-                                    <img class="img_pro_cart" style="display:flex" src=" @book.getUrlImage()" alt="Ảnh sách">
+                            //         <img class="img_pro_cart" style="display:flex" src=" @book.getUrlImage()" alt="Ảnh sách">
 
-                                    <div class="group-info" style="display:flex">
-                                        <div class="namePro"> @book.getTitle() </div>
-                                        <div class="tacGia"> @book.getAuthor()</div>
-                                    </div>
-                                    <div class"remote-cart">
-                                        <a href="~/Home/RemoveItem?book=@book&copy=@copy">
-                                            Xóa
-                                        </a>
-                                    </div>
-                                </div>
-                            }
+                            //         <div class="group-info" style="display:flex">
+                            //             <div class="namePro"> @book.getTitle() </div>
+                            //             <div class="tacGia"> @book.getAuthor()</div>
+                            //         </div>
+                            //         <div class"remote-cart">
+                            //             <a href="~/Home/RemoveItem?book=@book&copy=@copy">
+                            //                 Xóa
+                            //             </a>
+                            //         </div>
+                            //     </div>
+                            // }
 
                             break;
                         }
