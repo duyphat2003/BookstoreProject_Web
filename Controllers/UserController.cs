@@ -96,14 +96,14 @@ namespace BookstoreProject.Controllers
         //Trang thông tin người dùng
         public IActionResult UserInfo()
         {
+            //string id = BookstoreProjectDatabase.accountInfo.getAccount();
+            //BookstoreProjectDatabase.LoadLibraryCardsWithId(id);
             return View();
         }
-
         //Trang lịch sử mượn
         public IActionResult UserLoanHistory()
         {
-            string id = BookstoreProjectDatabase.accountInfo.getAccount();
-            BookstoreProjectDatabase.LoadLoanWithId(id);
+            BookstoreProjectDatabase.LoadLoanWithId(BookstoreProjectDatabase.accountInfo.getAccount());
             return View();
         }
         //Trang thông báo của người dùng 

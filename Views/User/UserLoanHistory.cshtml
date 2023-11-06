@@ -2,9 +2,9 @@
     ViewBag.Title = "Loan History";
     Layout = "~/Views/Shared/_Layout.cshtml";
     <link rel="stylesheet" type="text/css" href="~/css/admin.css">
-    List<Loan> loans = ViewBag.loanList;
-    List<Book> books = ViewBag.bookcart;
-    List<Copy> copies = ViewBag.copiescart;
+    List<Loan> loans = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.loans;
+    List<Book> books = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.books;
+    // List<Copy> copies = ViewBag.copiescart;
 }
 <style>
     body {
@@ -126,6 +126,7 @@
                 <td>@loan.getBookId()</td>
                 <td>@loan.getDateLoaned()</td>
                 <td>@loan.getDateDue()</td>
+                <td></td>
             </tr>
         }
     </thead>

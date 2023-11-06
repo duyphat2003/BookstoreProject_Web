@@ -740,13 +740,13 @@ namespace BookstoreProject.Firestore_Database
         {
             LoadBooks();
             loans = new List<Loan>();
-            Task<QuerySnapshot> loanIds = loanCollectionRef.GetSnapshotAsync();
+            Task<QuerySnapshot> loanIds = loanCollectionRef.WhereEqualTo("Id", id).GetSnapshotAsync();
             loanIds.Wait();
             foreach (DocumentSnapshot loanId in loanIds.Result)
             {
                 foreach (Book book in books)
                 {
-                    Task<QuerySnapshot> bookCopyIds = loanCollectionRef.Document(id).Collection(book.getId()).GetSnapshotAsync();
+                    Task<QuerySnapshot> bookCopyIds = loanCollectionRef.Document(loanId.Id).Collection(book.getId()).GetSnapshotAsync();
                     bookCopyIds.Wait();
                     foreach (DocumentSnapshot bookCopyId in bookCopyIds.Result)
                     {
@@ -760,6 +760,7 @@ namespace BookstoreProject.Firestore_Database
                 }
             }
         }
+
         public static void LoadLoanWithUserID(string id)
         {
             LoadBooks();
@@ -770,7 +771,7 @@ namespace BookstoreProject.Firestore_Database
             {
                 foreach (Book book in books)
                 {
-                    Task<QuerySnapshot> bookCopyIds = loanCollectionRef.Document(id).Collection(accountInfo.getAccount()).GetSnapshotAsync();
+                    Task<QuerySnapshot> bookCopyIds = loanCollectionRef.Document(id).Collection(book.getId()).GetSnapshotAsync();
                     bookCopyIds.Wait();
                     foreach (DocumentSnapshot bookCopyId in bookCopyIds.Result)
                     {
