@@ -11,18 +11,7 @@
 
 }
 
-<div class="homePage">
-    <div class="dropdown">
-        <button class="dropbtn">Thể loại</button>
-        <div class="dropdown-content">
-            @foreach (Genre genre in genres)
-            {
-                <a href="~/Admin/BookManagement?nameGenre=@genre.getName()">@genre.getName()</a>
-            }
-        </div>
-    </div>
-</div>
-<br />
+
                            
 <form action="~/Admin/ManageBookManagement" method="post" style="margin-bottom:10px">
     <fieldset>
@@ -233,7 +222,18 @@
     </tr>
 </table>
 
-<div class="title homePage">Quản lí sách</div>
+<div class="homePage">
+    <div class="dropdown">
+        <button class="dropbtn">Thể loại</button>
+        <div class="dropdown-content">
+            @foreach (Genre genre in genres)
+            {
+                <a href="~/Admin/BookManagement?nameGenre=@genre.getName()">@genre.getName()</a>
+            }
+        </div>
+    </div>
+</div>
+<br />
 
 <div class="homePage">
     
@@ -243,6 +243,7 @@
             {
                 <div class="prod-item">
                     <div class="image"><img src="@book2.getUrlImage()" alt="@book2.getTitle()"></div>
+                    <div class="title2" style="color:red">@book2.getId()</div>
                     <div class="title2">@book2.getTitle()</div>
                 </div>
             }
