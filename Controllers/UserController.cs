@@ -93,6 +93,24 @@ namespace BookstoreProject.Controllers
                 return RedirectToAction("SignIn", "User");
             }
         }
+        //Trang thông tin người dùng
+        public IActionResult UserInfo()
+        {
+            return View();
+        }
+
+        //Trang lịch sử mượn
+        public IActionResult UserLoanHistory()
+        {
+            string id = BookstoreProjectDatabase.accountInfo.getAccount();
+            BookstoreProjectDatabase.LoadLoanWithId(id);
+            return View();
+        }
+        //Trang thông báo của người dùng 
+        public IActionResult UserNofi()
+        {
+            return View();
+        }
 
         //Email Service is not working while using firebase
         //Not sure

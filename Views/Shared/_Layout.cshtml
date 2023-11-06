@@ -67,7 +67,7 @@
                     <div class="flex-column align-items-center d-flex me-4">
                         <div class="mb-1"><img alt="Lỗi ảnh" src="~/lib/bell.png" width="25" height="25" /></div>
                         <div>
-                            <a class="nav-item">@Html.ActionLink("Thông báo", "SignIn", "User", null, new { @class = "nav-link"}) </a>
+                            <a class="nav-item">@Html.ActionLink("Thông báo", "UserNofi", "User", null, new { @class = "nav-link"}) </a>
                         </div>
                     </div>
                     <div class="flex-column align-items-center d-flex me-4">
@@ -96,8 +96,9 @@
                                     @if (BookstoreProjectDatabase.accountInfo.getRole().Equals(BookstoreProjectDatabase.SINHVIEN))
                                     {
                                         Console.WriteLine("User.Claims.ElementAt(2).ToString(): Sinh viên");
-                                        <li class="nav-item">@Html.ActionLink("Thông tin tài khoản", "Profile", "User", null, new { @class = "nav-link"})</li>
+                                        <li class="nav-item">@Html.ActionLink("Thông tin tài khoản", "UserInfo", "User", null, new { @class = "nav-link"})</li>
                                         <li class="nav-item">@Html.ActionLink("Danh sách yêu thích", "SavedProduct", "User", null, new { @class = "nav-link"})</li>
+                                        <li class="nav-item">@Html.ActionLink("Lịch sử mượn", "UserLoanHistory", "User", BookstoreProjectDatabase.accountInfo.getAccount() , new { @class = "nav-link"})</li>
                                     }
                                     else
                                     {

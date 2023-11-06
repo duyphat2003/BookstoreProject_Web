@@ -1,0 +1,47 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewBag.Title = "Nofication";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/custom.css" />
+    <link rel="stylesheet" href="~/css/StyleSheet.css" />
+   }
+
+   
+<body>
+    <div class="notification">
+        <div class="title">Thông báo mới</div>
+        <div class="message">Đây là nội dung thông báo.</div>
+        <div class="timestamp">05/11/2023 10:30 AM</div>
+    </div>
+    <style>
+        /* CSS cho thông báo */
+        .notification {
+            background-color: #f8f8f8;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 10px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 10px;
+            width: 700px;
+        }
+
+            .notification .title {
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            .notification .message {
+                color: #666;
+            }
+
+            .notification .timestamp {
+                font-size: 12px;
+                color: #999;
+            }
+    </style>
+</body>

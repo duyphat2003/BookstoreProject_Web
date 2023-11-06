@@ -1,0 +1,132 @@
+﻿@{
+    ViewBag.Title = "Loan History";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    <link rel="stylesheet" type="text/css" href="~/css/admin.css">
+    List<Loan> loans = ViewBag.loanList;
+    List<Book> books = ViewBag.bookcart;
+    List<Copy> copies = ViewBag.copiescart;
+}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0px;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 30%;
+        margin-top: 5px;
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 2px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    .buttons {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+        .buttons button {
+            margin-right: 10px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+            .buttons button:hover {
+                background-color: #0056b3;
+            }
+
+
+    /* CSS cho bảng */
+    #library-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        border: 5px, solid, #000;
+        padding: 20px;
+    }
+
+        #library-table th, #library-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #library-table th {
+            background-color: #f2f2f2;
+        }
+
+    /* CSS cho tiêu đề */
+    h4 {
+        text-align: left;
+        padding: 5px;
+    }
+
+    h2 {
+        text-align: center;
+        margin-top: 5px;
+        background-color: #FF6A6A;
+        padding: 5px;
+        color: white;
+    }
+</style>
+
+
+<h2>Lịch sử mượn</h2>
+@* <h4 style="margin-top: 40px">Thông tin mượn</h4>
+<form action="~/Admin/AddLoan">
+    <table>
+        <tr>
+            <th>Mã bản sao</th>
+            <th>Mã sách</th>
+            <th>Mã thẻ</th>
+        </tr>
+        <tr>
+
+            <td><input id="copyId" name="copyId" type="text" required></td>
+            <td><input id="bookId" name="bookId" type="text" required></td>
+            <td><input id="cardId" name="cardId" type="text" required></td>
+
+        </tr>
+
+
+    </table>
+
+    <div class="buttons">
+        <button name="button" value="addBtn"><i id="addBtn" class="fas fa-plus"></i> Thêm</button>
+    </div>
+</form> *@
+<table id="library-table">
+    <thead>
+        <tr>
+            <th>Mã sách</th>
+            <th>Ngày mượn</th>
+            <th>Ngày trả</th>
+        </tr>
+
+        @foreach (Loan loan in loans)
+        {
+            <tr>
+                <td>@loan.getBookId()</td>
+                <td>@loan.getDateLoaned()</td>
+                <td>@loan.getDateDue()</td>
+            </tr>
+        }
+    </thead>
+</table>

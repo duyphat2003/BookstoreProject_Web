@@ -755,6 +755,30 @@ namespace BookstoreProject.Firestore_Database
                                 bookCopyId.GetValue<string>("BookCopyId"),
                                 bookCopyId.GetValue<string>("BorrowDate"),
                                 bookCopyId.GetValue<string>("DateDue")));
+                        Console.WriteLine(book.getId() + ", " + loanId.Id); 
+                    }
+                }
+            }
+        }
+        public static void LoadLoanWithUserID(string id)
+        {
+            LoadBooks();
+            loans = new List<Loan>();
+            Task<QuerySnapshot> loanIds = loanCollectionRef.GetSnapshotAsync();
+            loanIds.Wait();
+            foreach (DocumentSnapshot loanId in loanIds.Result)
+            {
+                foreach (Book book in books)
+                {
+                    Task<QuerySnapshot> bookCopyIds = loanCollectionRef.Document(id).Collection(accountInfo.getAccount()).GetSnapshotAsync();
+                    bookCopyIds.Wait();
+                    foreach (DocumentSnapshot bookCopyId in bookCopyIds.Result)
+                    {
+                        loans.Add(new Loan(book.getId(),
+                                loanId.Id,
+                                bookCopyId.GetValue<string>("BookCopyId"),
+                                bookCopyId.GetValue<string>("BorrowDate"),
+                                bookCopyId.GetValue<string>("DateDue")));
                         Console.WriteLine(book.getId() + ", " + loanId.Id);
                     }
                 }
