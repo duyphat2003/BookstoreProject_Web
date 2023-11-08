@@ -186,24 +186,7 @@ namespace BookstoreProject.Controllers
             return PartialView("_MoreProductPartial");
         }
 
-        //Trang thông tin người dùng
-        public IActionResult UserInfo(string id)
-        {
-            BookstoreProjectDatabase.LoadLoanWithId(id);   
-            return View();
-        }
-
-        //Trang lịch sử mượn
-        public IActionResult UserLoanHistory()
-        {
-            return View();
-        }
-        //Trang thông báo của người dùng 
-        public IActionResult UserNofi()
-        {
-            return View();
-        }
-
+        
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

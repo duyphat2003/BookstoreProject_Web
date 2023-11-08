@@ -1,0 +1,74 @@
+﻿
+@{
+    ViewData["Title"] = "User Info";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    LibraryCard libraryCard = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.libraryCard;
+    Account account = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.accountInfo;
+
+}
+<section style="background-color: #eee;">
+    <div class="container py-5">
+
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-body text-center">
+                        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                             class="rounded-circle img-fluid" style="width: 150px;">
+                        <h5 class="my-3">@libraryCard.getName()</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Name</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="text-muted mb-0">@libraryCard.getName()</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Tài khoản</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="text-muted mb-0">@account.getAccount()</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Chức vụ</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="text-muted mb-0">@account.getRole()</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Id card</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="text-muted mb-0">@libraryCard.getId()</p>
+                            </div>
+                        </div>   
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Ngày hết hạn</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="text-muted mb-0">@libraryCard.getExpirationDate()</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
