@@ -33,6 +33,9 @@ namespace BookstoreProject.Firestore_Database
         public static Account accountInfo;
         public static LibraryCard libraryCard;
 
+
+        //.accountInfo.GetAccount();
+
         static FirestoreDb database;
         static CollectionReference bookCollectionRef, copyCollectionRef, loanCollectionRef, libraryCardCollectionRef, genreCollectionRef, accountCollectionRef; // Các collection trong database Bookstore
 
