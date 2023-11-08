@@ -76,6 +76,8 @@ namespace BookstoreProject.Controllers
 
         public IActionResult ForgotPassword()
         {
+            ViewBag.IsLogin = User.Identity.IsAuthenticated;
+
             return View();
         }
 
