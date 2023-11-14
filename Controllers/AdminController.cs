@@ -175,7 +175,7 @@ namespace BookstoreProject.Controllers
             BookstoreProjectDatabase.LoadGenre();
             ViewBag.BookContent = book;
             Console.WriteLine("LoadContentBookWithId book: " + book.getId());
-            return RedirectToAction("BookManagement", "Admin");
+            return View("BookManagement");
         }
 
         [HttpPost]

@@ -58,6 +58,13 @@ namespace BookstoreProject.Controllers
             BookstoreProjectDatabase.LoadBooksWithKeyword(name);
             return RedirectToAction("BookList", "Home");
         }
+        public IActionResult LoadBooksAll()
+        {
+            BookstoreProjectDatabase.LoadBooks();
+            BookstoreProjectDatabase.LoadCopies();
+            BookstoreProjectDatabase.LoadGenre();
+            return RedirectToAction("BookList", "Home");
+        }
 
 
         //Trang chi tiết sản phẩm

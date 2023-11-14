@@ -1,8 +1,10 @@
 ﻿using Amazon.IdentityManagement.Model;
 using BookstoreProject.Models;
 using Google.Cloud.Firestore;
+using Humanizer.Localisation;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using static Google.Rpc.Context.AttributeContext.Types;
 
 namespace BookstoreProject.Firestore_Database
 {
@@ -90,6 +92,63 @@ namespace BookstoreProject.Firestore_Database
             books = new List<Book>();
             
             Task<QuerySnapshot> bookIds = bookCollectionRef.GetSnapshotAsync();
+            bookIds.Wait();
+
+            foreach (DocumentSnapshot bookId in bookIds.Result)
+            {
+                string content = "";
+                foreach (string arCon in bookId.GetValue<List<string>>("Content"))
+                {
+                    content += arCon + "\n";
+                }
+
+                books.Add(new Book(bookId.GetValue<string>("Id"),
+                                     bookId.GetValue<string>("Name"),
+                                     bookId.GetValue<string>("Author"),
+                                     bookId.GetValue<string>("Genre"),
+                                     content,
+                                     bookId.GetValue<string>("YearPublished"),
+                                     bookId.GetValue<string>("Publisher"),
+                                     bookId.GetValue<string>("URL")));
+
+                Console.WriteLine(bookId.GetValue<string>("Name"));
+            }
+        }
+
+
+        public static void LoadBooksWithAuthor(string author)
+        {
+            books = new List<Book>();
+
+            Task<QuerySnapshot> bookIds = bookCollectionRef.WhereEqualTo("Author", author).GetSnapshotAsync();
+            bookIds.Wait();
+
+            foreach (DocumentSnapshot bookId in bookIds.Result)
+            {
+                string content = "";
+                foreach (string arCon in bookId.GetValue<List<string>>("Content"))
+                {
+                    content += arCon + "\n";
+                }
+
+                books.Add(new Book(bookId.GetValue<string>("Id"),
+                                     bookId.GetValue<string>("Name"),
+                                     bookId.GetValue<string>("Author"),
+                                     bookId.GetValue<string>("Genre"),
+                                     content,
+                                     bookId.GetValue<string>("YearPublished"),
+                                     bookId.GetValue<string>("Publisher"),
+                                     bookId.GetValue<string>("URL")));
+
+                Console.WriteLine(bookId.GetValue<string>("Name"));
+            }
+        }
+
+        public static void LoadBooksWithYearPublished(bool isASC)
+        {
+            books = new List<Book>();
+            Task<QuerySnapshot> bookIds;
+            bookIds = isASC ? bookCollectionRef.OrderBy("YearPublished").GetSnapshotAsync() : bookCollectionRef.OrderByDescending("YearPublished").GetSnapshotAsync();
             bookIds.Wait();
 
             foreach (DocumentSnapshot bookId in bookIds.Result)
