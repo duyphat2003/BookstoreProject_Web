@@ -170,8 +170,36 @@ namespace BookstoreProject.Firestore_Database
 
                 Console.WriteLine(bookId.GetValue<string>("Name"));
             }
-        }
 
+        }
+        public static void LoadBooksWithNameSorted(bool isASC)
+        {
+            books = new List<Book>();
+            Task<QuerySnapshot> bookIds;
+            bookIds = isASC ? bookCollectionRef.OrderBy("Name").GetSnapshotAsync() : bookCollectionRef.OrderByDescending("Name").GetSnapshotAsync();
+            bookIds.Wait();
+
+            foreach (DocumentSnapshot bookId in bookIds.Result)
+            {
+                string content = "";
+                foreach (string arCon in bookId.GetValue<List<string>>("Content"))
+                {
+                    content += arCon + "\n";
+                }
+
+                books.Add(new Book(bookId.GetValue<string>("Id"),
+                                     bookId.GetValue<string>("Name"),
+                                     bookId.GetValue<string>("Author"),
+                                     bookId.GetValue<string>("Genre"),
+                                     content,
+                                     bookId.GetValue<string>("YearPublished"),
+                                     bookId.GetValue<string>("Publisher"),
+                                     bookId.GetValue<string>("URL")));
+
+                Console.WriteLine(bookId.GetValue<string>("Name"));
+            }
+
+        }
 
         public static Book LoadContentBookWithId(string id)
         {

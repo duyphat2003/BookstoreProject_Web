@@ -50,21 +50,27 @@ namespace BookstoreProject.Controllers
         public IActionResult LoadBooksWithGenre(string nameGenre)
         {
             BookstoreProjectDatabase.LoadBooksWithGenre(nameGenre);
+            BookstoreProjectDatabase.LoadGenre();
+            BookstoreProjectDatabase.LoadCopies();
             return RedirectToAction("BookList", "Home");
         }
 
-        public IActionResult LoadBooksWithYearPublished(bool isACS)
+        public IActionResult LoadBooksWithSort(bool isSortNameBook, bool isACS)
         {
-            BookstoreProjectDatabase.LoadBooksWithYearPublished(isACS);
+            if(isSortNameBook)
+            {
+                BookstoreProjectDatabase.LoadBooksWithNameSorted(isACS);
+            }
+            else
+            {
+                BookstoreProjectDatabase.LoadBooksWithYearPublished(isACS);
+            }
+
+
+            BookstoreProjectDatabase.LoadGenre();
+            BookstoreProjectDatabase.LoadCopies();
             return RedirectToAction("BookList", "Home");
         }
-
-        public IActionResult LoadBooksWithAuthor(string author)
-        {
-            BookstoreProjectDatabase.LoadBooksWithAuthor(author);
-            return RedirectToAction("BookList", "Home");
-        }
-
 
         [HttpPost]
         public IActionResult LoadBooksWithName(string name)
@@ -77,6 +83,7 @@ namespace BookstoreProject.Controllers
             BookstoreProjectDatabase.LoadBooks();
             BookstoreProjectDatabase.LoadCopies();
             BookstoreProjectDatabase.LoadGenre();
+            
             return RedirectToAction("BookList", "Home");
         }
 

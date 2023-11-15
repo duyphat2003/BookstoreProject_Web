@@ -11,16 +11,35 @@
             <div class="test">
             <ul id="menu">
                 <li>
-                    <a>Tác giả<span class="arrow arrow-down"></span></a>
+                    <a>Thể loại<span class="arrow arrow-down"></span></a>
                     <ul class="dropdown_menu">
                         @{
-                            foreach (Book book in BookstoreProjectDatabase.books)
+                            foreach (Genre genre in BookstoreProjectDatabase.genres)
                             {
                                 <li>
-                                    <a href="@Url.Action("LoadBooksWithAuthor", "Home", new { author = book.getAuthor()})"> @book.getAuthor()</a>
+                                    <a href="@Url.Action("LoadBooksWithGenre", "Home", new { nameGenre = genre.getName()})"> @genre.getName()</a>
                                 </li>
                             }
                         }
+                    </ul>
+                </li>
+
+                <li>
+                    <a>Sắp xếp<span class="arrow arrow-down"></span></a>
+                    <ul class="dropdown_menu">
+                        <li>
+                            <a href="@Url.Action("LoadBooksWithSort", "Home", new { isSortNameBook = false, isACS = true})">Năm xuất bản tăng dần</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("LoadBooksWithSort", "Home", new { isSortNameBook = false, isACS = false})">Năm xuất bản giảm dần</a>
+                        </li>
+
+                        <li>
+                            <a href="@Url.Action("LoadBooksWithSort", "Home", new { isSortNameBook = true,  isACS = true})">Tên sách tăng dần</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("LoadBooksWithSort", "Home", new { isSortNameBook = true, isACS = false})">Tên sách giảm dần</a>
+                        </li>
                     </ul>
                 </li>
             </ul>
