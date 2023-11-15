@@ -10,7 +10,7 @@
 
     #menu li {
         text-align: left;
-        color: #fff;
+        color: black;
     }
         /**/
         #menu li a {
@@ -18,17 +18,17 @@
             font-size: 16px;
             display: block;
             padding: 15px;
-            color: #fff;
+            color: black;
             background-color: #333;
         }
 
         #menu li #menuTitle {
-            background-color: white;
+            background-color: black;
         }
 
     #menu > li {
         float: left;
-        border-right: 1px solid #fff;
+        border-right: 1px solid black;
         position: relative;
     }
 
@@ -82,12 +82,11 @@ ul.submenu > li:hover > a {
 .arrow-down {
     border-left: 7px solid transparent;
     border-right: 7px solid transparent;
-    border-top: 7px solid #fff;
-    background-color:black
+    border-top: 7px solid black;
 }
 
 .arrow-right {
     border-top: 7px solid transparent;
     border-bottom: 7px solid transparent;
-    border-left: 7px solid #fff;
+    border-left: 7px solid black;
 }

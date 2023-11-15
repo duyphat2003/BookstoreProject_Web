@@ -1,4 +1,5 @@
-﻿@{
+﻿@using BookstoreProject.Firestore_Database;
+@{
     List<Book> books = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.books;
     List<Copy> copies = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.copies;
     List<Genre> genres = BookstoreProject.Firestore_Database.BookstoreProjectDatabase.genres;
@@ -7,10 +8,24 @@
 
 <div class="homePage">
         <div class="container-lg d-flex flex-column">
-            <div class="title">
-            
-            </div>
-            <div class="products">
+            <div class="test">
+            <ul id="menu">
+                <li>
+                    <a>Tác giả<span class="arrow arrow-down"></span></a>
+                    <ul class="dropdown_menu">
+                        @{
+                            foreach (Book book in BookstoreProjectDatabase.books)
+                            {
+                                <li>
+                                    <a href="@Url.Action("LoadBooksWithAuthor", "Home", new { author = book.getAuthor()})"> @book.getAuthor()</a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="products">
             @foreach (var book in books)
             {
                 int count = 0;
@@ -28,4 +43,25 @@
             }
             </div>
         </div>
+        
+
 </div>
+<script src="http://code.jquery.com/jquery-1.7.min.js"></script>
+<script>
+    $('#menu > li').hover(function () {
+        // khi thẻ menu li bị hover thì drop down menu thuộc thẻ li đó sẽ trượt xuống(hiện)
+        $('.dropdown_menu', this).slideDown();
+    }, function () {
+        // khi thẻ menu li bị out không hover nữa thì drop down menu thuộc thẻ li đó sẽ trượt lên(ẩn)
+        $('.dropdown_menu', this).slideUp();
+    });
+
+    $('.dropdown_menu > li').hover(function () {
+        // khi thẻ dropdown_menu li bị hover thì submenusubmenu thuộc thẻ li đó sẽ trượt xuống(hiện)
+        $('.submenu', this).slideDown();
+    }, function () {
+        // khi thẻ dropdown_menu li bị hover thì submenusubmenu thuộc thẻ li đó sẽ trượt lên(ẩnẩn)
+        $('.submenu', this).slideUp();
+    });
+</script>
+

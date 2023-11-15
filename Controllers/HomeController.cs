@@ -46,11 +46,25 @@ namespace BookstoreProject.Controllers
             return View();
         }
 
+
         public IActionResult LoadBooksWithGenre(string nameGenre)
         {
             BookstoreProjectDatabase.LoadBooksWithGenre(nameGenre);
             return RedirectToAction("BookList", "Home");
         }
+
+        public IActionResult LoadBooksWithYearPublished(bool isACS)
+        {
+            BookstoreProjectDatabase.LoadBooksWithYearPublished(isACS);
+            return RedirectToAction("BookList", "Home");
+        }
+
+        public IActionResult LoadBooksWithAuthor(string author)
+        {
+            BookstoreProjectDatabase.LoadBooksWithAuthor(author);
+            return RedirectToAction("BookList", "Home");
+        }
+
 
         [HttpPost]
         public IActionResult LoadBooksWithName(string name)

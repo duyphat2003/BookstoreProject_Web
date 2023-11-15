@@ -66,6 +66,13 @@ body {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
+    
+}
+.product {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    
 }
 
 .prod-item {
